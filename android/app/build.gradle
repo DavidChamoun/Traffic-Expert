@@ -84,6 +84,12 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
+
+        project.ext.vectoricons = [
+            iconFontNames: [ 'MaterialIcons.ttf', 'MaterialCommunityIcons.ttf', 'FontAwesome.ttf', 'Ionicons.ttf', 'Fontisto.ttf' ] // add what you need
+        ]
+        apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
+
     }
     signingConfigs {
         debug {
@@ -108,8 +114,21 @@ android {
 }
 
 dependencies {
+        // Import the BoM for the Firebase platform
+    implementation(platform("com.google.firebase:firebase-bom:34.7.0"))
+
+    // Add the dependency for the Firebase Authentication library
+    // When using the BoM, you don't specify versions in Firebase library dependencies
+    implementation("com.google.firebase:firebase-auth")
+
     // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
+
+    implementation project(':react-native-maps')
+
+    implementation 'com.transistorsoft:tslocationmanager:4.0.0-beta.14'
+
+
 
     if (hermesEnabled.toBoolean()) {
         implementation("com.facebook.react:hermes-android")
@@ -117,3 +136,6 @@ dependencies {
         implementation jscFlavor
     }
 }
+
+
+apply plugin: 'com.google.gms.google-services'

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "961513525788",
+    "project_id": "trafficexpert-app",
+    "storage_bucket": "trafficexpert-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:961513525788:android:1be633a8aec636502985d9",
+        "android_client_info": {
+          "package_name": "com.trafficexpert"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAxXQC1w-ynpaW3wbfZWKS5-L-qa1PoCio"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
