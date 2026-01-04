@@ -10,6 +10,8 @@ import {
   TouchableOpacity,
   SafeAreaView,
   ToastAndroid,
+  Pressable,
+  Modal,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -20,6 +22,8 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/AppNavigator';
 import { ActivityIndicator } from 'react-native';
 import { getExpertSession, clearExpertSession } from '../session/session.tsx';
+import { checkAndPrepareLocation, getCurrentLocation, isLocationTurnedOn } from '../utils/location.ts';
+import { updateExpertLocation } from '../utils/firestoreService.ts';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
@@ -39,7 +43,51 @@ const ExpertProfile: React.FC = () => {
   // const [expertInfo, setExpertInfo] = useState<any>(null);
   const [expertInfo, setExpertInfo] = useState<ExpertProfileData | null>(null);
   const [loading, setLoading] = useState(false);
+  const [locationIsLoading, setLocationIsLoading] = useState(false);
+  const [dialogVisible, setDialogVisible] = useState(false);
 
+
+
+  const updateLocation = async () => {
+
+    setLocationIsLoading(true);
+
+    const locationReady = await checkAndPrepareLocation();
+    const enabled = await isLocationTurnedOn();
+
+    if (!locationReady || !enabled) {
+      console.error('Location permission is required to complete registration.');
+      setLocationIsLoading(false);
+      return;
+    }
+
+
+
+    try {
+      console.log('Updating current location...');
+      const location = await getCurrentLocation();
+      const session = await getExpertSession();
+      if (!session) return;
+
+      // Convert to Firestore GeoPoint
+      const geoPoint = new firestore.GeoPoint(
+        location.latitude,
+        location.longitude
+      );
+
+      await updateExpertLocation(
+        session.expertId,
+        location.latitude,
+        location.longitude
+
+      );
+    } catch (error) {
+      console.error('Failed to update location..');
+      ToastAndroid.show('Failed to update location', ToastAndroid.SHORT);
+    } finally {
+      setLocationIsLoading(false);
+    }
+  }
 
   // useEffect(() => {
   //   const fetchExpert = async () => {
@@ -139,26 +187,15 @@ const ExpertProfile: React.FC = () => {
 
   const logout = async () => {
 
-    Alert.alert(
-      'Logout',
-      '',
-      [
-        {
-          text: 'Yes',
-          onPress: async () => {
-            // Navigate to login or success screen
-            await clearExpertSession();
+    // Navigate to login or success screen
+    await clearExpertSession();
 
-            ToastAndroid.show('Logged out successfully', ToastAndroid.LONG);
+    ToastAndroid.show('Logged out successfully', ToastAndroid.LONG);
 
-            navigation.reset({
-              index: 0,
-              routes: [{ name: 'Login' }],
-            });
-          },
-        },
-      ]
-    );
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'Login' }],
+    });
 
   };
 
@@ -252,6 +289,41 @@ const ExpertProfile: React.FC = () => {
         </View>
 
 
+        {/* Update Expert Location */}
+        <TouchableOpacity
+          style={[
+            styles.changePasswordCard,
+            locationIsLoading && { opacity: 0.6 }
+          ]}
+          onPress={updateLocation}
+          activeOpacity={0.8}
+          disabled={locationIsLoading}
+        >
+          <View style={{ position: 'relative' }}>
+
+            <View style={styles.row}>
+              <View style={styles.passwordIconCircle}>
+                <MaterialIcons name="location-pin" size={20} color="#102C7E" />
+              </View>
+
+              <View style={{ flex: 1, marginLeft: 16 }}>
+                <Text style={styles.cardTitle}>Update Location</Text>
+                <Text style={styles.cardSub}>Update your current location</Text>
+              </View>
+            </View>
+
+            {locationIsLoading && (
+              <View style={styles.loadingOverlay}>
+                <ActivityIndicator size="small" color="#102C7E" />
+              </View>
+            )}
+          </View>
+
+        </TouchableOpacity>
+
+
+
+
         {/* Change Password Section */}
         <TouchableOpacity
           style={styles.changePasswordCard}
@@ -289,7 +361,7 @@ const ExpertProfile: React.FC = () => {
         {/* Logout Button */}
         <TouchableOpacity
           style={styles.logoutButton}
-          onPress={logout}
+          onPress={() => setDialogVisible(true)}
           activeOpacity={0.8}
         >
           <View style={styles.logoutButtonContent}>
@@ -297,6 +369,38 @@ const ExpertProfile: React.FC = () => {
             <Text style={styles.logoutButtonText}>Logout</Text>
           </View>
         </TouchableOpacity>
+
+
+        {/* Expert selection dialog */}
+        <Modal
+          visible={dialogVisible}
+          transparent
+          animationType="none"
+          onRequestClose={() => setDialogVisible(false)}
+        >
+          <View style={styles.modalOverlay}>
+            <View style={styles.dialog}>
+
+              <Text style={styles.dialogText}>
+                Are you sure you want to log out?
+              </Text>
+
+              <View style={styles.actions}>
+                <Pressable
+                  style={styles.cancelBtn}
+                  onPress={() => setDialogVisible(false)}
+                >
+                  <Text style={styles.cancelBtnText}>Cancel</Text>
+                </Pressable>
+                <Pressable style={styles.confirmBtn} onPress={logout}>
+                  <MaterialIcons name="logout" size={18} color="#fff" />
+                  <Text style={styles.confirmBtnText}>Logout</Text>
+                </Pressable>
+              </View>
+            </View>
+          </View>
+        </Modal>
+
 
 
         <View style={{ height: 22 }} />
@@ -315,13 +419,13 @@ const styles = StyleSheet.create({
     width: 120, height: 120, borderRadius: 120, alignItems: 'center', justifyContent: 'center',
     shadowColor: '#102C7E', shadowOpacity: 0.18, shadowRadius: 20, elevation: 8,
   },
-  name: { fontSize: 24, fontWeight: '700', color: '#2D3748', marginTop: 18 },
+  name: { fontSize: 24, fontWeight: '700', color: '#2D3748', marginTop: 18, fontFamily: 'Outfit-SemiBold' },
   statusPill: {
     flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 8,
     borderRadius: 20, borderWidth: 1, marginTop: 12,
   },
   statusDot: { width: 8, height: 8, borderRadius: 8 },
-  statusText: { marginLeft: 8, fontWeight: '600' },
+  statusText: { marginLeft: 8, fontWeight: '600', fontFamily: 'Outfit-Medium' },
 
   card: {
     marginTop: 32, padding: 20, borderRadius: 16, backgroundColor: '#fff', borderWidth: 1, borderColor: '#E2E8F0',
@@ -333,34 +437,92 @@ const styles = StyleSheet.create({
   },
   passwordIconCircle: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(16,44,126,0.06)' },
 
+  loadingOverlay: {
+    ...StyleSheet.absoluteFillObject, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(255, 255, 255, 0.1)', borderRadius: 16
+  },
+
+
   row: { flexDirection: 'row', alignItems: 'center' },
   iconCircle: { width: 50, height: 50, borderRadius: 25, alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(16,44,126,0.06)' },
-  cardTitle: { fontSize: 16, fontWeight: '600', color: '#2D3748' },
-  cardSub: { marginTop: 4, color: '#718096', fontSize: 12 },
+  cardTitle: { fontSize: 16, fontWeight: '600', color: '#2D3748', fontFamily: 'Outfit-Medium' },
+  cardSub: { marginTop: 4, color: '#718096', fontSize: 12, fontFamily: 'Outfit-Regular' },
 
   infoContainer: {
     marginTop: 24, borderRadius: 16, overflow: 'hidden', borderWidth: 1, borderColor: '#E2E8F0', backgroundColor: '#fff',
     shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 10, elevation: 2,
   },
   infoHeader: { padding: 20, backgroundColor: '#F7FAFC', flexDirection: 'row', alignItems: 'center' },
-  infoHeaderText: { fontSize: 18, fontWeight: '600', color: '#2D3748' },
+  infoHeaderText: { fontSize: 18, fontWeight: '600', color: '#2D3748', fontFamily: 'Outfit-Medium' },
 
   infoItem: { flexDirection: 'row', padding: 20, alignItems: 'flex-start' },
   infoItemBorder: { borderBottomWidth: 1, borderBottomColor: '#E2E8F0' },
   infoIconWrap: { width: 40, height: 40, borderRadius: 20, backgroundColor: 'rgba(16,44,126,0.06)', alignItems: 'center', justifyContent: 'center' },
-  infoLabel: { color: '#718096', fontSize: 14, fontWeight: '500' },
-  infoValue: { marginTop: 4, color: '#2D3748', fontSize: 16, fontWeight: '600' },
+  infoLabel: { color: '#718096', fontSize: 14, fontWeight: '500', fontFamily: 'Outfit-Medium' },
+  infoValue: { marginTop: 4, color: '#2D3748', fontSize: 16, fontWeight: '600', fontFamily: 'Outfit-Medium' },
 
   verifWrap: { marginTop: 24, padding: 20, borderRadius: 16, borderWidth: 1, borderColor: '#48BB78', backgroundColor: '#F0FFF4', flexDirection: 'row', alignItems: 'center' },
   verifIconWrap: { width: 50, height: 50, borderRadius: 25, backgroundColor: 'rgba(72,187,120,0.1)', alignItems: 'center', justifyContent: 'center' },
-  verifTitle: { fontSize: 16, fontWeight: '600', color: '#2D3748' },
-  verifText: { marginTop: 4, color: '#718096', fontSize: 12 },
+  verifTitle: { fontSize: 16, fontWeight: '600', color: '#2D3748', fontFamily: 'Outfit-Medium' },
+  verifText: { marginTop: 4, color: '#718096', fontSize: 12, fontFamily: 'Outfit-Regular' },
 
   // Logout Button
 
   logoutButton: { marginTop: 32, paddingVertical: 16, paddingHorizontal: 20, borderRadius: 12, backgroundColor: 'rgba(229,62,62,0.05)', borderWidth: 1.5, borderColor: '#FED7D7', alignItems: 'center' },
   logoutButtonContent: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center' },
-  logoutButtonText: { color: '#E53E3E', fontSize: 16, fontWeight: '600', marginLeft: 12 },
+  logoutButtonText: { color: '#E53E3E', fontSize: 16, fontWeight: '600', marginLeft: 12, fontFamily: 'Outfit-Medium' },
 
   loadingScreen: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#fff' },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.2)',
+  },
+  dialog: {
+    width: '85%',
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    padding: 20,
+    elevation: 8,
+  },
+  dialogText: {
+    fontSize: 16,
+    color: '#718096',
+    lineHeight: 20,
+    marginTop: 15,
+    fontFamily: 'Outfit-Medium',
+  },
+  actions: {
+    marginTop: 25,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    gap: 8,
+  },
+  cancelBtn: {
+    paddingHorizontal: 6,
+    paddingVertical: 10,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+  },
+  cancelBtnText: {
+    color: '#718096',
+    fontWeight: '600',
+    fontFamily: 'Outfit-Medium',
+  },
+  confirmBtn: {
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    backgroundColor: '#d42222ff',
+    borderRadius: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  confirmBtnText: {
+    color: '#fff',
+    fontWeight: '600',
+    fontFamily: 'Outfit-Medium',
+  },
+
 });

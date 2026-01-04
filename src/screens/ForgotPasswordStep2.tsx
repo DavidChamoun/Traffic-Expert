@@ -321,6 +321,7 @@ const styles = StyleSheet.create({
         fontWeight: '700',
         color: '#2D3748',
         textAlign: 'center',
+        fontFamily: 'Outfit-SemiBold'
     },
     headerRight: {
         width: responsiveSize(40),
@@ -347,6 +348,7 @@ const styles = StyleSheet.create({
     inputLabel: {
         fontSize: responsiveSize(14),
         fontWeight: '600',
+        fontFamily: 'Outfit-Medium',
         color: '#4A5568',
         marginBottom: responsiveVertical(8),
     },
@@ -366,7 +368,8 @@ const styles = StyleSheet.create({
         flex: 1,
         paddingHorizontal: responsiveSize(16),
         paddingVertical: responsiveVertical(16),
-        fontSize: responsiveSize(16),
+        fontSize: responsiveSize(14),
+        fontFamily: 'Outfit-Regular',
         color: '#2D3748',
         includeFontPadding: false,
     },
@@ -388,6 +391,7 @@ const styles = StyleSheet.create({
         fontWeight: '600',
         color: '#4A5568',
         marginBottom: responsiveVertical(12),
+        fontFamily: 'Outfit-Medium',
     },
     requirementRow: {
         flexDirection: 'row',
@@ -406,6 +410,7 @@ const styles = StyleSheet.create({
     },
     requirementText: {
         fontSize: responsiveSize(12),
+        fontFamily: 'Outfit-Regular',
         color: '#A0AEC0',
     },
     requirementTextMet: {
@@ -413,7 +418,7 @@ const styles = StyleSheet.create({
         fontWeight: '500',
     },
     errorContainer: { marginBottom: responsiveVertical(12), alignItems: 'center', width: '100%' },
-    errorText: { color: 'red', fontSize: 14 },
+    errorText: { color: 'red', fontSize: 14, fontFamily: 'Outfit-Regular' },
     resetButton: {
         backgroundColor: '#102C7E',
         height: responsiveVertical(56),
@@ -439,19 +444,20 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontSize: responsiveSize(16),
         fontWeight: '600',
+        fontFamily: 'Outfit-Medium',
         marginLeft: responsiveSize(8),
     },
-    securityNote: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginTop: responsiveVertical(24),
-        paddingHorizontal: responsiveSize(20),
-    },
-    securityNoteText: {
-        fontSize: responsiveSize(12),
-        color: '#48BB78',
-        marginLeft: responsiveSize(8),
-        fontWeight: '500',
-    },
+    // securityNote: {
+    //     flexDirection: 'row',
+    //     alignItems: 'center',
+    //     justifyContent: 'center',
+    //     marginTop: responsiveVertical(24),
+    //     paddingHorizontal: responsiveSize(20),
+    // },
+    // securityNoteText: {
+    //     fontSize: responsiveSize(12),
+    //     color: '#48BB78',
+    //     marginLeft: responsiveSize(8),
+    //     fontWeight: '500',
+    // },
 });

@@ -90,8 +90,8 @@ const DriverMain: React.FC<any> = ({ navigation }) => {
 
         <View style={styles.rightActions}>
           {currentIndex === 0 && (
-            <TouchableOpacity style={styles.iconCircle} onPress={() => showSnack('Centering map on your location')}>
-              <MaterialIcons name="my-location" size={moderateScale(20)} color="#102C7E" />
+            <TouchableOpacity style={styles.iconCircle} onPress={() => showSnack('owwwwwwww lwen ya helo')}>
+              <MaterialIcons name="refresh" size={moderateScale(20)} color="#102C7E" />
             </TouchableOpacity>
           )}
         </View>
@@ -120,7 +120,7 @@ const DriverMain: React.FC<any> = ({ navigation }) => {
               >
                 <MaterialIcons name={t.icon as any} size={moderateScale(22)} color={active ? '#102C7E' : '#A0AEC0'} />
               </View>
-              <Text style={[styles.tabLabel, { color: active ? '#102C7E' : '#A0AEC0', fontWeight: active ? '500' : '400' }]}>
+              <Text style={[styles.tabLabel, { color: active ? '#102C7E' : '#A0AEC0', fontFamily: active ? 'Outfit-Medium' : 'Outfit-Light' }]}>
                 {t.label}
               </Text>
             </TouchableOpacity>
@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
     flex: 1,
     textAlign: 'center',
     fontSize: moderateScale(18),
-    fontWeight: '600',
+    fontFamily: 'Outfit-SemiBold',
     color: '#2D3748',
   },
   rightActions: {
@@ -165,8 +165,8 @@ const styles = StyleSheet.create({
   iconCircle: {
     padding: moderateScale(8),
     borderRadius: moderateScale(20),
-    display: 'none',
-    backgroundColor: 'rgba(16,44,126,0.06)',
+    // display: 'none',
+    // backgroundColor: 'rgba(16,44,126,0.06)',
   },
   content: {
     flex: 1,
@@ -191,6 +191,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     width: scale(80),
+    fontFamily: 'Outfit-Regular',
   },
   iconWrap: {
     padding: moderateScale(8),

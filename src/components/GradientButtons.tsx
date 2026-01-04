@@ -35,7 +35,7 @@ export default GradientButton;
 
 const styles = StyleSheet.create({
   gradient: { height: 56, borderRadius: 16, alignItems: 'center', justifyContent: 'center' },
-  text: { color: '#fff', fontSize: 18, fontWeight: '600' },
+  text: { color: '#fff', fontSize: 18, fontWeight: '600', fontFamily: 'Outfit-SemiBold' },
   row: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center' },
   icon: { marginRight: 12, fontSize: 20, color: '#764BA2' },
 });

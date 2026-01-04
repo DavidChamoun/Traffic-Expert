@@ -32,6 +32,8 @@ const ExpertRegister: React.FC<any> = ({ navigation }) => {
   const [obscureConfirm, setObscureConfirm] = useState(true);
   const [error, setError] = useState<string>('');
   const [info, setInfo] = useState<boolean>(false);
+  const [infoText, setInfoText] = useState<String>('Checking location permissions...');
+
 
 
 
@@ -65,12 +67,13 @@ const ExpertRegister: React.FC<any> = ({ navigation }) => {
     })();
   }, []);
 
-  const sleep = (ms: number) => new Promise<void>(resolve => setTimeout(() => resolve(), ms));
+
 
 
   const register = async () => {
     setError('');
     setInfo(false);
+    setInfoText('Checking location permissions...');
 
     // Trim and validate license
     const trimmedLicense = license.trim();
@@ -160,6 +163,7 @@ const ExpertRegister: React.FC<any> = ({ navigation }) => {
 
       // 5️⃣ Get current location
       console.log('Getting current location...');
+      setInfoText('Getting current location...');
       const location = await getCurrentLocation();
 
       // Convert to Firestore GeoPoint
@@ -171,6 +175,7 @@ const ExpertRegister: React.FC<any> = ({ navigation }) => {
       // console.log('Location obtained:', location);
       setError(''); // Clear the progress message
       setInfo(false);
+      setInfoText('Checking location permissions...');
 
       // 6️⃣ Create expert account
       const expertDocRef = await firestore()
@@ -192,33 +197,6 @@ const ExpertRegister: React.FC<any> = ({ navigation }) => {
       console.log('Expert account created:', expertDocRef.id);
       ToastAndroid.show('Registration successful!', ToastAndroid.SHORT);
 
-
-      try {
-        // Request permission
-        console.log('🔍 Checking location permissions...');
-        const hasPermission = await checkAndPrepareBackgroundLocation();
-        console.log('Permission result:', hasPermission);
-
-        if (hasPermission) {
-          console.log('🚀 Starting background tracking...');
-          // Start tracking
-          await startBackgroundLocationTracking(expertDocRef.id);
-          console.log('✅ Tracking started for:', expertDocRef.id);
-
-          // Wait for service to initialize
-          await sleep(2000); // 2 seconds
-
-        } else {
-          console.log('❌ Location permission denied');
-          Alert.alert(
-            'Permission Required',
-            'Background location access is needed to help users find you during emergencies.'
-          );
-        }
-      } catch (error) {
-        console.error('❌ Error starting tracking:', error);
-        Alert.alert('Error', 'Failed to start location tracking: ' + error);
-      }
 
 
       // 8️⃣ Navigate to OTP
@@ -283,7 +261,7 @@ const ExpertRegister: React.FC<any> = ({ navigation }) => {
             {info && (
               <>
                 <MaterialCommunityIcons name="map-marker-alert" color="#102C7E" size={14} />
-                Checking location permissions...
+                {infoText}
               </>
             )}
           </Text>
@@ -369,9 +347,9 @@ const ExpertRegister: React.FC<any> = ({ navigation }) => {
         <View style={{ height: 20 }} />
 
         <View style={styles.registerRow}>
-          <Text style={{ color: '#718096' }}>Already have an account? </Text>
+          <Text style={{ color: '#718096', fontFamily: 'Outfit-Regular' }}>Already have an account? </Text>
           <TouchableOpacity onPress={() => navigation.replace('ExpertLogin')}>
-            <Text style={{ color: '#102C7E', fontWeight: '600' }}>Sign In</Text>
+            <Text style={{ color: '#102C7E', fontWeight: '600', fontFamily: 'Outfit-Medium' }}>Sign In</Text>
           </TouchableOpacity>
         </View>
 
@@ -387,28 +365,28 @@ const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: '#fff' },
   container: { padding: 24 },
   back: { padding: 6, marginBottom: 6 },
-  title: { fontSize: 32, fontWeight: '700', color: '#2D3748' },
-  subtitle: { marginTop: 8, color: '#718096', fontSize: 16 },
+  title: { fontSize: 32, fontWeight: '700', fontFamily: 'Outfit-SemiBold', color: '#2D3748' },
+  subtitle: { marginTop: 8, color: '#718096', fontSize: 16, fontFamily: 'Outfit-Medium' },
 
   infoBox: { marginTop: 12, padding: 16, backgroundColor: '#F7FAFC', borderRadius: 12, borderWidth: 1, borderColor: '#E2E8F0' },
-  infoTitle: { fontSize: 14, fontWeight: '600', color: '#2D3748' },
+  infoTitle: { fontSize: 14, fontWeight: '600', color: '#2D3748', fontFamily: 'Outfit-Medium' },
   stepRow: { flexDirection: 'row', alignItems: 'center', marginTop: 6 },
   stepDot: { width: 20, height: 20, borderRadius: 10, backgroundColor: 'rgba(72,187,120,0.1)', alignItems: 'center', justifyContent: 'center' },
-  stepText: { marginLeft: 8, color: '#718096', fontSize: 12 },
+  stepText: { marginLeft: 8, color: '#718096', fontSize: 12, fontFamily: 'Outfit-Regular' },
 
   formCard: { marginTop: 8 },
 
   inputWrap: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#fff', borderRadius: 12, borderWidth: 1, borderColor: '#E2E8F0', paddingHorizontal: 12, paddingVertical: 8, shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 6, elevation: 2 },
-  input: { marginLeft: 12, flex: 1, color: '#2D3748' },
+  input: { marginLeft: 12, flex: 1, color: '#2D3748', fontFamily: 'Outfit-Regular' },
 
   errorContainer: { marginTop: 10, alignItems: 'center', flex: 1 },
-  errorText: { color: 'red', fontSize: 14 },
+  errorText: { color: 'red', fontSize: 14, fontFamily: 'Outfit-Regular' },
   infoContainer: { marginTop: 8, alignItems: 'center', flex: 1 },
-  infoText: { color: '#102C7E', fontSize: 14, gap: 5 },
+  infoText: { color: '#102C7E', fontSize: 14, gap: 5, fontFamily: 'Outfit-Medium' },
 
 
   registerBtn: { height: 56, borderRadius: 16, backgroundColor: '#102C7E', alignItems: 'center', justifyContent: 'center', elevation: 6 },
-  registerBtnText: { color: '#fff', fontSize: 18, fontWeight: '600' },
+  registerBtnText: { color: '#fff', fontSize: 18, fontWeight: '600', fontFamily: 'Outfit-Medium' },
 
   registerRow: { flexDirection: 'row', justifyContent: 'center', marginTop: 12, alignItems: 'center' },
 });

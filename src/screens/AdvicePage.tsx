@@ -42,7 +42,7 @@ const AdvicePage: React.FC = () => {
         <View key={s.id} style={styles.stepCard}>
           <View style={styles.stepLeft}>
             <View style={styles.stepNum}>
-              <Text style={{ color: '#102C7E', fontWeight: '700' }}>{s.id}</Text>
+              <Text style={{ color: '#102C7E', fontWeight: '700', fontFamily: 'Outfit-SemiBold' }}>{s.id}</Text>
             </View>
           </View>
           <View style={{ flex: 1 }}>
@@ -69,7 +69,7 @@ const AdvicePage: React.FC = () => {
             <Text style={styles.contactNumber}>{c.number}</Text>
           </View>
           <View style={[styles.callPill, { backgroundColor: `${c.color}10` }]}>
-            <Text style={{ color: c.color, fontWeight: '600' }}>Call</Text>
+            <Text style={{ color: c.color, fontWeight: '600', fontFamily: 'Outfit-Medium' }}>Call</Text>
           </View>
         </TouchableOpacity>
       ))}
@@ -89,10 +89,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#FF6B6B',
   },
   emIconWrap: { width: 40, height: 40, borderRadius: 20, backgroundColor: 'rgba(255,255,255,0.18)', alignItems: 'center', justifyContent: 'center' },
-  emTitle: { color: '#fff', fontWeight: '700', fontSize: 18 },
-  emDesc: { color: 'rgba(255,255,255,0.9)', marginTop: 8, lineHeight: 20, fontSize: 14 },
+  emTitle: { color: '#fff', fontWeight: '700', fontSize: 18, fontFamily: 'Outfit-SemiBold' },
+  emDesc: { color: 'rgba(255,255,255,0.9)', marginTop: 8, lineHeight: 20, fontSize: 14, fontFamily: 'Outfit-Regular' },
 
-  sectionTitle: { fontSize: 18, fontWeight: '700', color: '#2D3748' },
+  sectionTitle: { fontSize: 18, fontWeight: '700', color: '#2D3748', fontFamily: 'Outfit-SemiBold'},
 
   stepCard: {
     marginBottom: 12,
@@ -109,12 +109,12 @@ const styles = StyleSheet.create({
   },
   stepLeft: { width: 40, alignItems: 'center', justifyContent: 'center' },
   stepNum: { width: 32, height: 32, borderRadius: 16, backgroundColor: 'rgba(16,44,126,0.06)', alignItems: 'center', justifyContent: 'center' },
-  stepTitle: { marginLeft: 10, fontSize: 16, fontWeight: '600', color: '#2D3748' },
-  stepDesc: { marginTop: 6, fontSize: 14, color: '#718096', lineHeight: 18 },
+  stepTitle: { marginLeft: 10, fontSize: 16, fontWeight: '600', color: '#2D3748', fontFamily: 'Outfit-Medium', },
+  stepDesc: { marginTop: 6, fontSize: 14, color: '#718096', lineHeight: 18, fontFamily: 'Outfit-Regular', },
 
   contactItem: { flexDirection: 'row', alignItems: 'center', paddingVertical: 12, borderBottomWidth: 0.5, borderBottomColor: '#EEE' },
   contactIcon: { width: 50, height: 50, borderRadius: 12, alignItems: 'center', justifyContent: 'center', marginRight: 12 },
-  contactName: { fontSize: 16, fontWeight: '600', color: '#2D3748' },
-  contactNumber: { color: '#718096' },
+  contactName: { fontSize: 16, fontWeight: '600', color: '#2D3748', fontFamily: 'Outfit-Medium', },
+  contactNumber: { color: '#718096', fontFamily: 'Outfit-Regular', },
   callPill: { paddingHorizontal: 16, paddingVertical: 8, borderRadius: 20 },
 });

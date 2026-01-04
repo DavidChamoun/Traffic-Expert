@@ -18,6 +18,8 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import auth, { firebase, FirebaseAuthTypes } from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import { saveExpertSession } from '../session/session';
+import { checkAndPrepareBackgroundLocation } from '../utils/location';
+import { startBackgroundLocationTracking } from '../utils/backgroundLocationService';
 
 
 const { width, height } = Dimensions.get('window');
@@ -64,6 +66,7 @@ const OTPAuthScreen: React.FC<OTPAuthScreenProps> = ({ route, navigation }) => {
   const [error, setError] = useState<string>('');
   const [confirmation, setConfirmation] =
     useState<FirebaseAuthTypes.ConfirmationResult | null>(null);
+  const sleep = (ms: number) => new Promise<void>(resolve => setTimeout(() => resolve(), ms));
 
 
   const inputsRef = useRef<TextInput[]>([]);
@@ -204,6 +207,39 @@ const OTPAuthScreen: React.FC<OTPAuthScreenProps> = ({ route, navigation }) => {
           });
 
         } else {
+          // Start location tracking
+          // setIsLoading(true);
+
+          // try {
+          //   console.log('🔍 Checking location permissions...');
+          //   const hasPermission = await checkAndPrepareBackgroundLocation();
+          //   console.log('Permission result:', hasPermission);
+
+          //   if (hasPermission) {
+          //     console.log('🚀 Starting background tracking...');
+          //     const trackingStarted = await startBackgroundLocationTracking(expertDocID);
+
+          //     if (trackingStarted) {
+          //       console.log('✅ Tracking started for:', expertDocID);
+          //       // Add a small delay to ensure service is initialized
+          //       await sleep(1500);
+          //     } else {
+          //       console.log('⚠️ Tracking failed to start, but continuing anyway');
+          //     }
+
+          //   } else {
+          //     console.log('❌ Location permission denied');
+          //     ToastAndroid.show('Location permission needed for tracking', ToastAndroid.LONG);
+          //   }
+
+          // } catch (error) {
+          //   console.error('❌ Error starting tracking:', error);
+          //   // Don't block the login flow, just log the error
+          // } finally {
+          //   setIsLoading(false);
+          // }
+
+          // Navigate after brief delay
           navigation.reset({
             index: 0,
             routes: [{ name: 'DriverMain' }],
@@ -215,11 +251,13 @@ const OTPAuthScreen: React.FC<OTPAuthScreenProps> = ({ route, navigation }) => {
       return;
     }
 
-
+    // Production Firebase flow
     if (!confirmation) {
       setError('OTP session expired');
       return;
     }
+
+    setIsLoading(true);
 
     try {
       const userCredential = await confirmation.confirm(otpString);
@@ -232,13 +270,18 @@ const OTPAuthScreen: React.FC<OTPAuthScreenProps> = ({ route, navigation }) => {
           authUid: uid,
         });
 
+      // Start location tracking for production
+      // await startBackgroundLocationTracking(expertDocID);
 
       navigation.reset({
         index: 0,
         routes: [{ name: 'DriverMain' }],
       });
-    } catch {
+    } catch (error) {
+      console.error('OTP verification error:', error);
       setError('Invalid OTP');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -429,7 +472,7 @@ const styles = StyleSheet.create({
   backButton: {
     padding: responsiveSize(8),
     alignSelf: 'flex-start',
-    marginTop: responsiveVertical(12),
+    marginTop: responsiveVertical(18),
     marginBottom: responsiveVertical(8),
   },
   header: {
@@ -452,17 +495,20 @@ const styles = StyleSheet.create({
     color: '#2D3748',
     marginBottom: responsiveVertical(8),
     textAlign: 'center',
+    fontFamily: 'Outfit-SemiBold'
   },
   subtitle: {
     fontSize: responsiveSize(16),
     color: '#718096',
     textAlign: 'center',
     marginBottom: responsiveVertical(4),
+    fontFamily: 'Outfit-Medium'
   },
   phoneNumber: {
     fontSize: responsiveSize(18),
     fontWeight: '600',
     color: '#102C7E',
+    fontFamily: 'Outfit-Medium',
     textAlign: 'center',
   },
   otpContainer: {
@@ -474,6 +520,7 @@ const styles = StyleSheet.create({
     color: '#4A5568',
     marginBottom: responsiveVertical(16),
     textAlign: 'center',
+    fontFamily: 'Outfit-Medium'
   },
   otpInputsRow: {
     flexDirection: 'row',
@@ -483,6 +530,7 @@ const styles = StyleSheet.create({
   otpInput: {
     width: responsiveSize(48),
     height: responsiveSize(60),
+    fontFamily: 'Outfit-Medium',
     borderWidth: 1.5,
     borderColor: '#E2E8F0',
     borderRadius: responsiveSize(12),
@@ -504,6 +552,7 @@ const styles = StyleSheet.create({
     fontSize: responsiveSize(14),
     textAlign: 'center',
     marginTop: responsiveVertical(12),
+    fontFamily: 'Outfit-Regular'
   },
   timerContainer: {
     alignItems: 'center',
@@ -512,11 +561,13 @@ const styles = StyleSheet.create({
   timerText: {
     fontSize: responsiveSize(14),
     color: '#718096',
+    fontFamily: 'Outfit-Medium',
     textAlign: 'center',
   },
   timerHighlight: {
     color: '#102C7E',
     fontWeight: '600',
+    fontFamily: 'Outfit-SemiBold'
   },
   resendReady: {
     color: '#38A169',
@@ -546,6 +597,7 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: responsiveSize(16),
     fontWeight: '600',
+    fontFamily: 'Outfit-Medium',
     marginRight: responsiveSize(8),
   },
   loadingContainer: {
@@ -569,6 +621,7 @@ const styles = StyleSheet.create({
     fontSize: responsiveSize(16),
     fontWeight: '600',
     color: '#102C7E',
+    fontFamily: 'Outfit-Medium',
     marginLeft: responsiveSize(8),
   },
   resendButtonTextDisabled: {
@@ -581,9 +634,11 @@ const styles = StyleSheet.create({
     fontSize: responsiveSize(14),
     color: '#718096',
     textAlign: 'center',
+    fontFamily: 'Outfit-Regular'
   },
   footerLink: {
     color: '#102C7E',
+    fontFamily: 'Outfit-Medium',
     fontWeight: '600',
     textDecorationLine: 'underline',
   },

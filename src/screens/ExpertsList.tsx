@@ -180,7 +180,7 @@ const ExpertsList: React.FC = () => {
             renderItem={renderInspector}
             ListEmptyComponent={
               <View style={styles.noDataFound}>
-                <Text style={styles.noDataFoundTesxt}>
+                <Text style={styles.noDataFoundText}>
                   No experts found
                 </Text>
               </View>
@@ -209,6 +209,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 18,
     color: 'red',
+    fontFamily: 'Outfit-Medium',
   },
   searchContainer: { padding: 16, backgroundColor: '#fff', elevation: 2 },
   searchBox: {
@@ -221,11 +222,11 @@ const styles = StyleSheet.create({
     borderColor: '#E2E8F0',
     height: 48,
   },
-  searchInput: { marginLeft: 12, flex: 1, color: '#2D3748' },
+  searchInput: { marginLeft: 12, flex: 1, color: '#2D3748', fontFamily: 'Outfit-Regular' },
 
   verifiedHeader: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 12, backgroundColor: '#F0FFF4' },
   verifiedIcon: { backgroundColor: '#48BB78', padding: 6, borderRadius: 12, marginRight: 8 },
-  verifiedText: { flex: 1, color: '#2D3748', fontWeight: '500' },
+  verifiedText: { flex: 1, color: '#2D3748', fontWeight: '500', fontFamily: 'Outfit-Regular' },
 
   noDataFound: {
     height: '100%',
@@ -236,9 +237,10 @@ const styles = StyleSheet.create({
     marginTop: 50
   },
 
-  noDataFoundTesxt: {
+  noDataFoundText: {
     fontSize: 16,
     color: '#718096',
+    fontFamily: 'Outfit-Medium',
   },
   
   card: {
@@ -256,9 +258,9 @@ const styles = StyleSheet.create({
   cardTop: { padding: 16 },
   left: { flexDirection: 'row', alignItems: 'flex-start' },
   avatarCircle: { width: 60, height: 60, borderRadius: 30, backgroundColor: 'rgba(102,126,234,0.08)', alignItems: 'center', justifyContent: 'center' },
-  name: { fontSize: 18, fontWeight: '600', color: '#2D3748' },
-  role: { fontSize: 14, color: '#667EEA', fontWeight: '500', marginTop: 4 },
-  license: { fontSize: 13, color: '#718096', marginTop: 8 },
+  name: { fontSize: 18, fontWeight: '600', color: '#2D3748', fontFamily: 'Outfit-Medium' },
+  role: { fontSize: 14, color: '#667EEA', fontWeight: '500', marginTop: 4, fontFamily: 'Outfit-Medium', },
+  license: { fontSize: 13, color: '#718096', marginTop: 8, fontFamily: 'Outfit-Regular', },
 
   cardBottom: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 12, backgroundColor: '#F7FAFC', borderBottomLeftRadius: 16, borderBottomRightRadius: 16 },
   statusPill: { paddingHorizontal: 12, paddingVertical: 6, borderRadius: 12, flexDirection: 'row', alignItems: 'center' },
@@ -268,5 +270,5 @@ const styles = StyleSheet.create({
   callBtn: { marginLeft: 'auto', paddingHorizontal: 16, paddingVertical: 8, borderRadius: 12, flexDirection: 'row', alignItems: 'center' },
   callEnabled: { backgroundColor: '#48BB78' },
   callDisabled: { backgroundColor: '#d6d6d6ff' },
-  callBtnText: { color: '#fff', fontWeight: '600' },
+  callBtnText: { color: '#fff', fontWeight: '600', fontFamily: 'Outfit-Medium', },
 });

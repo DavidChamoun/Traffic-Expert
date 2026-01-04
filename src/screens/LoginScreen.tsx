@@ -226,12 +226,14 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#2D3748',
     textAlign: 'center',
+    fontFamily: 'Outfit-Bold',
   },
   subtitle: {
     fontSize: responsiveSize(16),
     fontWeight: '500',
     color: '#718096',
     marginTop: responsiveVertical(8),
+    fontFamily: 'Outfit-Medium',
     textAlign: 'center',
   },
 
@@ -242,6 +244,7 @@ const styles = StyleSheet.create({
     fontSize: responsiveSize(28),
     fontWeight: '700',
     color: '#2D3748',
+    fontFamily: 'Outfit-Bold',
     textAlign: 'center',
   },
   welcomeSub: {
@@ -249,6 +252,7 @@ const styles = StyleSheet.create({
     color: '#718096',
     marginTop: responsiveVertical(8),
     textAlign: 'center',
+    fontFamily: 'Outfit-Regular',
   },
 
   // Spacing utilities
@@ -292,6 +296,7 @@ const styles = StyleSheet.create({
   },
   driverBtnText: {
     fontSize: responsiveSize(16),
+    fontFamily: 'Outfit-Medium',
     fontWeight: '600',
     color: '#4A5568',
     textAlign: 'center',
@@ -310,6 +315,7 @@ const styles = StyleSheet.create({
   orText: {
     marginHorizontal: responsiveSize(16),
     color: '#718096',
+    fontFamily: 'Outfit-Regular',
     fontSize: responsiveSize(14),
   },
 
@@ -325,6 +331,7 @@ const styles = StyleSheet.create({
     color: '#718096',
     fontWeight: '500',
     fontSize: responsiveSize(14),
+    fontFamily: 'Outfit-Medium',
     textAlign: 'center',
   },
   emergencyRow: {
@@ -357,12 +364,14 @@ const styles = StyleSheet.create({
     marginTop: responsiveVertical(8),
     fontWeight: '500',
     textAlign: 'center',
+    fontFamily: 'Outfit-Regular',
   },
   emNumber: {
     color: '#E53E3E',
     fontWeight: '800',
     fontSize: responsiveSize(12),
     textAlign: 'center',
+    fontFamily: 'Outfit-Medium',
   },
 
   // Modal
@@ -395,12 +404,14 @@ const styles = StyleSheet.create({
     color: '#2D3748',
     marginTop: verticalScale(12),
     letterSpacing: -0.3,
+    fontFamily: 'Outfit-SemiBold',
   },
   modalSubtitle: {
     fontSize: moderateScale(14),
     color: '#718096',
     marginTop: verticalScale(6),
     letterSpacing: 0.2,
+    fontFamily: 'Outfit-Regular',
   },
   optionCard: {
     backgroundColor: '#FFFFFF',
@@ -433,12 +444,14 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#2D3748',
     letterSpacing: 0.2,
+    fontFamily: 'Outfit-SemiBold',
   },
   optionDesc: {
     fontSize: moderateScale(12),
     color: '#718096',
     marginTop: verticalScale(2),
     letterSpacing: 0.2,
+    fontFamily: 'Outfit-Light',
   },
   cancelButton: {
     padding: scale(16),
@@ -449,5 +462,6 @@ const styles = StyleSheet.create({
     fontSize: moderateScale(15),
     fontWeight: '600',
     letterSpacing: 0.3,
+    fontFamily: 'Outfit-SemiBold',
   },
 });

@@ -1,16 +1,22 @@
-// src/utils/phone.ts
-import { Linking, Alert } from 'react-native';
+import { Linking, Alert, Platform } from 'react-native';
 
-export function makePhoneCall(number: string) {
+export async function makePhoneCall(number: string) {
   const url = `tel:${number}`;
-  Linking.canOpenURL(url).then(supported => {
+
+  try {
+    const supported = await Linking.canOpenURL(url);
+
     if (!supported) {
-      Alert.alert('Error', 'Phone calls not supported on this device');
-    } else {
-      return Linking.openURL(url);
+      Alert.alert(
+        'Not Supported',
+        'This device cannot make phone calls.'
+      );
+      return;
     }
-  }).catch(err => {
-    console.warn('Error opening URL', err);
-    Alert.alert('Error', 'Unable to make call');
-  });
+
+    await Linking.openURL(url);
+  } catch (error) {
+    console.warn('Call error:', error);
+    Alert.alert('Error', 'Unable to open phone dialer.');
+  }
 }

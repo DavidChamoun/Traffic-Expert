@@ -291,6 +291,7 @@ const styles = StyleSheet.create({
         fontWeight: '700',
         color: '#2D3748',
         textAlign: 'center',
+        fontFamily: 'Outfit-SemiBold'
     },
     headerRight: {
         width: responsiveSize(40),
@@ -303,6 +304,7 @@ const styles = StyleSheet.create({
         fontWeight: '600',
         color: '#4A5568',
         marginBottom: responsiveVertical(8),
+        fontFamily: 'Outfit-Medium',
     },
     inputWrapper: {
         flexDirection: 'row',
@@ -321,11 +323,12 @@ const styles = StyleSheet.create({
         paddingHorizontal: responsiveSize(16),
         paddingVertical: responsiveVertical(16),
         fontSize: responsiveSize(16),
+        fontFamily: 'Outfit-Medium',
         color: '#2D3748',
         includeFontPadding: false,
     },
     errorContainer: { marginBottom: responsiveVertical(12), alignItems: 'center', width: '100%' },
-    errorText: { color: 'red', fontSize: 14 },
+    errorText: { color: 'red', fontSize: 14, fontFamily: 'Outfit-Regular' },
 
     continueButton: {
         backgroundColor: '#102C7E',
@@ -353,6 +356,7 @@ const styles = StyleSheet.create({
         fontSize: responsiveSize(16),
         fontWeight: '600',
         marginRight: responsiveSize(8),
+        fontFamily: 'Outfit-Medium'
     },
     supportContainer: {
         flexDirection: 'row',
@@ -366,5 +370,6 @@ const styles = StyleSheet.create({
         color: '#718096',
         marginLeft: responsiveSize(8),
         fontWeight: '500',
+        fontFamily: 'Outfit-Medium',
     },
 });

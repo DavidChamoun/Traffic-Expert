@@ -438,6 +438,7 @@ const styles = StyleSheet.create({
         fontWeight: '700',
         color: '#2D3748',
         textAlign: 'center',
+        fontFamily: 'Outfit-SemiBold',
     },
     headerRight: {
         width: responsiveSize(40),
@@ -449,6 +450,7 @@ const styles = StyleSheet.create({
         fontSize: responsiveSize(14),
         fontWeight: '600',
         color: '#4A5568',
+        fontFamily: 'Outfit-Medium',
         marginBottom: responsiveVertical(8),
     },
     passwordInputWrapper: {
@@ -464,15 +466,16 @@ const styles = StyleSheet.create({
         flex: 1,
         paddingHorizontal: responsiveSize(16),
         paddingVertical: responsiveVertical(16),
-        fontSize: responsiveSize(16),
+        fontSize: responsiveSize(14),
         color: '#2D3748',
         includeFontPadding: false,
+        fontFamily: 'Outfit-Regular'
     },
     eyeButton: {
         paddingHorizontal: responsiveSize(16),
         paddingVertical: responsiveVertical(16),
     },
-    forgot: { textAlign: 'right', color: '#102C7E', fontWeight: '500' },
+    forgot: { textAlign: 'right', color: '#102C7E', fontWeight: '500', fontFamily: 'Outfit-Medium' },
 
     requirementsContainer: {
         marginTop: responsiveVertical(8),
@@ -487,6 +490,7 @@ const styles = StyleSheet.create({
         fontSize: responsiveSize(14),
         fontWeight: '600',
         color: '#4A5568',
+        fontFamily: 'Outfit-Medium',
         marginBottom: responsiveVertical(12),
     },
     requirementRow: {
@@ -507,13 +511,15 @@ const styles = StyleSheet.create({
     requirementText: {
         fontSize: responsiveSize(12),
         color: '#A0AEC0',
+        fontFamily: 'Outfit-Regular'
     },
     requirementTextMet: {
         color: '#48BB78',
         fontWeight: '500',
+        fontFamily: 'Outfit-Regular'
     },
     errorContainer: { marginBottom: responsiveVertical(14), alignItems: 'center', flex: 1 },
-    errorText: { color: 'red', fontSize: 14 },
+    errorText: { color: 'red', fontSize: 14, fontFamily: 'Outfit-Regular' },
     updateButton: {
         backgroundColor: '#102C7E',
         height: responsiveVertical(56),
@@ -543,6 +549,7 @@ const styles = StyleSheet.create({
         fontSize: responsiveSize(16),
         fontWeight: '600',
         marginLeft: responsiveSize(8),
+        fontFamily: 'Outfit-Medium'
     },
     cancelButton: {
         paddingVertical: responsiveVertical(16),
@@ -552,5 +559,6 @@ const styles = StyleSheet.create({
         color: '#718096',
         fontSize: responsiveSize(16),
         fontWeight: '500',
+        fontFamily: 'Outfit-Medium',
     },
 });

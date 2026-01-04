@@ -259,9 +259,9 @@ const ExpertLogin: React.FC<any> = ({ navigation }) => {
           <View style={{ height: 28 }} />
 
           <View style={styles.registerRow}>
-            <Text style={{ color: '#718096' }}>Don't have an account? </Text>
+            <Text style={{ color: '#718096', fontFamily: 'Outfit-Regular' }}>Don't have an account? </Text>
             <TouchableOpacity onPress={() => navigation.replace('ExpertRegister')}>
-              <Text style={{ color: '#102C7E', fontWeight: '600' }}>Register Now</Text>
+              <Text style={{ color: '#102C7E', fontWeight: '600', fontFamily: 'Outfit-Medium' }}>Register Now</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -277,22 +277,22 @@ const styles = StyleSheet.create({
   safeLogin: { height: '100%', display: 'flex', justifyContent: 'center', marginBottom: 70 },
   container: { padding: 24, height: '100%', display: 'flex', justifyContent: 'center' },
   back: { padding: 8, marginTop: 12, marginBottom: 8 },
-  title: { fontSize: 32, textAlign: 'center', fontWeight: '700', color: '#2D3748' },
-  subtitle: { marginTop: 8, textAlign: 'center', color: '#718096', fontSize: 16 },
+  title: { fontSize: 32, textAlign: 'center', fontWeight: '700', color: '#2D3748', fontFamily: 'Outfit-SemiBold' },
+  subtitle: { marginTop: 8, textAlign: 'center', fontFamily: 'Outfit-Medium', color: '#718096', fontSize: 16 },
 
   badge: { marginTop: 16, alignSelf: 'center', paddingHorizontal: 16, paddingVertical: 8, borderRadius: 20, backgroundColor: '#F0FFF4', borderWidth: 1, borderColor: '#48BB78', flexDirection: 'row', alignItems: 'center' },
-  badgeText: { color: '#48BB78', marginLeft: 8 },
+  badgeText: { color: '#48BB78', marginLeft: 8, fontFamily: 'Outfit-Regular' },
 
   formCard: { marginTop: 18 },
   inputWrap: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#fff', borderRadius: 12, borderWidth: 1, borderColor: '#E2E8F0', paddingHorizontal: 12, paddingVertical: 8, shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 6, elevation: 2 },
-  input: { marginLeft: 12, flex: 1, color: '#2D3748' },
+  input: { marginLeft: 12, flex: 1, color: '#2D3748', fontFamily: 'Outfit-Regular' },
   errorContainer: { marginTop: 8, alignItems: 'center', flex: 1 },
-  errorText: { color: 'red', fontSize: 14 },
+  errorText: { color: 'red', fontSize: 14, fontFamily: 'Outfit-Regular' },
 
   signInBtn: { height: 56, borderRadius: 16, backgroundColor: '#102C7E', alignItems: 'center', justifyContent: 'center', elevation: 6 },
-  signInText: { color: '#fff', fontSize: 18, fontWeight: '600' },
+  signInText: { color: '#fff', fontSize: 18, fontWeight: '600', fontFamily: 'Outfit-Medium' },
 
-  forgot: { textAlign: 'center', color: '#102C7E', fontWeight: '500' },
+  forgot: { textAlign: 'center', color: '#102C7E', fontWeight: '500', fontFamily: 'Outfit-Medium' },
 
   registerRow: { flexDirection: 'row', justifyContent: 'center', marginTop: 8, alignItems: 'center' },
 });
