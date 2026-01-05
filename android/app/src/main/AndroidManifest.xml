@@ -11,6 +11,13 @@
       android:name="android.hardware.telephony"
       android:required="false" />
 
+    <queries>
+      <intent>
+        <action android:name="android.intent.action.DIAL" />
+      </intent>
+    </queries>
+
+
     <application
       android:name=".MainApplication"
       android:label="@string/app_name"
