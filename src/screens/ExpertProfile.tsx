@@ -22,8 +22,12 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/AppNavigator';
 import { ActivityIndicator } from 'react-native';
 import { getExpertSession, clearExpertSession } from '../session/session.tsx';
-import { checkAndPrepareLocation, getCurrentLocation, isLocationTurnedOn } from '../utils/location.ts';
+import { getCurrentLocation } from '../utils/location.ts';
+import { checkAndPrepareLocation, isLocationTurnedOn, requestBatteryUnrestricted } from '../utils/permissions.ts';
 import { updateExpertLocation } from '../utils/firestoreService.ts';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { startTracking, stopTracking } from '../utils/backgroundLocationService';
+
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
@@ -45,6 +49,9 @@ const ExpertProfile: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [locationIsLoading, setLocationIsLoading] = useState(false);
   const [dialogVisible, setDialogVisible] = useState(false);
+  const [trackingEnabled, setTrackingEnabled] = useState(false);
+
+
 
 
 
@@ -53,9 +60,8 @@ const ExpertProfile: React.FC = () => {
     setLocationIsLoading(true);
 
     const locationReady = await checkAndPrepareLocation();
-    const enabled = await isLocationTurnedOn();
 
-    if (!locationReady || !enabled) {
+    if (!locationReady) {
       console.error('Location permission is required to complete registration.');
       setLocationIsLoading(false);
       return;
@@ -134,6 +140,7 @@ const ExpertProfile: React.FC = () => {
         const expertData = expertSnap.data()!;
 
         setIsAvailable(expertData.isAvailable ?? false);
+        setTrackingEnabled(expertData.isTrackingEnabled ?? false);
 
 
         // 3️⃣ Resolve verifiedRef
@@ -185,10 +192,46 @@ const ExpertProfile: React.FC = () => {
     ToastAndroid.show('Status updated', ToastAndroid.SHORT);
   };
 
+
+  const toggleTrackingLocation = async (value: boolean) => {
+    if (value) {
+      const locationReady = await checkAndPrepareLocation();
+
+      if (!locationReady) {
+        console.error('Location permission is required to complete registration.');
+        setLocationIsLoading(false);
+        return;
+      }
+      await requestBatteryUnrestricted();
+    }
+    setTrackingEnabled(value);
+
+    const session = await getExpertSession();
+    if (!session) return;
+
+    await firestore()
+      .collection('experts')
+      .doc(session.expertId)
+      .update({
+        isTrackingEnabled: value,
+        lastUpdated: firestore.FieldValue.serverTimestamp(),
+      });
+
+    if (value) {
+      await startTracking();
+    } else {
+      await stopTracking();
+    }
+
+    ToastAndroid.show('Tracking status updated', ToastAndroid.SHORT);
+  };
+
+
   const logout = async () => {
 
     // Navigate to login or success screen
     await clearExpertSession();
+    stopTracking();
 
     ToastAndroid.show('Logged out successfully', ToastAndroid.LONG);
 
@@ -289,6 +332,30 @@ const ExpertProfile: React.FC = () => {
         </View>
 
 
+        {/* Tracking location */}
+        <View style={styles.card}>
+          <View style={styles.row}>
+            <View style={styles.passwordIconCircle}>
+              <MaterialCommunityIcons name="map-marker-check" size={20} color="#102C7E" />
+            </View>
+
+            <View style={{ flex: 1, marginLeft: 16 }}>
+              <Text style={styles.cardTitle}>Location Tracking</Text>
+              <Text style={styles.cardSub}>Enable location tracking to keep your position updated in the background.
+                Please make sure location services are turned on and allow unrestricted battery usage for reliable tracking.
+                Note: On some devices, tracking may be paused when the app is closed or the system restricts background activity.</Text>
+            </View>
+
+            <Switch
+              value={trackingEnabled}
+              onValueChange={toggleTrackingLocation}
+              trackColor={{ true: '#48BB78', false: '#DDD' }}
+              thumbColor={trackingEnabled ? '#fff' : '#fff'}
+            />
+          </View>
+        </View>
+
+
         {/* Update Expert Location */}
         <TouchableOpacity
           style={[
@@ -320,7 +387,6 @@ const ExpertProfile: React.FC = () => {
           </View>
 
         </TouchableOpacity>
-
 
 
 

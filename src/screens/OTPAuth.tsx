@@ -19,7 +19,6 @@ import auth, { firebase, FirebaseAuthTypes } from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import { saveExpertSession } from '../session/session';
 import { checkAndPrepareBackgroundLocation } from '../utils/location';
-import { startBackgroundLocationTracking } from '../utils/backgroundLocationService';
 
 
 const { width, height } = Dimensions.get('window');
@@ -238,6 +237,8 @@ const OTPAuthScreen: React.FC<OTPAuthScreenProps> = ({ route, navigation }) => {
           // } finally {
           //   setIsLoading(false);
           // }
+
+            
 
           // Navigate after brief delay
           navigation.reset({
@@ -491,7 +492,6 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: responsiveSize(28),
-    fontWeight: '700',
     color: '#2D3748',
     marginBottom: responsiveVertical(8),
     textAlign: 'center',

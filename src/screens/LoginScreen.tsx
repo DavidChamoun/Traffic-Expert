@@ -1,5 +1,5 @@
 // src/screens/LoginScreen.tsx
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -19,6 +19,11 @@ import GradientButton from '../components/GradientButtons';
 import { makePhoneCall } from '../utils/phone';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Fontisto from 'react-native-vector-icons/Fontisto';
+import { getExpertSession } from '../session/session';
+import firestore from '@react-native-firebase/firestore';
+import { requestBatteryUnrestricted } from '../utils/permissions';
+import { startTracking } from '../utils/backgroundLocationService';
+
 
 const { width, height } = Dimensions.get('window');
 
@@ -40,6 +45,38 @@ const responsiveVertical = (size: number) => {
 
 const LoginScreen: React.FC = ({ navigation }: any) => {
   const [modalVisible, setModalVisible] = useState(false);
+
+  useEffect(() => {
+    const checkAndRestartTracking = async () => {
+      const session = await getExpertSession();
+      if (!session?.expertId) return;
+
+      try {
+        const doc = await firestore()
+          .collection('experts')
+          .doc(session.expertId)
+          .get();
+
+        const data = doc.data();
+        const isTrackingEnabled = data?.isTrackingEnabled;
+
+        if (isTrackingEnabled) {
+          // Ask for battery unrestricted if needed
+          await requestBatteryUnrestricted();
+
+          // Start background tracking
+          await startTracking();
+        }
+      } catch (error) {
+        console.warn('Failed to check session or restart tracking:', error);
+      }
+    };
+
+    checkAndRestartTracking();
+  }, []);
+
+
+
 
   const openExpertLogin = () => {
     setModalVisible(true);
@@ -223,14 +260,12 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: responsiveSize(32),
-    fontWeight: '700',
     color: '#2D3748',
     textAlign: 'center',
-    fontFamily: 'Outfit-Bold',
+    fontFamily: 'Outfit-SemiBold',
   },
   subtitle: {
     fontSize: responsiveSize(16),
-    fontWeight: '500',
     color: '#718096',
     marginTop: responsiveVertical(8),
     fontFamily: 'Outfit-Medium',
@@ -242,9 +277,8 @@ const styles = StyleSheet.create({
   },
   welcomeTitle: {
     fontSize: responsiveSize(28),
-    fontWeight: '700',
     color: '#2D3748',
-    fontFamily: 'Outfit-Bold',
+    fontFamily: 'Outfit-SemiBold',
     textAlign: 'center',
   },
   welcomeSub: {
@@ -400,7 +434,6 @@ const styles = StyleSheet.create({
   },
   modalTitle: {
     fontSize: moderateScale(22),
-    fontWeight: '700',
     color: '#2D3748',
     marginTop: verticalScale(12),
     letterSpacing: -0.3,

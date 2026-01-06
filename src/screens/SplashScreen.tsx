@@ -7,7 +7,7 @@ import {
   StyleSheet,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { checkAndPrepareLocation } from '../utils/location';
+import { checkAndPrepareLocation } from '../utils/permissions';
 
 const SplashScreen: React.FC = () => {
   const navigation = useNavigation<any>();

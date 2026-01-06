@@ -25,6 +25,7 @@
     "react-native": "0.82.1",
     "react-native-android-location-enabler": "^3.0.1",
     "react-native-background-fetch": "^4.2.8",
+    "react-native-battery-optimization-check": "^1.0.8",
     "react-native-device-info": "^15.0.1",
     "react-native-geolocation-service": "^5.3.1",
     "react-native-linear-gradient": "^2.8.3",

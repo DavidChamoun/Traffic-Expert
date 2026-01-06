@@ -15,7 +15,9 @@ import {
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import firestore from '@react-native-firebase/firestore';
 import { getExpertSession } from '../session/session';
-import { getCurrentLocation, isLocationTurnedOn } from '../utils/location';
+import { getCurrentLocation } from '../utils/location';
+import { isLocationTurnedOn } from '../utils/permissions.ts';
+
 
 
 
@@ -155,7 +157,7 @@ const ExpertLogin: React.FC<any> = ({ navigation }) => {
         return;
       }
 
-      
+
 
       // ✅ Navigate to OTP screen
       navigation.navigate('OTPAuth', {
@@ -175,12 +177,12 @@ const ExpertLogin: React.FC<any> = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.safe}>
-      <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
+      <View style={styles.container}>
         <TouchableOpacity style={styles.back} onPress={() => navigation.goBack()}>
-          <MaterialIcons name="arrow-back" size={22} color="#2D3748" />
+          <MaterialIcons name="arrow-back" size={24} color="#2D3748" />
         </TouchableOpacity>
 
-        <View style={styles.safeLogin}>
+        <View style={styles.content}>
           <Text style={styles.title}>Welcome Back</Text>
           <Text style={styles.subtitle}>Sign in to your expert account</Text>
 
@@ -188,7 +190,7 @@ const ExpertLogin: React.FC<any> = ({ navigation }) => {
 
           <View style={styles.badge}>
             <MaterialIcons name="verified" size={16} color="#48BB78" />
-            <Text style={styles.badgeText}> Certified Traffic Expert</Text>
+            <Text style={styles.badgeText}>Certified Traffic Expert</Text>
           </View>
 
           <View style={{ height: 24 }} />
@@ -230,10 +232,11 @@ const ExpertLogin: React.FC<any> = ({ navigation }) => {
               </TouchableOpacity>
             </View>
 
-            <View style={styles.errorContainer}>
-              <Text style={styles.errorText}>{error}</Text>
-            </View>
-
+            {error ? (
+              <View style={styles.errorContainer}>
+                <Text style={styles.errorText}>{error}</Text>
+              </View>
+            ) : null}
           </View>
 
           <View style={{ height: 8 }} />
@@ -248,10 +251,7 @@ const ExpertLogin: React.FC<any> = ({ navigation }) => {
           </TouchableOpacity>
 
           <TouchableOpacity style={{ marginTop: 16 }} onPress={() => {
-            // mark isExpert and navigate (mimic Flutter behavior)
-            // navigation.navigate('ForgotPasswordStep1');
             navigation.navigate('FirestoreTest');
-
           }}>
             <Text style={styles.forgot}>Forgot Password?</Text>
           </TouchableOpacity>
@@ -265,19 +265,18 @@ const ExpertLogin: React.FC<any> = ({ navigation }) => {
             </TouchableOpacity>
           </View>
         </View>
-      </ScrollView>
-    </SafeAreaView>
-  );
+      </View>
+    </SafeAreaView>);
 };
 
 export default ExpertLogin;
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: '#fff',  },
-  safeLogin: { height: '100%', display: 'flex', justifyContent: 'center', marginBottom: 70 },
-  container: { padding: 24, height: '100%', display: 'flex', justifyContent: 'center' },
-  back: { padding: 8, marginTop: 12, marginBottom: 8 },
-  title: { fontSize: 32, textAlign: 'center', fontWeight: '700', color: '#2D3748', fontFamily: 'Outfit-SemiBold' },
+  safe: { flex: 1, backgroundColor: '#fff' },
+  container: { flex: 1, padding: 24, marginBottom: 60 },
+  back: { padding: 12 },
+  content: { flex: 1, justifyContent: 'center' },
+  title: { fontSize: 32, textAlign: 'center', color: '#2D3748', fontFamily: 'Outfit-SemiBold' },
   subtitle: { marginTop: 8, textAlign: 'center', fontFamily: 'Outfit-Medium', color: '#718096', fontSize: 16 },
 
   badge: { marginTop: 16, alignSelf: 'center', paddingHorizontal: 16, paddingVertical: 8, borderRadius: 20, backgroundColor: '#F0FFF4', borderWidth: 1, borderColor: '#48BB78', flexDirection: 'row', alignItems: 'center' },
@@ -286,8 +285,8 @@ const styles = StyleSheet.create({
   formCard: { marginTop: 18 },
   inputWrap: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#fff', borderRadius: 12, borderWidth: 1, borderColor: '#E2E8F0', paddingHorizontal: 12, paddingVertical: 8, shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 6, elevation: 2 },
   input: { marginLeft: 12, flex: 1, color: '#2D3748', fontFamily: 'Outfit-Regular' },
-  errorContainer: { marginTop: 8, alignItems: 'center', flex: 1 },
-  errorText: { color: 'red', fontSize: 14, fontFamily: 'Outfit-Regular' },
+  errorContainer: { marginTop: 12, alignItems: 'center' },
+  errorText: { color: '#EF4444', fontSize: 14, fontFamily: 'Outfit-Regular' },
 
   signInBtn: { height: 56, borderRadius: 16, backgroundColor: '#102C7E', alignItems: 'center', justifyContent: 'center', elevation: 6 },
   signInText: { color: '#fff', fontSize: 18, fontWeight: '600', fontFamily: 'Outfit-Medium' },

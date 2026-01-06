@@ -14,7 +14,9 @@ import {
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { makePhoneCall } from '../utils/phone';
-import { checkAndPrepareLocation, getCurrentLocation, isLocationTurnedOn } from '../utils/location';
+import { getCurrentLocation } from '../utils/location';
+import { checkAndPrepareLocation, isLocationTurnedOn } from '../utils/permissions.ts';
+
 import { useNavigation } from '@react-navigation/native';
 import firestore from '@react-native-firebase/firestore';
 import { getExpertSession } from '../session/session';

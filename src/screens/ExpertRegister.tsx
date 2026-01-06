@@ -16,9 +16,8 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { getExpertSession } from '../session/session';
 import firestore from '@react-native-firebase/firestore';
-import { checkAndPrepareBackgroundLocation, checkAndPrepareLocation, getCurrentLocation, isLocationTurnedOn } from '../utils/location';
-import { startBackgroundLocationTracking } from '../utils/backgroundLocationService';
-import { GeoPosition } from 'react-native-geolocation-service';
+import { checkAndPrepareBackgroundLocation, getCurrentLocation } from '../utils/location';
+import { checkAndPrepareLocation, isLocationTurnedOn } from '../utils/permissions.ts';
 
 
 
@@ -364,8 +363,8 @@ export default ExpertRegister;
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: '#fff' },
   container: { padding: 24 },
-  back: { padding: 6, marginBottom: 6 },
-  title: { fontSize: 32, fontWeight: '700', fontFamily: 'Outfit-SemiBold', color: '#2D3748' },
+  back: { padding: 12, marginBottom: 6 },
+  title: { fontSize: 32, fontFamily: 'Outfit-SemiBold', color: '#2D3748' },
   subtitle: { marginTop: 8, color: '#718096', fontSize: 16, fontFamily: 'Outfit-Medium' },
 
   infoBox: { marginTop: 12, padding: 16, backgroundColor: '#F7FAFC', borderRadius: 12, borderWidth: 1, borderColor: '#E2E8F0' },

@@ -435,7 +435,6 @@ const styles = StyleSheet.create({
     },
     headerTitle: {
         fontSize: responsiveSize(20),
-        fontWeight: '700',
         color: '#2D3748',
         textAlign: 'center',
         fontFamily: 'Outfit-SemiBold',
