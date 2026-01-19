@@ -26,7 +26,7 @@ import { getCurrentLocation } from '../utils/location.ts';
 import { checkAndPrepareLocation, isLocationTurnedOn, requestBatteryUnrestricted } from '../utils/permissions.ts';
 import { updateExpertLocation } from '../utils/firestoreService.ts';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { startTracking, stopTracking } from '../utils/backgroundLocationService';
+import { isTrackingActive, startTracking, stopTracking } from '../utils/backgroundLocationService';
 
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -223,7 +223,7 @@ const ExpertProfile: React.FC = () => {
       await stopTracking();
     }
 
-    ToastAndroid.show('Tracking status updated', ToastAndroid.SHORT);
+    // ToastAndroid.show('Tracking status updated', ToastAndroid.SHORT);
   };
 
 
@@ -231,7 +231,9 @@ const ExpertProfile: React.FC = () => {
 
     // Navigate to login or success screen
     await clearExpertSession();
-    stopTracking();
+    if (await isTrackingActive()) {
+      stopTracking();
+    }
 
     ToastAndroid.show('Logged out successfully', ToastAndroid.LONG);
 

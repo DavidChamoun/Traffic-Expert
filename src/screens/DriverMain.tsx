@@ -17,7 +17,11 @@ import MapPage from './MapPage.tsx';
 import ExpertsList from './ExpertsList.tsx';
 import AdvicePage from './AdvicePage.tsx';
 import ExpertProfile from './ExpertProfile.tsx';
+import firestore from '@react-native-firebase/firestore';
 import { isExpert } from '../utils/publicVariables.ts';
+import { requestBatteryUnrestricted } from '../utils/permissions.ts';
+import { isTrackingActive, startTracking } from '../utils/backgroundLocationService.ts';
+import useDoubleBackExit from '../utils/doubleBackService.ts';
 
 const { width, height } = Dimensions.get('window');
 
@@ -38,12 +42,45 @@ const DriverMain: React.FC<any> = ({ navigation }) => {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [session, setSession] = useState<{ expertId: string } | null>(null);
 
+  useDoubleBackExit();
+
 
   useEffect(() => {
     const loadSession = async () => {
       const storedSession = await getExpertSession();
       setSession(storedSession);
     };
+
+    const checkAndRestartTracking = async () => {
+      const session = await getExpertSession();
+      if (!session?.expertId) return;
+
+      if (await isTrackingActive()) {
+        return;
+      }
+
+      try {
+        const doc = await firestore()
+          .collection('experts')
+          .doc(session.expertId)
+          .get();
+
+        const data = doc.data();
+        const isTrackingEnabled = data?.isTrackingEnabled;
+
+        if (isTrackingEnabled) {
+          // Ask for battery unrestricted if needed
+          await requestBatteryUnrestricted();
+
+          // Start background tracking
+          await startTracking();
+        }
+      } catch (error) {
+        console.warn('Failed to check session or restart tracking:', error);
+      }
+    };
+
+    checkAndRestartTracking();
 
     loadSession();
   }, []);
@@ -82,18 +119,26 @@ const DriverMain: React.FC<any> = ({ navigation }) => {
     <SafeAreaView style={styles.safe}>
       <StatusBar barStyle="dark-content" backgroundColor="#fff" />
       <View style={styles.appBar}>
-        <TouchableOpacity onPress={() => (navigation.goBack() || navigation.replace('Login'))} style={styles.appBarIcon}>
-          <MaterialIcons name="arrow-back" size={moderateScale(22)} color="#2D3748" />
-        </TouchableOpacity>
+        {currentIndex !== 0 && (
+          <TouchableOpacity onPress={() => (navigation.replace('DriverMain'))} style={styles.appBarIcon}>
+            <MaterialIcons name="arrow-back" size={moderateScale(22)} color="#2D3748" />
+          </TouchableOpacity>
+        )}
+
+        {currentIndex === 0 && (
+          <View style={styles.appBarIcon}>
+            <MaterialIcons name="arrow-back" size={moderateScale(22)} color="#2D3748" style={{opacity: 0}} />
+          </View>
+        )}
 
         <Text style={styles.title}>{getTitle()}</Text>
 
         <View style={styles.rightActions}>
-          {currentIndex === 0 && (
-            <TouchableOpacity style={styles.iconCircle} onPress={() => showSnack('owwwwwwww lwen ya helo')}>
+          {/* {currentIndex === 0 && (
+            <TouchableOpacity style={styles.iconCircle} onPress={() => showSnack('Refresh Goes here')}>
               <MaterialIcons name="refresh" size={moderateScale(20)} color="#102C7E" />
             </TouchableOpacity>
-          )}
+          )} */}
         </View>
       </View>
 

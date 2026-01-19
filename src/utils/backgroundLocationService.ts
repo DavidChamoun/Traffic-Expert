@@ -370,6 +370,9 @@ import { getExpertSession } from '../session/session';
 import firestore from '@react-native-firebase/firestore';
 import { updateExpertLocation } from './firestoreService';
 import { ToastAndroid } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const TRACKING_STATE_KEY = '@tracking_active';
 
 
 export async function initBackgroundFetch() {
@@ -387,6 +390,13 @@ export async function initBackgroundFetch() {
       // ✅ CALL YOUR FUNCTION HERE
       console.log('Call to getCurrentLocation');
       try {
+        const isActive = await isTrackingActive();
+        if (!isActive) {
+          console.log('[BackgroundFetch] Tracking disabled, skipping');
+          BackgroundFetch.finish(taskId);
+          return;
+        }
+        
         console.log('Updating current location...');
         const location = await getCurrentLocation();
         const session = await getExpertSession();
@@ -415,10 +425,26 @@ export async function initBackgroundFetch() {
 export async function startTracking() {
   await initBackgroundFetch();
   await BackgroundFetch.start();
+
+  await AsyncStorage.setItem(TRACKING_STATE_KEY, 'true');
+
   ToastAndroid.show('Location tracking started', ToastAndroid.LONG);
 }
 
 export async function stopTracking() {
   await BackgroundFetch.stop();
+
+  await AsyncStorage.setItem(TRACKING_STATE_KEY, 'false');
+
   ToastAndroid.show('Location tracking stopped', ToastAndroid.LONG);
+}
+
+export async function isTrackingActive(): Promise<boolean> {
+  try {
+    const state = await AsyncStorage.getItem(TRACKING_STATE_KEY);
+    return state === 'true';
+  } catch (error) {
+    console.error('Error checking tracking state:', error);
+    return false;
+  }
 }

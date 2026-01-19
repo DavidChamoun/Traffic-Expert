@@ -22,7 +22,8 @@ import Fontisto from 'react-native-vector-icons/Fontisto';
 import { getExpertSession } from '../session/session';
 import firestore from '@react-native-firebase/firestore';
 import { requestBatteryUnrestricted } from '../utils/permissions';
-import { startTracking } from '../utils/backgroundLocationService';
+import { isTrackingActive, startTracking } from '../utils/backgroundLocationService';
+import useDoubleBackExit from '../utils/doubleBackService';
 
 
 const { width, height } = Dimensions.get('window');
@@ -46,10 +47,16 @@ const responsiveVertical = (size: number) => {
 const LoginScreen: React.FC = ({ navigation }: any) => {
   const [modalVisible, setModalVisible] = useState(false);
 
+    useDoubleBackExit();
+
+
   useEffect(() => {
     const checkAndRestartTracking = async () => {
       const session = await getExpertSession();
-      if (!session?.expertId) return;
+      if (!session?.expertId){
+        return;
+      } 
+
 
       try {
         const doc = await firestore()
