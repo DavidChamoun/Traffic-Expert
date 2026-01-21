@@ -28,26 +28,22 @@ import useDoubleBackExit from '../utils/doubleBackService';
 
 const { width, height } = Dimensions.get('window');
 
-// Responsive helper functions (matching DriverMain.tsx)
 const scale = (size: number) => (width / 375) * size;
 const verticalScale = (size: number) => (height / 812) * size;
 const moderateScale = (size: number, factor = 0.5) => size + (scale(size) - size) * factor;
 
-// Responsive size function
 const responsiveSize = (size: number) => {
-  const scale = width / 375; // 375 is typical iPhone width
+  const scale = width / 375;
   return Math.round(size * scale);
 };
 
 const responsiveVertical = (size: number) => {
-  const scale = height / 812; // 812 is typical iPhone height
+  const scale = height / 812;
   return Math.round(size * scale);
 };
 
 const LoginScreen: React.FC = ({ navigation }: any) => {
   const [modalVisible, setModalVisible] = useState(false);
-
-    useDoubleBackExit();
 
 
   useEffect(() => {

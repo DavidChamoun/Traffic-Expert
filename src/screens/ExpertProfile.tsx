@@ -27,6 +27,7 @@ import { checkAndPrepareLocation, isLocationTurnedOn, requestBatteryUnrestricted
 import { updateExpertLocation } from '../utils/firestoreService.ts';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { isTrackingActive, startTracking, stopTracking } from '../utils/backgroundLocationService';
+import useDoubleBackExit from '../utils/doubleBackService.ts';
 
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -53,6 +54,7 @@ const ExpertProfile: React.FC = () => {
 
 
 
+  useDoubleBackExit();
 
 
   const updateLocation = async () => {

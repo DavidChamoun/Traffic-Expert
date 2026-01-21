@@ -8,7 +8,7 @@ import {
 } from 'react-native-permissions';
 import Geolocation from '@react-native-community/geolocation';
 import { promptForEnableLocationIfNeeded } from 'react-native-android-location-enabler';
-import notifee from '@notifee/react-native';
+import notifee, { AuthorizationStatus } from '@notifee/react-native';
 import {
   BatteryOptEnabled,
   OpenOptimizationSettings,
@@ -147,3 +147,46 @@ export async function requestBatteryUnrestricted() {
 
 }
 
+
+
+/**
+ * Request notification permission
+ */
+export async function requestNotificationPermission(): Promise<boolean> {
+  try {
+    const settings = await notifee.requestPermission();
+
+    if (settings.authorizationStatus >= AuthorizationStatus.AUTHORIZED) {
+      return true;
+    }
+
+    if (settings.authorizationStatus === AuthorizationStatus.DENIED) {
+      Alert.alert(
+        'Notification Permission Required',
+        'Please enable notifications from settings to receive important updates.',
+        [
+          { text: 'Cancel', style: 'cancel' },
+          { text: 'Open Settings', onPress: () => openSettings() },
+        ],
+      );
+    }
+
+    return false;
+  } catch (error) {
+    console.error('Error requesting notification permission:', error);
+    return false;
+  }
+}
+
+/**
+ * Check if notification permission is granted
+ */
+export async function checkNotificationPermission(): Promise<boolean> {
+  try {
+    const settings = await notifee.getNotificationSettings();
+    return settings.authorizationStatus >= AuthorizationStatus.AUTHORIZED;
+  } catch (error) {
+    console.error('Error checking notification permission:', error);
+    return false;
+  }
+}

@@ -54,10 +54,7 @@ const ExpertRegister: React.FC<any> = ({ navigation }) => {
     checkSession();
 
     (async () => {
-      // 1. Check permission + prepare location
-      // await checkAndPrepareLocation();
 
-      // 2. Check if GPS/location services are enabled
       const enabled = await isLocationTurnedOn();
 
       if (!enabled) {
@@ -95,7 +92,7 @@ const ExpertRegister: React.FC<any> = ({ navigation }) => {
     setIsLoading(true);
 
     try {
-      // 1️⃣ Check if license exists in verifiedExperts
+      // Check if license exists in verifiedExperts
       const verifiedRef = firestore()
         .collection('verifiedExperts')
         .doc(trimmedLicense);
@@ -126,7 +123,7 @@ const ExpertRegister: React.FC<any> = ({ navigation }) => {
         return;
       }
 
-      // 2️⃣ Check for existing account
+      // Check for existing account
       const existingExpertSnap = await firestore()
         .collection('experts')
         .where('verifiedRef', '==', verifiedRef)
@@ -140,7 +137,7 @@ const ExpertRegister: React.FC<any> = ({ navigation }) => {
         return;
       }
 
-      // 3️⃣ Get phone number
+      // Get phone number
       const phoneNumber = verifiedData.phoneNumber;
 
       if (!phoneNumber) {
@@ -149,7 +146,7 @@ const ExpertRegister: React.FC<any> = ({ navigation }) => {
         return;
       }
 
-      // 4️⃣ Check location permission
+      // Check location permission
       console.log('Checking location permission...');
       setInfo(true); // Show progress
       const locationReady = await checkAndPrepareLocation();
@@ -160,7 +157,7 @@ const ExpertRegister: React.FC<any> = ({ navigation }) => {
         return;
       }
 
-      // 5️⃣ Get current location
+      // Get current location
       console.log('Getting current location...');
       setInfoText('Getting current location...');
       const location = await getCurrentLocation();
@@ -176,7 +173,7 @@ const ExpertRegister: React.FC<any> = ({ navigation }) => {
       setInfo(false);
       setInfoText('Checking location permissions...');
 
-      // 6️⃣ Create expert account
+      // Create expert account
       const expertDocRef = await firestore()
         .collection('experts')
         .add({
@@ -188,7 +185,7 @@ const ExpertRegister: React.FC<any> = ({ navigation }) => {
           lastUpdated: firestore.FieldValue.serverTimestamp(),
         });
 
-      // 7️⃣ Update verifiedExperts
+      // Update verifiedExperts
       await verifiedRef.update({
         isRegistered: true,
       });
@@ -198,7 +195,7 @@ const ExpertRegister: React.FC<any> = ({ navigation }) => {
 
 
 
-      // 8️⃣ Navigate to OTP
+      // Navigate to OTP
       navigation.navigate('OTPAuth', {
         phoneNumber,
         isSignUp: true,

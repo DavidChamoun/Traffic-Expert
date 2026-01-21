@@ -3,6 +3,7 @@ import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { makePhoneCall } from '../utils/phone';
+import useDoubleBackExit from '../utils/doubleBackService';
 
 const steps = [
   { id: 1, title: 'Ensure Safety', desc: 'Check for injuries and move to a safe location if possible. Turn on hazard lights.', icon: 'safety-check' },
@@ -20,6 +21,10 @@ const contacts = [
 ];
 
 const AdvicePage: React.FC = () => {
+
+    useDoubleBackExit();
+
+    
   return (
     <ScrollView contentContainerStyle={{ padding: 16 }}>
       <View style={styles.emergencyCard}>

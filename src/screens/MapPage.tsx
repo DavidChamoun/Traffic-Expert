@@ -20,6 +20,7 @@ import { checkAndPrepareLocation, isLocationTurnedOn } from '../utils/permission
 import { useNavigation } from '@react-navigation/native';
 import firestore from '@react-native-firebase/firestore';
 import { getExpertSession } from '../session/session';
+import useDoubleBackExit from '../utils/doubleBackService.ts';
 
 type Props = {
   onCenterPress?: () => void;
@@ -39,7 +40,7 @@ interface UserLocation {
   longitude: number;
 }
 
-const DISTANCE_FILTER_KM = 10; // Filter experts within 10 KM
+const DISTANCE_FILTER_KM = 10;
 
 
 const MapPage: React.FC<Props> = ({ onCenterPress }) => {
@@ -69,10 +70,10 @@ const MapPage: React.FC<Props> = ({ onCenterPress }) => {
 
   const [userRegion, setUserRegion] = useState(defaultRegion);
 
-  /**
-   * Calculate distance between two coordinates using Haversine formula
-   * Returns distance in kilometers
-   */
+
+    useDoubleBackExit();
+
+
   const calculateDistanceKm = useCallback(
     (lat1: number, lon1: number, lat2: number, lon2: number): number => {
       const R = 6371; // Earth's radius in km
@@ -91,29 +92,8 @@ const MapPage: React.FC<Props> = ({ onCenterPress }) => {
     []
   );
 
-  /**
-   * Center map on user's current location
-   */
-  // const centerOnUser = useCallback(async () => {
-  //   try {
-  //     const location = await getCurrentLocation();
-  //     const region = {
-  //       latitude: location.latitude,
-  //       longitude: location.longitude,
-  //       latitudeDelta: 0.05,
-  //       longitudeDelta: 0.05,
-  //     };
-  //     setUserRegion(region);
-  //     mapRef.current?.animateToRegion(region, 800);
-  //   } catch (error) {
-  //     console.error('[MapPage] Error centering on user:', error);
-  //     ToastAndroid.show('❌ Failed to get your location', ToastAndroid.SHORT);
-  //   }
-  // }, []);
 
-  /**
-   * Initialize location permissions and fetch user location
-   */
+
   const initializeLocation = useCallback(async () => {
     try {
       console.log('[MapPage] 🔍 Initializing location...');
@@ -138,14 +118,6 @@ const MapPage: React.FC<Props> = ({ onCenterPress }) => {
         return;
       }
 
-      // Get user's current location
-      // const location = await getCurrentLocation();
-      // console.log('[MapPage] ✅ User location:', location);
-      // setUserLocation(location);
-
-      // Center map on user
-      // await centerOnUser();
-
       setLoading(false);
     } catch (error) {
       console.error('[MapPage] ❌ Location initialization failed:', error);
@@ -154,10 +126,10 @@ const MapPage: React.FC<Props> = ({ onCenterPress }) => {
     }
   }, [navigation]);
 
-  /**
-   * Fetch and filter experts from Firestore
-   * Only shows available experts within 10 KM
-   */
+
+
+
+
   const fetchNearbyExperts = useCallback(async () => {
     if (!userLocation) {
       console.log('[MapPage] ⚠️ User location not available yet');
@@ -317,15 +289,15 @@ const MapPage: React.FC<Props> = ({ onCenterPress }) => {
     setDialogVisible(false);
   }, [selectedExpert]);
 
-  /**
-   * Handle refresh button press
-   */
-  const handleRefresh = useCallback(async () => {
-    console.log('[MapPage] 🔄 Refreshing location and experts...');
-    // await centerOnUser();
-    await fetchNearbyExperts();
-    ToastAndroid.show('✅ Refreshed', ToastAndroid.SHORT);
-  }, [fetchNearbyExperts]);
+  // /**
+  //  * Handle refresh button press
+  //  */
+  // const handleRefresh = useCallback(async () => {
+  //   console.log('[MapPage] Refreshing location and experts...');
+  //   // await centerOnUser();
+  //   await fetchNearbyExperts();
+  //   ToastAndroid.show( Refreshed', ToastAndroid.SHORT);
+  // }, [fetchNearbyExperts]);
 
   // Loading state
   if (loading) {

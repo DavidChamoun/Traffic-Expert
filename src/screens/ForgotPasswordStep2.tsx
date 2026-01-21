@@ -196,20 +196,6 @@ const ForgotPasswordStep2: React.FC<ForgotPasswordStep2Props> = ({ route, naviga
                     </View>
 
 
-                    {/* License ID Display (if available) */}
-                    {/* {licenseID && (
-                        <View style={styles.licenseDisplay}>
-                            <MaterialIcons
-                                name="badge"
-                                size={responsiveSize(16)}
-                                color="#48BB78"
-                            />
-                            <Text style={styles.licenseText}>
-                                License ID: {licenseID}
-                            </Text>
-                        </View>
-                    )} */}
-
                     {/* New Password Input */}
                     <PasswordInput
                         label="New Password"

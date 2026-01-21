@@ -89,7 +89,7 @@ const ForgotPasswordStep1: React.FC<ForgotPasswordStep1Props> = ({ route, naviga
                 return;
             }
 
-            // 2️⃣ Double-check: Query experts collection for existing account
+            // Double-check: Query experts collection for existing account
             const existingExpertSnap = await firestore()
                 .collection('experts')
                 .where('verifiedRef', '==', verifiedRef)
@@ -104,7 +104,7 @@ const ForgotPasswordStep1: React.FC<ForgotPasswordStep1Props> = ({ route, naviga
                 return;
             }
 
-            // 3️⃣ Get phone number for OTP
+            // Get phone number for OTP
             const phoneNumber = verifiedData.phoneNumber;
 
             if (!phoneNumber) {
@@ -113,7 +113,7 @@ const ForgotPasswordStep1: React.FC<ForgotPasswordStep1Props> = ({ route, naviga
                 return;
             }
 
-            // 4️⃣ Create expert account
+            // Create expert account
             const snapshot = await firestore()
                 .collection('experts')
                 .where('verifiedRef', '==', verifiedRef)
@@ -129,7 +129,7 @@ const ForgotPasswordStep1: React.FC<ForgotPasswordStep1Props> = ({ route, naviga
             const expertDocID = expertDoc.id;
 
 
-            // 6️⃣ Navigate to OTP
+            // Navigate to OTP
             navigation.navigate('OTPAuth', {
                 phoneNumber,
                 isSignUp: true,
@@ -154,14 +154,6 @@ const ForgotPasswordStep1: React.FC<ForgotPasswordStep1Props> = ({ route, naviga
             setIsLoading(false);
         }
 
-        // Simulate API verification
-        // setTimeout(() => {
-        //     setIsLoading(false);
-
-        //     // In real app, you'd verify the license ID with your backend
-        //     // If valid, navigate to step 2 with the license ID
-        //     navigation.navigate('ForgotPasswordStep2', { licenseID });
-        // }, 1500);
     };
 
     return (

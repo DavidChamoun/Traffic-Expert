@@ -23,7 +23,7 @@ import { isLocationTurnedOn } from '../utils/permissions.ts';
 
 
 const ExpertLogin: React.FC<any> = ({ navigation }) => {
-  const [identifier, setIdentifier] = useState<string>(''); // email or license
+  const [identifier, setIdentifier] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
   const [obscure, setObscure] = useState(true);
@@ -47,10 +47,7 @@ const ExpertLogin: React.FC<any> = ({ navigation }) => {
     checkSession();
 
     (async () => {
-      // 1. Check permission + prepare location
-      // await checkAndPrepareLocation();
 
-      // 2. Check if GPS/location services are enabled
       const enabled = await isLocationTurnedOn();
 
       if (!enabled) {
@@ -91,22 +88,6 @@ const ExpertLogin: React.FC<any> = ({ navigation }) => {
     } finally {
       setIsLoading(false);
     }
-
-
-    // setIsLoading(true);
-    // // Simulate API call
-    // setTimeout(() => {
-    //   setIsLoading(false);
-    //   Alert.alert('Success', 'Login successful!');
-    //   // set global isExpert flag or navigate to driver_main
-    //   navigation.replace('DriverMain'); // or navigate accordingly
-
-    //   navigation.navigate('OTPAuth', {
-    //     phoneNumber: '+961 71 123 456', // User's phone number
-    //     isSignUp: false, // true for sign-up, false for login
-    //     expertData: {}, // Optional: pass expert data for sign-up
-    //   });
-    // }, 1500);
   };
 
   const authenticateExpert = async () => {
@@ -116,7 +97,7 @@ const ExpertLogin: React.FC<any> = ({ navigation }) => {
       // Reference to verified expert using license ID
       const licenseRef = firestore()
         .collection('verifiedExperts')
-        .doc(identifier); // e.g. "150"
+        .doc(identifier);
 
       // Find expert linked to this verified license
       const snapshot = await firestore()
@@ -140,7 +121,7 @@ const ExpertLogin: React.FC<any> = ({ navigation }) => {
         return;
       }
 
-      // 🔹 Resolve the reference to get phone number
+
       const verifiedSnap = await licenseRef.get();
 
       if (!verifiedSnap.exists) {
@@ -159,7 +140,7 @@ const ExpertLogin: React.FC<any> = ({ navigation }) => {
 
 
 
-      // ✅ Navigate to OTP screen
+      // Navigate to OTP screen
       navigation.navigate('OTPAuth', {
         phoneNumber,
         isSignUp: false,
@@ -251,7 +232,7 @@ const ExpertLogin: React.FC<any> = ({ navigation }) => {
           </TouchableOpacity>
 
           <TouchableOpacity style={{ marginTop: 16 }} onPress={() => {
-            navigation.navigate('FirestoreTest');
+            navigation.navigate('ForgotPasswordStep1');
           }}>
             <Text style={styles.forgot}>Forgot Password?</Text>
           </TouchableOpacity>

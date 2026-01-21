@@ -7,7 +7,7 @@ import LoginScreen from '../screens/LoginScreen.tsx';
 import DriverMain from '../screens/DriverMain.tsx';
 import ExpertLogin from '../screens/ExpertLogin.tsx';
 import ExpertRegister from '../screens/ExpertRegister.tsx';
-import OTPAuthScreen from '../screens/OTPAuth.tsx'; // Import the OTP screen
+import OTPAuthScreen from '../screens/OTPAuth.tsx';
 import FirestoreTest from '../screens/FirestoreTest.tsx';
 import ExpertProfile from '../screens/ExpertProfile.tsx';
 import ChangePassword from '../screens/ChangePassword.tsx';

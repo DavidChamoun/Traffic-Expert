@@ -18,7 +18,6 @@ import ExpertsList from './ExpertsList.tsx';
 import AdvicePage from './AdvicePage.tsx';
 import ExpertProfile from './ExpertProfile.tsx';
 import firestore from '@react-native-firebase/firestore';
-import { isExpert } from '../utils/publicVariables.ts';
 import { requestBatteryUnrestricted } from '../utils/permissions.ts';
 import { isTrackingActive, startTracking } from '../utils/backgroundLocationService.ts';
 import useDoubleBackExit from '../utils/doubleBackService.ts';
@@ -42,7 +41,6 @@ const DriverMain: React.FC<any> = ({ navigation }) => {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [session, setSession] = useState<{ expertId: string } | null>(null);
 
-  useDoubleBackExit();
 
 
   useEffect(() => {

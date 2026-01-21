@@ -7,7 +7,7 @@ import {
   StyleSheet,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { checkAndPrepareLocation } from '../utils/permissions';
+import { checkAndPrepareLocation, requestNotificationPermission } from '../utils/permissions';
 
 const SplashScreen: React.FC = () => {
   const navigation = useNavigation<any>();
@@ -22,6 +22,7 @@ const SplashScreen: React.FC = () => {
 
     (async () => {
       await checkAndPrepareLocation();
+      await requestNotificationPermission();
       setTimeout(() => navigation.replace('Login'), 1000);
     })();
   }, []);

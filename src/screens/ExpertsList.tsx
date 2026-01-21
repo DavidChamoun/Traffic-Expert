@@ -4,8 +4,8 @@ import { View, Text, StyleSheet, TextInput, FlatList, TouchableOpacity, Image, S
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import firestore from '@react-native-firebase/firestore';
 import { ActivityIndicator } from 'react-native';
-import { TrafficInspector, sampleInspectors } from '../utils/models.ts';
 import { makePhoneCall } from '../utils/phone';
+import useDoubleBackExit from '../utils/doubleBackService';
 
 interface Expert {
   id: string;
@@ -22,7 +22,9 @@ const ExpertsList: React.FC = () => {
   const [search, setSearch] = useState('');
 
 
+  useDoubleBackExit();
 
+  
   useEffect(() => {
     const loadExperts = async () => {
       try {
