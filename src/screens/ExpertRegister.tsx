@@ -11,6 +11,7 @@ import {
   ActivityIndicator,
   Alert,
   ToastAndroid,
+  useColorScheme
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -33,6 +34,10 @@ const ExpertRegister: React.FC<any> = ({ navigation }) => {
   const [info, setInfo] = useState<boolean>(false);
   const [infoText, setInfoText] = useState<String>('Checking location permissions...');
 
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
+
+  const styles = getStyles(isDark);
 
 
 
@@ -267,7 +272,7 @@ const ExpertRegister: React.FC<any> = ({ navigation }) => {
         {/* Form */}
         <View style={styles.formCard}>
           <View style={styles.inputWrap}>
-            <MaterialIcons name="badge" size={20} color="#102C7E" />
+            <MaterialIcons name="badge" size={20} color={isDark ? '#F1F5F9' : '#102C7E'} />
             <TextInput
               placeholder="Syndicate License Number"
               placeholderTextColor="#718096"
@@ -284,7 +289,7 @@ const ExpertRegister: React.FC<any> = ({ navigation }) => {
           <View style={{ height: 12 }} />
 
           <View style={styles.inputWrap}>
-            <MaterialIcons name="lock" size={20} color="#102C7E" />
+            <MaterialIcons name="lock" size={20} color={isDark ? '#F1F5F9' : '#102C7E'} />
             <TextInput
               placeholder="Password"
               placeholderTextColor="#718096"
@@ -304,7 +309,7 @@ const ExpertRegister: React.FC<any> = ({ navigation }) => {
           <View style={{ height: 12 }} />
 
           <View style={styles.inputWrap}>
-            <MaterialIcons name="lock" size={20} color="#102C7E" />
+            <MaterialIcons name="lock" size={20} color={isDark ? '#F1F5F9' : '#102C7E'} />
             <TextInput
               placeholder="Confirm Password"
               placeholderTextColor="#718096"
@@ -357,32 +362,135 @@ const ExpertRegister: React.FC<any> = ({ navigation }) => {
 
 export default ExpertRegister;
 
-const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: '#fff' },
-  container: { padding: 24 },
-  back: { padding: 12, marginBottom: 6 },
-  title: { fontSize: 32, fontFamily: 'Outfit-SemiBold', color: '#2D3748' },
-  subtitle: { marginTop: 8, color: '#718096', fontSize: 16, fontFamily: 'Outfit-Medium' },
+const getStyles = (isDark: boolean) => StyleSheet.create({
+  safe: { 
+    flex: 1, 
+    backgroundColor: isDark ? '#0A0A0F' : '#fff' 
+  },
+  container: { 
+    padding: 24,
+    backgroundColor: isDark ? '#0A0A0F' : '#fff',
+  },
+  back: { 
+    padding: 12, 
+    marginBottom: 6 
+  },
+  title: { 
+    fontSize: 32, 
+    fontFamily: 'Outfit-SemiBold', 
+    color: isDark ? '#F7FAFC' : '#2D3748' 
+  },
+  subtitle: { 
+    marginTop: 8, 
+    color: isDark ? '#94A3B8' : '#718096', 
+    fontSize: 16, 
+    fontFamily: 'Outfit-Medium' 
+  },
 
-  infoBox: { marginTop: 12, padding: 16, backgroundColor: '#F7FAFC', borderRadius: 12, borderWidth: 1, borderColor: '#E2E8F0' },
-  infoTitle: { fontSize: 14, fontWeight: '600', color: '#2D3748', fontFamily: 'Outfit-Medium' },
-  stepRow: { flexDirection: 'row', alignItems: 'center', marginTop: 6 },
-  stepDot: { width: 20, height: 20, borderRadius: 10, backgroundColor: 'rgba(72,187,120,0.1)', alignItems: 'center', justifyContent: 'center' },
-  stepText: { marginLeft: 8, color: '#718096', fontSize: 12, fontFamily: 'Outfit-Regular' },
+  infoBox: { 
+    marginTop: 12, 
+    padding: 16, 
+    backgroundColor: isDark ? '#1A1A24' : '#F7FAFC', 
+    borderRadius: 12, 
+    borderWidth: 1, 
+    borderColor: isDark ? '#2D2D3A' : '#E2E8F0' 
+  },
+  infoTitle: { 
+    fontSize: 14, 
+    fontWeight: '600', 
+    color: isDark ? '#F7FAFC' : '#2D3748', 
+    fontFamily: 'Outfit-Medium' 
+  },
+  stepRow: { 
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    marginTop: 6 
+  },
+  stepDot: { 
+    width: 20, 
+    height: 20, 
+    borderRadius: 10, 
+    backgroundColor: isDark ? 'rgba(104,211,145,0.15)' : 'rgba(72,187,120,0.1)', 
+    alignItems: 'center', 
+    justifyContent: 'center' 
+  },
+  stepText: { 
+    marginLeft: 8, 
+    color: isDark ? '#94A3B8' : '#718096', 
+    fontSize: 12, 
+    fontFamily: 'Outfit-Regular' 
+  },
 
-  formCard: { marginTop: 8 },
+  formCard: { 
+    marginTop: 8 
+  },
 
-  inputWrap: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#fff', borderRadius: 12, borderWidth: 1, borderColor: '#E2E8F0', paddingHorizontal: 12, paddingVertical: 8, shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 6, elevation: 2 },
-  input: { marginLeft: 12, flex: 1, color: '#2D3748', fontFamily: 'Outfit-Regular' },
+  inputWrap: { 
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    backgroundColor: isDark ? '#1A1A24' : '#fff', 
+    borderRadius: 12, 
+    borderWidth: 1, 
+    borderColor: isDark ? '#2D2D3A' : '#E2E8F0', 
+    paddingHorizontal: 12, 
+    paddingVertical: 8, 
+    shadowColor: isDark ? '#8B5CF6' : '#000', 
+    shadowOpacity: isDark ? 0.1 : 0.05, 
+    shadowRadius: 6, 
+    elevation: isDark ? 0 : 2,
+  },
+  input: { 
+    marginLeft: 12, 
+    flex: 1, 
+    color: isDark ? '#F7FAFC' : '#2D3748', 
+    fontFamily: 'Outfit-Regular' 
+  },
 
-  errorContainer: { marginTop: 10, alignItems: 'center', flex: 1 },
-  errorText: { color: 'red', fontSize: 14, fontFamily: 'Outfit-Regular' },
-  infoContainer: { marginTop: 8, alignItems: 'center', flex: 1 },
-  infoText: { color: '#102C7E', fontSize: 14, gap: 5, fontFamily: 'Outfit-Medium' },
+  errorContainer: { 
+    marginTop: 10, 
+    alignItems: 'center', 
+    flex: 1 
+  },
+  errorText: { 
+    color: '#EF4444', 
+    fontSize: 14, 
+    fontFamily: 'Outfit-Regular' 
+  },
+  infoContainer: { 
+    marginTop: 8, 
+    alignItems: 'center', 
+    flex: 1 
+  },
+  infoText: { 
+    color: isDark ? '#8B5CF6' : '#102C7E', 
+    fontSize: 14, 
+    gap: 5, 
+    fontFamily: 'Outfit-Medium' 
+  },
 
+  registerBtn: { 
+    height: 56, 
+    borderRadius: 16, 
+    backgroundColor: isDark ? '#102C7E' : '#102C7E', 
+    alignItems: 'center', 
+    justifyContent: 'center', 
+    elevation: isDark ? 0 : 6,
+    shadowColor: isDark ? '#102C7E' : '#102C7E',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: isDark ? 0.25 : 0.15,
+    shadowRadius: 8,
+  },
+  registerBtnText: { 
+    color: '#fff', 
+    fontSize: 18, 
+    fontWeight: '600', 
+    fontFamily: 'Outfit-Medium' 
+  },
 
-  registerBtn: { height: 56, borderRadius: 16, backgroundColor: '#102C7E', alignItems: 'center', justifyContent: 'center', elevation: 6 },
-  registerBtnText: { color: '#fff', fontSize: 18, fontWeight: '600', fontFamily: 'Outfit-Medium' },
-
-  registerRow: { flexDirection: 'row', justifyContent: 'center', marginTop: 12, alignItems: 'center' },
+  registerRow: { 
+    flexDirection: 'row', 
+    justifyContent: 'center', 
+    marginTop: 12, 
+    alignItems: 'center' 
+  },
 });

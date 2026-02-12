@@ -1,6 +1,6 @@
 // src/screens/AdvicePage.tsx
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, useColorScheme } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { makePhoneCall } from '../utils/phone';
 import useDoubleBackExit from '../utils/doubleBackService';
@@ -22,9 +22,14 @@ const contacts = [
 
 const AdvicePage: React.FC = () => {
 
-    useDoubleBackExit();
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
 
-    
+  const styles = getStyles(isDark);
+
+  useDoubleBackExit();
+
+
   return (
     <ScrollView contentContainerStyle={{ padding: 16 }}>
       <View style={styles.emergencyCard}>
@@ -84,42 +89,193 @@ const AdvicePage: React.FC = () => {
 
 export default AdvicePage;
 
-const styles = StyleSheet.create({
+const getStyles = (isDark: boolean) => StyleSheet.create({
+  container: {
+    padding: 16,
+    paddingBottom: 32,
+    backgroundColor: isDark ? '#0A0A0F' : '#fff',
+  },
+  spacingSmall: {
+    height: 12,
+  },
+  spacingMedium: {
+    height: 24,
+  },
+  spacingLarge: {
+    height: 32,
+  },
+  
+  // Emergency Card
   emergencyCard: {
     padding: 20,
     borderRadius: 16,
-    // backgroundColor: 'linear-gradient(180deg, #FF6B6B, #EE5A52)', // RN doesn't support CSS gradients in styles; keep for reference
+    backgroundColor: isDark ? '#DC2626' : '#FF6B6B',
+    shadowColor: isDark ? '#DC2626' : '#FF6B6B',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: isDark ? 0.3 : 0.2,
+    shadowRadius: 8,
     elevation: 6,
-    // We'll fallback to solid color:
-    backgroundColor: '#FF6B6B',
   },
-  emIconWrap: { width: 40, height: 40, borderRadius: 20, backgroundColor: 'rgba(255,255,255,0.18)', alignItems: 'center', justifyContent: 'center' },
-  emTitle: { color: '#fff', fontWeight: '700', fontSize: 18, fontFamily: 'Outfit-SemiBold' },
-  emDesc: { color: 'rgba(255,255,255,0.9)', marginTop: 8, lineHeight: 20, fontSize: 14, fontFamily: 'Outfit-Regular' },
+  emIconWrap: { 
+    width: 44, 
+    height: 44, 
+    borderRadius: 22, 
+    backgroundColor: 'rgba(255,255,255,0.2)', 
+    alignItems: 'center', 
+    justifyContent: 'center' 
+  },
+  emTitle: { 
+    color: '#fff', 
+    fontWeight: '700', 
+    fontSize: 18, 
+    fontFamily: 'Outfit-SemiBold' 
+  },
+  emDesc: { 
+    color: 'rgba(255,255,255,0.95)', 
+    marginTop: 6, 
+    lineHeight: 20, 
+    fontSize: 14, 
+    fontFamily: 'Outfit-Regular' 
+  },
 
-  sectionTitle: { fontSize: 18, fontWeight: '700', color: '#2D3748', fontFamily: 'Outfit-SemiBold'},
+  // Section Header
+  sectionHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 4,
+  },
+  sectionIconWrap: {
+    width: 32,
+    height: 32,
+    borderRadius: 8,
+    backgroundColor: isDark ? 'rgba(139,92,246,0.12)' : 'rgba(16,44,126,0.08)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 10,
+  },
+  sectionTitle: { 
+    fontSize: 18, 
+    fontWeight: '700', 
+    color: isDark ? '#F7FAFC' : '#2D3748', 
+    fontFamily: 'Outfit-SemiBold'
+  },
 
+  // Step Cards
   stepCard: {
     marginBottom: 12,
-    padding: 12,
-    backgroundColor: '#fff',
-    borderRadius: 12,
+    padding: 16,
+    backgroundColor: isDark ? '#1A1A24' : '#fff',
+    borderRadius: 14,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: isDark ? '#2D2D3A' : '#E2E8F0',
     flexDirection: 'row',
-    shadowColor: '#000',
-    shadowOpacity: 0.05,
-    shadowRadius: 5,
-    elevation: 2,
+    shadowColor: isDark ? '#8B5CF6' : '#000',
+    shadowOpacity: isDark ? 0.1 : 0.05,
+    shadowRadius: 6,
+    elevation: isDark ? 0 : 2,
   },
-  stepLeft: { width: 40, alignItems: 'center', justifyContent: 'center' },
-  stepNum: { width: 32, height: 32, borderRadius: 16, backgroundColor: 'rgba(16,44,126,0.06)', alignItems: 'center', justifyContent: 'center' },
-  stepTitle: { marginLeft: 10, fontSize: 16, fontWeight: '600', color: '#2D3748', fontFamily: 'Outfit-Medium', },
-  stepDesc: { marginTop: 6, fontSize: 14, color: '#718096', lineHeight: 18, fontFamily: 'Outfit-Regular', },
+  stepLeft: { 
+    width: 40, 
+    alignItems: 'center', 
+    justifyContent: 'flex-start' 
+  },
+  stepNum: { 
+    width: 32, 
+    height: 32, 
+    borderRadius: 16, 
+    backgroundColor: isDark ? 'rgba(139,92,246,0.15)' : 'rgba(16,44,126,0.06)', 
+    alignItems: 'center', 
+    justifyContent: 'center' 
+  },
+  stepNumText: { 
+    color: isDark ? '#8B5CF6' : '#102C7E', 
+    fontWeight: '700', 
+    fontSize: 14,
+    fontFamily: 'Outfit-SemiBold' 
+  },
+  stepTitleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 6,
+  },
+  stepTitle: { 
+    marginLeft: 10, 
+    fontSize: 16, 
+    fontWeight: '600', 
+    color: isDark ? '#F7FAFC' : '#2D3748', 
+    fontFamily: 'Outfit-Medium' 
+  },
+  stepDesc: { 
+    fontSize: 14, 
+    color: isDark ? '#94A3B8' : '#718096', 
+    lineHeight: 20, 
+    fontFamily: 'Outfit-Regular' 
+  },
 
-  contactItem: { flexDirection: 'row', alignItems: 'center', paddingVertical: 12, borderBottomWidth: 0.5, borderBottomColor: '#EEE' },
-  contactIcon: { width: 50, height: 50, borderRadius: 12, alignItems: 'center', justifyContent: 'center', marginRight: 12 },
-  contactName: { fontSize: 16, fontWeight: '600', color: '#2D3748', fontFamily: 'Outfit-Medium', },
-  contactNumber: { color: '#718096', fontFamily: 'Outfit-Regular', },
-  callPill: { paddingHorizontal: 16, paddingVertical: 8, borderRadius: 20 },
+  // Emergency Contacts
+  contactItem: { 
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    paddingVertical: 14, 
+    paddingHorizontal: 12,
+    marginBottom: 8,
+    backgroundColor: isDark ? '#1A1A24' : '#fff',
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: isDark ? '#2D2D3A' : 'transparent',
+  },
+  contactIcon: { 
+    width: 52, 
+    height: 52, 
+    borderRadius: 14, 
+    alignItems: 'center', 
+    justifyContent: 'center' 
+  },
+  contactName: { 
+    fontSize: 16, 
+    fontWeight: '600', 
+    color: isDark ? '#F7FAFC' : '#2D3748', 
+    fontFamily: 'Outfit-Medium' 
+  },
+  contactNumber: { 
+    color: isDark ? '#94A3B8' : '#718096', 
+    fontSize: 14,
+    marginTop: 2,
+    fontFamily: 'Outfit-Regular' 
+  },
+  callPill: { 
+    paddingHorizontal: 16, 
+    paddingVertical: 8, 
+    borderRadius: 20,
+    marginLeft: 8,
+  },
+  callText: {
+    fontWeight: '600', 
+    fontFamily: 'Outfit-Medium',
+    fontSize: 14,
+  },
+
+  // Tip Card
+  tipCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 16,
+    backgroundColor: isDark ? 'rgba(245,158,11,0.08)' : '#FFFBEB',
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: isDark ? 'rgba(245,158,11,0.2)' : '#FCD34D',
+  },
+  tipTitle: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: isDark ? '#FBBF24' : '#D97706',
+    fontFamily: 'Outfit-SemiBold',
+    marginBottom: 4,
+  },
+  tipText: {
+    fontSize: 14,
+    color: isDark ? '#94A3B8' : '#4B5563',
+    fontFamily: 'Outfit-Regular',
+    lineHeight: 20,
+  },
 });

@@ -13,6 +13,7 @@ import {
     ActivityIndicator,
     Dimensions,
     ToastAndroid,
+    useColorScheme,
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import firestore from '@react-native-firebase/firestore';
@@ -39,6 +40,11 @@ const ForgotPasswordStep1: React.FC<ForgotPasswordStep1Props> = ({ route, naviga
     const [licenseID, setLicenseID] = useState<string>('');
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<string>('');
+
+    const colorScheme = useColorScheme();
+    const isDark = colorScheme === 'dark';
+
+    const styles = getStyles(isDark);
 
 
     const handleContinue = async () => {
@@ -255,10 +261,10 @@ const ForgotPasswordStep1: React.FC<ForgotPasswordStep1Props> = ({ route, naviga
 
 export default ForgotPasswordStep1;
 
-const styles = StyleSheet.create({
+const getStyles = (isDark: boolean) => StyleSheet.create({
     safeArea: {
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: isDark ? '#0A0A0F' : '#fff',
     },
     container: {
         flex: 1,
@@ -267,6 +273,7 @@ const styles = StyleSheet.create({
         flex: 1,
         paddingHorizontal: responsiveSize(24),
         paddingBottom: responsiveVertical(30),
+        backgroundColor: isDark ? '#0A0A0F' : '#fff',
     },
     header: {
         flexDirection: 'row',
@@ -280,12 +287,40 @@ const styles = StyleSheet.create({
     },
     headerTitle: {
         fontSize: responsiveSize(20),
-        color: '#2D3748',
+        color: isDark ? '#F7FAFC' : '#2D3748',
         textAlign: 'center',
         fontFamily: 'Outfit-SemiBold'
     },
     headerRight: {
         width: responsiveSize(40),
+    },
+    iconContainer: {
+        alignItems: 'center',
+        marginBottom: responsiveVertical(24),
+    },
+    iconCircle: {
+        width: responsiveSize(80),
+        height: responsiveSize(80),
+        borderRadius: responsiveSize(40),
+        backgroundColor: isDark ? 'rgba(139,92,246,0.15)' : 'rgba(16,44,126,0.08)',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    title: {
+        fontSize: responsiveSize(28),
+        fontWeight: '700',
+        color: isDark ? '#F7FAFC' : '#2D3748',
+        textAlign: 'center',
+        marginBottom: responsiveVertical(8),
+        fontFamily: 'Outfit-SemiBold',
+    },
+    subtitle: {
+        fontSize: responsiveSize(16),
+        color: isDark ? '#94A3B8' : '#718096',
+        textAlign: 'center',
+        lineHeight: responsiveSize(24),
+        marginBottom: responsiveVertical(40),
+        fontFamily: 'Outfit-Regular',
     },
     inputContainer: {
         marginBottom: responsiveVertical(10),
@@ -293,7 +328,7 @@ const styles = StyleSheet.create({
     inputLabel: {
         fontSize: responsiveSize(14),
         fontWeight: '600',
-        color: '#4A5568',
+        color: isDark ? '#E2E8F0' : '#4A5568',
         marginBottom: responsiveVertical(8),
         fontFamily: 'Outfit-Medium',
     },
@@ -301,9 +336,9 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         borderWidth: 1.5,
-        borderColor: '#E2E8F0',
+        borderColor: isDark ? '#2D2D3A' : '#E2E8F0',
         borderRadius: responsiveSize(12),
-        backgroundColor: '#fff',
+        backgroundColor: isDark ? '#1A1A24' : '#fff',
         overflow: 'hidden',
     },
     inputIcon: {
@@ -315,28 +350,42 @@ const styles = StyleSheet.create({
         paddingVertical: responsiveVertical(16),
         fontSize: responsiveSize(16),
         fontFamily: 'Outfit-Medium',
-        color: '#2D3748',
+        color: isDark ? '#F7FAFC' : '#2D3748',
         includeFontPadding: false,
     },
-    errorContainer: { marginBottom: responsiveVertical(12), alignItems: 'center', width: '100%' },
-    errorText: { color: 'red', fontSize: 14, fontFamily: 'Outfit-Regular' },
-
+    inputHint: {
+        fontSize: responsiveSize(12),
+        color: isDark ? '#94A3B8' : '#718096',
+        marginTop: responsiveVertical(8),
+        marginLeft: responsiveSize(4),
+        fontFamily: 'Outfit-Regular',
+    },
+    errorContainer: { 
+        marginBottom: responsiveVertical(12), 
+        alignItems: 'center', 
+        width: '100%' 
+    },
+    errorText: { 
+        color: isDark ? '#FC8181' : 'red', 
+        fontSize: 14, 
+        fontFamily: 'Outfit-Regular' 
+    },
     continueButton: {
-        backgroundColor: '#102C7E',
+        backgroundColor: isDark ? '#102C7E' : '#102C7E',
         height: responsiveVertical(56),
         borderRadius: responsiveSize(12),
         justifyContent: 'center',
         alignItems: 'center',
         marginBottom: responsiveVertical(24),
-        shadowColor: '#102C7E',
+        shadowColor: isDark ? '#102C7E' : '#102C7E',
         shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.15,
+        shadowOpacity: isDark ? 0.25 : 0.15,
         shadowRadius: 8,
-        elevation: 4,
+        elevation: isDark ? 0 : 4,
     },
     continueButtonDisabled: {
         opacity: 0.5,
-        backgroundColor: '#2b4081ff',
+        backgroundColor: isDark ? '#2b4081ff' : '#2b4081ff',
     },
     buttonContent: {
         flexDirection: 'row',
@@ -358,7 +407,7 @@ const styles = StyleSheet.create({
     },
     supportText: {
         fontSize: responsiveSize(12),
-        color: '#718096',
+        color: isDark ? '#94A3B8' : '#718096',
         marginLeft: responsiveSize(8),
         fontWeight: '500',
         fontFamily: 'Outfit-Medium',

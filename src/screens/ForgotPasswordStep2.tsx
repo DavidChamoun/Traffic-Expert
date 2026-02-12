@@ -12,6 +12,7 @@ import {
     Platform,
     ActivityIndicator,
     Dimensions,
+    useColorScheme,
     ToastAndroid,
 } from 'react-native';
 import firestore from '@react-native-firebase/firestore';
@@ -36,6 +37,11 @@ const ForgotPasswordStep2: React.FC<ForgotPasswordStep2Props> = ({ route, naviga
     const [showNewPassword, setShowNewPassword] = useState<boolean>(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
     const [error, setError] = useState<string>('');
+
+    const colorScheme = useColorScheme();
+    const isDark = colorScheme === 'dark';
+
+    const styles = getStyles(isDark);
 
 
     const validatePasswords = (): boolean => {
@@ -100,7 +106,7 @@ const ForgotPasswordStep2: React.FC<ForgotPasswordStep2Props> = ({ route, naviga
             // });
             if (!isChangePassword) {
                 navigation.pop(2);
-            } else{
+            } else {
                 navigation.pop(3);
             }
 
@@ -279,10 +285,10 @@ const ForgotPasswordStep2: React.FC<ForgotPasswordStep2Props> = ({ route, naviga
 
 export default ForgotPasswordStep2;
 
-const styles = StyleSheet.create({
+const getStyles = (isDark: boolean) => StyleSheet.create({
     safeArea: {
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: isDark ? '#0A0A0F' : '#fff',
     },
     container: {
         flex: 1,
@@ -291,41 +297,73 @@ const styles = StyleSheet.create({
         flex: 1,
         paddingHorizontal: responsiveSize(24),
         paddingBottom: responsiveVertical(30),
+        backgroundColor: isDark ? '#0A0A0F' : '#fff',
     },
     header: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
         marginTop: responsiveVertical(35),
-        marginBottom: responsiveVertical(32),
+        marginBottom: responsiveVertical(24),
     },
     backButton: {
         padding: responsiveSize(8),
     },
     headerTitle: {
         fontSize: responsiveSize(20),
-        color: '#2D3748',
+        color: isDark ? '#F7FAFC' : '#2D3748',
         textAlign: 'center',
         fontFamily: 'Outfit-SemiBold'
     },
     headerRight: {
         width: responsiveSize(40),
     },
+    iconContainer: {
+        alignItems: 'center',
+        marginBottom: responsiveVertical(24),
+    },
+    iconCircle: {
+        width: responsiveSize(80),
+        height: responsiveSize(80),
+        borderRadius: responsiveSize(40),
+        backgroundColor: isDark ? 'rgba(139,92,246,0.15)' : 'rgba(16,44,126,0.08)',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    title: {
+        fontSize: responsiveSize(28),
+        fontWeight: '700',
+        color: isDark ? '#F7FAFC' : '#2D3748',
+        textAlign: 'center',
+        marginBottom: responsiveVertical(8),
+        fontFamily: 'Outfit-SemiBold',
+    },
+    subtitle: {
+        fontSize: responsiveSize(16),
+        color: isDark ? '#94A3B8' : '#718096',
+        textAlign: 'center',
+        lineHeight: responsiveSize(24),
+        marginBottom: responsiveVertical(32),
+        fontFamily: 'Outfit-Regular',
+    },
     licenseDisplay: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: 'rgba(72,187,120,0.08)',
+        backgroundColor: isDark ? 'rgba(104,211,145,0.08)' : 'rgba(72,187,120,0.08)',
         paddingHorizontal: responsiveSize(16),
         paddingVertical: responsiveVertical(10),
         borderRadius: responsiveSize(8),
         marginBottom: responsiveVertical(24),
+        borderWidth: 1,
+        borderColor: isDark ? 'rgba(104,211,145,0.2)' : 'transparent',
     },
     licenseText: {
         fontSize: responsiveSize(14),
-        color: '#48BB78',
+        color: isDark ? '#68D391' : '#48BB78',
         fontWeight: '500',
         marginLeft: responsiveSize(8),
+        fontFamily: 'Outfit-Medium',
     },
     inputContainer: {
         marginBottom: responsiveVertical(24),
@@ -334,16 +372,16 @@ const styles = StyleSheet.create({
         fontSize: responsiveSize(14),
         fontWeight: '600',
         fontFamily: 'Outfit-Medium',
-        color: '#4A5568',
+        color: isDark ? '#E2E8F0' : '#4A5568',
         marginBottom: responsiveVertical(8),
     },
     inputWrapper: {
         flexDirection: 'row',
         alignItems: 'center',
         borderWidth: 1.5,
-        borderColor: '#E2E8F0',
+        borderColor: isDark ? '#2D2D3A' : '#E2E8F0',
         borderRadius: responsiveSize(12),
-        backgroundColor: '#fff',
+        backgroundColor: isDark ? '#1A1A24' : '#fff',
         overflow: 'hidden',
     },
     inputIcon: {
@@ -355,7 +393,7 @@ const styles = StyleSheet.create({
         paddingVertical: responsiveVertical(16),
         fontSize: responsiveSize(14),
         fontFamily: 'Outfit-Regular',
-        color: '#2D3748',
+        color: isDark ? '#F7FAFC' : '#2D3748',
         includeFontPadding: false,
     },
     eyeButton: {
@@ -367,14 +405,14 @@ const styles = StyleSheet.create({
         marginBottom: responsiveVertical(10),
         padding: responsiveSize(16),
         borderRadius: responsiveSize(12),
-        backgroundColor: '#F7FAFC',
+        backgroundColor: isDark ? '#1A1A24' : '#F7FAFC',
         borderWidth: 1,
-        borderColor: '#E2E8F0',
+        borderColor: isDark ? '#2D2D3A' : '#E2E8F0',
     },
     requirementsTitle: {
         fontSize: responsiveSize(14),
         fontWeight: '600',
-        color: '#4A5568',
+        color: isDark ? '#F7FAFC' : '#4A5568',
         marginBottom: responsiveVertical(12),
         fontFamily: 'Outfit-Medium',
     },
@@ -387,39 +425,47 @@ const styles = StyleSheet.create({
         width: responsiveSize(8),
         height: responsiveSize(8),
         borderRadius: responsiveSize(4),
-        backgroundColor: '#E2E8F0',
+        backgroundColor: isDark ? '#4A5568' : '#E2E8F0',
         marginRight: responsiveSize(12),
     },
     requirementDotMet: {
-        backgroundColor: '#48BB78',
+        backgroundColor: isDark ? '#68D391' : '#48BB78',
     },
     requirementText: {
         fontSize: responsiveSize(12),
         fontFamily: 'Outfit-Regular',
-        color: '#A0AEC0',
+        color: isDark ? '#94A3B8' : '#A0AEC0',
     },
     requirementTextMet: {
-        color: '#48BB78',
+        color: isDark ? '#68D391' : '#48BB78',
         fontWeight: '500',
     },
-    errorContainer: { marginBottom: responsiveVertical(12), alignItems: 'center', width: '100%' },
-    errorText: { color: 'red', fontSize: 14, fontFamily: 'Outfit-Regular' },
+    errorContainer: { 
+        marginBottom: responsiveVertical(12), 
+        alignItems: 'center', 
+        width: '100%' 
+    },
+    errorText: { 
+        color: isDark ? '#FC8181' : 'red', 
+        fontSize: 14, 
+        fontFamily: 'Outfit-Regular' 
+    },
     resetButton: {
-        backgroundColor: '#102C7E',
+        backgroundColor: isDark ? '#102C7E' : '#102C7E',
         height: responsiveVertical(56),
         borderRadius: responsiveSize(12),
         justifyContent: 'center',
         alignItems: 'center',
         marginBottom: responsiveVertical(16),
-        shadowColor: '#102C7E',
+        shadowColor: isDark ? '#102C7E' : '#102C7E',
         shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.15,
+        shadowOpacity: isDark ? 0.25 : 0.15,
         shadowRadius: 8,
-        elevation: 4,
+        elevation: isDark ? 0 : 4,
     },
     resetButtonDisabled: {
         opacity: 0.5,
-        backgroundColor: '#2b4081ff',
+        backgroundColor: isDark ? '#2b4081ff' : '#2b4081ff',
     },
     buttonContent: {
         flexDirection: 'row',
@@ -432,17 +478,18 @@ const styles = StyleSheet.create({
         fontFamily: 'Outfit-Medium',
         marginLeft: responsiveSize(8),
     },
-    // securityNote: {
-    //     flexDirection: 'row',
-    //     alignItems: 'center',
-    //     justifyContent: 'center',
-    //     marginTop: responsiveVertical(24),
-    //     paddingHorizontal: responsiveSize(20),
-    // },
-    // securityNoteText: {
-    //     fontSize: responsiveSize(12),
-    //     color: '#48BB78',
-    //     marginLeft: responsiveSize(8),
-    //     fontWeight: '500',
-    // },
+    securityNote: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: responsiveVertical(24),
+        paddingHorizontal: responsiveSize(20),
+    },
+    securityNoteText: {
+        fontSize: responsiveSize(12),
+        color: isDark ? '#68D391' : '#48BB78',
+        marginLeft: responsiveSize(8),
+        fontWeight: '500',
+        fontFamily: 'Outfit-Medium',
+    },
 });

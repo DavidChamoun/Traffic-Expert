@@ -12,6 +12,7 @@ import {
   Pressable,
   Linking,
   Dimensions,
+  useColorScheme,
   Platform,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
@@ -45,14 +46,20 @@ const responsiveVertical = (size: number) => {
 const LoginScreen: React.FC = ({ navigation }: any) => {
   const [modalVisible, setModalVisible] = useState(false);
 
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
+
+  const styles = getStyles(isDark);
+
 
   useEffect(() => {
     const checkAndRestartTracking = async () => {
       const session = await getExpertSession();
-      if (!session?.expertId){
+      if (!session?.expertId) {
         return;
-      } 
+      }
 
+    
 
       try {
         const doc = await firestore()
@@ -248,14 +255,15 @@ export default LoginScreen;
 
 
 
-const styles = StyleSheet.create({
+const getStyles = (isDark: boolean) => StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#fff'
+    backgroundColor: isDark ? '#0A0A0F' : '#fff'
   },
   container: {
     padding: responsiveSize(24),
-    minHeight: height * 0.9, // Ensure minimum height for small devices
+    minHeight: height * 0.9,
+    backgroundColor: isDark ? '#0A0A0F' : '#fff',
   },
   header: {
     alignItems: 'center',
@@ -263,13 +271,13 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: responsiveSize(32),
-    color: '#2D3748',
+    color: isDark ? '#F7FAFC' : '#2D3748',
     textAlign: 'center',
     fontFamily: 'Outfit-SemiBold',
   },
   subtitle: {
     fontSize: responsiveSize(16),
-    color: '#718096',
+    color: isDark ? '#94A3B8' : '#718096',
     marginTop: responsiveVertical(8),
     fontFamily: 'Outfit-Medium',
     textAlign: 'center',
@@ -280,13 +288,13 @@ const styles = StyleSheet.create({
   },
   welcomeTitle: {
     fontSize: responsiveSize(28),
-    color: '#2D3748',
+    color: isDark ? '#F7FAFC' : '#2D3748',
     fontFamily: 'Outfit-SemiBold',
     textAlign: 'center',
   },
   welcomeSub: {
     fontSize: responsiveSize(16),
-    color: '#718096',
+    color: isDark ? '#94A3B8' : '#718096',
     marginTop: responsiveVertical(8),
     textAlign: 'center',
     fontFamily: 'Outfit-Regular',
@@ -321,21 +329,21 @@ const styles = StyleSheet.create({
     width: '100%',
     height: responsiveVertical(56),
     borderRadius: responsiveSize(16),
-    backgroundColor: '#fff',
+    backgroundColor: isDark ? '#1A1A24' : '#fff',
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: isDark ? '#2D2D3A' : '#E2E8F0',
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOpacity: 0.05,
+    shadowColor: isDark ? '#8B5CF6' : '#000',
+    shadowOpacity: isDark ? 0.1 : 0.05,
     shadowRadius: 10,
-    elevation: 2,
+    elevation: isDark ? 0 : 2,
   },
   driverBtnText: {
     fontSize: responsiveSize(16),
     fontFamily: 'Outfit-Medium',
     fontWeight: '600',
-    color: '#4A5568',
+    color: isDark ? '#E2E8F0' : '#4A5568',
     textAlign: 'center',
   },
 
@@ -347,11 +355,11 @@ const styles = StyleSheet.create({
   line: {
     flex: 1,
     height: 1,
-    backgroundColor: '#E2E8F0'
+    backgroundColor: isDark ? '#2D2D3A' : '#E2E8F0'
   },
   orText: {
     marginHorizontal: responsiveSize(16),
-    color: '#718096',
+    color: isDark ? '#94A3B8' : '#718096',
     fontFamily: 'Outfit-Regular',
     fontSize: responsiveSize(14),
   },
@@ -359,13 +367,13 @@ const styles = StyleSheet.create({
   emergencyBox: {
     padding: responsiveSize(16),
     borderRadius: responsiveSize(12),
-    backgroundColor: '#FFF5F5',
+    backgroundColor: isDark ? 'rgba(229,62,62,0.08)' : '#FFF5F5',
     borderWidth: 1,
-    borderColor: '#ffa4a4ff',
+    borderColor: isDark ? 'rgba(229,62,62,0.3)' : '#ffa4a4ff',
     width: '100%',
   },
   emergencyTitle: {
-    color: '#718096',
+    color: isDark ? '#FC8181' : '#718096',
     fontWeight: '500',
     fontSize: responsiveSize(14),
     fontFamily: 'Outfit-Medium',
@@ -374,29 +382,29 @@ const styles = StyleSheet.create({
   emergencyRow: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    flexWrap: 'wrap', // Allow wrapping on very small screens
+    flexWrap: 'wrap',
   },
   emItem: {
     alignItems: 'center',
     marginVertical: responsiveVertical(4),
-    minWidth: responsiveSize(80), // Ensure minimum width for items
+    minWidth: responsiveSize(80),
   },
   emCircle: {
     width: responsiveSize(50),
     height: responsiveSize(50),
     borderRadius: responsiveSize(25),
-    backgroundColor: '#fff',
+    backgroundColor: isDark ? '#1A1A24' : '#fff',
     borderWidth: 1,
-    borderColor: '#ffa4a4ff',
+    borderColor: isDark ? 'rgba(229,62,62,0.4)' : '#ffa4a4ff',
     alignItems: 'center',
     justifyContent: 'center',
   },
   emIcon: {
     fontSize: responsiveSize(20),
-    color: '#E53E3E',
+    color: isDark ? '#FC8181' : '#E53E3E',
   },
   emLabel: {
-    color: '#4A5568',
+    color: isDark ? '#A0AEC0' : '#4A5568',
     fontSize: responsiveSize(10),
     marginTop: responsiveVertical(8),
     fontWeight: '500',
@@ -404,7 +412,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Outfit-Regular',
   },
   emNumber: {
-    color: '#E53E3E',
+    color: isDark ? '#FC8181' : '#E53E3E',
     fontWeight: '800',
     fontSize: responsiveSize(12),
     textAlign: 'center',
@@ -415,10 +423,10 @@ const styles = StyleSheet.create({
   modalOverlay: {
     flex: 1,
     justifyContent: 'flex-end',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: isDark ? 'rgba(0, 0, 0, 0.7)' : 'rgba(0, 0, 0, 0.5)',
   },
   modalContent: {
-    backgroundColor: '#F7FAFC',
+    backgroundColor: isDark ? '#1A1A24' : '#F7FAFC',
     borderTopLeftRadius: moderateScale(24),
     borderTopRightRadius: moderateScale(24),
     padding: scale(24),
@@ -427,7 +435,7 @@ const styles = StyleSheet.create({
   handle: {
     width: scale(40),
     height: verticalScale(4),
-    backgroundColor: '#CBD5E0',
+    backgroundColor: isDark ? '#4A5568' : '#CBD5E0',
     borderRadius: moderateScale(2),
     alignSelf: 'center',
     marginBottom: verticalScale(20),
@@ -437,37 +445,36 @@ const styles = StyleSheet.create({
   },
   modalTitle: {
     fontSize: moderateScale(22),
-    color: '#2D3748',
+    color: isDark ? '#F7FAFC' : '#2D3748',
     marginTop: verticalScale(12),
     letterSpacing: -0.3,
     fontFamily: 'Outfit-SemiBold',
   },
   modalSubtitle: {
     fontSize: moderateScale(14),
-    color: '#718096',
+    color: isDark ? '#94A3B8' : '#718096',
     marginTop: verticalScale(6),
     letterSpacing: 0.2,
     fontFamily: 'Outfit-Regular',
   },
   optionCard: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: isDark ? '#0A0A0F' : '#FFFFFF',
     borderRadius: moderateScale(16),
     padding: scale(16),
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: isDark ? '#2D2D3A' : '#E2E8F0',
     flexDirection: 'row',
     alignItems: 'center',
-    shadowColor: '#000',
+    shadowColor: isDark ? '#8B5CF6' : '#000',
     shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.04,
+    shadowOpacity: isDark ? 0.1 : 0.04,
     shadowRadius: moderateScale(4),
-    elevation: 2,
+    elevation: isDark ? 0 : 2,
   },
   optionIconWrap: {
     width: moderateScale(48),
     height: moderateScale(48),
     borderRadius: moderateScale(12),
-    backgroundColor: 'rgba(16, 44, 126, 0.08)',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -478,13 +485,13 @@ const styles = StyleSheet.create({
   optionTitle: {
     fontSize: moderateScale(16),
     fontWeight: '600',
-    color: '#2D3748',
+    color: isDark ? '#F7FAFC' : '#2D3748',
     letterSpacing: 0.2,
     fontFamily: 'Outfit-SemiBold',
   },
   optionDesc: {
     fontSize: moderateScale(12),
-    color: '#718096',
+    color: isDark ? '#94A3B8' : '#718096',
     marginTop: verticalScale(2),
     letterSpacing: 0.2,
     fontFamily: 'Outfit-Light',
@@ -494,7 +501,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   cancelText: {
-    color: '#718096',
+    color: isDark ? '#94A3B8' : '#718096',
     fontSize: moderateScale(15),
     fontWeight: '600',
     letterSpacing: 0.3,

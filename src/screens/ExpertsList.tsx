@@ -1,6 +1,6 @@
 // src/screens/ExpertsList.tsx
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TextInput, FlatList, TouchableOpacity, Image, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, TextInput, FlatList, TouchableOpacity, Image, SafeAreaView, useColorScheme } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import firestore from '@react-native-firebase/firestore';
 import { ActivityIndicator } from 'react-native';
@@ -21,10 +21,15 @@ const ExpertsList: React.FC = () => {
   const [error, setError] = useState('');
   const [search, setSearch] = useState('');
 
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
+
+  const styles = getStyles(isDark);
+
 
   useDoubleBackExit();
 
-  
+
   useEffect(() => {
     const loadExperts = async () => {
       try {
@@ -197,80 +202,190 @@ const ExpertsList: React.FC = () => {
 
 export default ExpertsList;
 
-const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: '#fff' },
-  loadingScreen: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#fff' },
+const getStyles = (isDark: boolean) => StyleSheet.create({
+  safe: { 
+    flex: 1, 
+    backgroundColor: isDark ? '#0A0A0F' : '#fff' 
+  },
+  loadingScreen: { 
+    flex: 1, 
+    justifyContent: 'center', 
+    alignItems: 'center', 
+    backgroundColor: isDark ? '#0A0A0F' : '#fff' 
+  },
   errorContainer: {
-    width: '100%',
-    height: '100%',
-    display: 'flex',
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    paddingHorizontal: 24,
   },
   errorText: {
     textAlign: 'center',
     fontSize: 18,
-    color: 'red',
+    color: isDark ? '#FC8181' : '#E53E3E',
     fontFamily: 'Outfit-Medium',
+    marginTop: 16,
   },
-  searchContainer: { padding: 16, backgroundColor: '#fff', elevation: 2 },
+  searchContainer: { 
+    padding: 16, 
+    backgroundColor: isDark ? '#0A0A0F' : '#fff',
+    borderBottomWidth: 1,
+    borderBottomColor: isDark ? '#2D2D3A' : 'transparent',
+    elevation: isDark ? 0 : 2,
+  },
   searchBox: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 12,
-    backgroundColor: '#F7FAFC',
+    backgroundColor: isDark ? '#1A1A24' : '#F7FAFC',
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: isDark ? '#2D2D3A' : '#E2E8F0',
     height: 48,
   },
-  searchInput: { marginLeft: 12, flex: 1, color: '#2D3748', fontFamily: 'Outfit-Regular' },
-
-  verifiedHeader: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 12, backgroundColor: '#F0FFF4' },
-  verifiedIcon: { backgroundColor: '#48BB78', padding: 6, borderRadius: 12, marginRight: 8 },
-  verifiedText: { flex: 1, color: '#2D3748', fontWeight: '500', fontFamily: 'Outfit-Regular' },
-
+  searchInput: { 
+    marginLeft: 12, 
+    flex: 1, 
+    color: isDark ? '#F7FAFC' : '#2D3748', 
+    fontFamily: 'Outfit-Regular',
+    fontSize: 15,
+  },
+  listContent: {
+    padding: 16,
+  },
+  verifiedHeader: { 
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    paddingHorizontal: 16, 
+    paddingVertical: 12, 
+    backgroundColor: isDark ? 'rgba(72,187,120,0.08)' : '#F0FFF4',
+    borderBottomWidth: 1,
+    borderBottomColor: isDark ? 'rgba(72,187,120,0.15)' : 'rgba(72,187,120,0.1)',
+  },
+  verifiedIcon: { 
+    backgroundColor: isDark ? '#68D391' : '#48BB78', 
+    padding: 6, 
+    borderRadius: 12, 
+    marginRight: 8 
+  },
+  verifiedText: { 
+    flex: 1, 
+    color: isDark ? '#E2E8F0' : '#2D3748', 
+    fontWeight: '500', 
+    fontFamily: 'Outfit-Regular',
+    fontSize: 13,
+  },
   noDataFound: {
-    height: '100%',
-    width: '100%',
-    display: 'flex',
+    height: 400,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 50
+    marginTop: 50,
   },
-
   noDataFoundText: {
-    fontSize: 16,
-    color: '#718096',
+    fontSize: 18,
+    color: isDark ? '#E2E8F0' : '#2D3748',
     fontFamily: 'Outfit-Medium',
+    marginTop: 16,
   },
-  
+  noDataFoundSubText: {
+    fontSize: 14,
+    color: isDark ? '#94A3B8' : '#718096',
+    fontFamily: 'Outfit-Regular',
+    marginTop: 8,
+  },
   card: {
-    marginBottom: 12,
-    backgroundColor: '#fff',
+    marginBottom: 16,
+    backgroundColor: isDark ? '#1A1A24' : '#fff',
     borderRadius: 16,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: isDark ? '#2D2D3A' : '#E2E8F0',
     overflow: 'hidden',
-    shadowColor: '#000',
-    shadowOpacity: 0.05,
+    shadowColor: isDark ? '#8B5CF6' : '#000',
+    shadowOpacity: isDark ? 0.1 : 0.05,
     shadowRadius: 10,
-    elevation: 2,
+    elevation: isDark ? 0 : 2,
   },
-  cardTop: { padding: 16 },
-  left: { flexDirection: 'row', alignItems: 'flex-start' },
-  avatarCircle: { width: 60, height: 60, borderRadius: 30, backgroundColor: 'rgba(102,126,234,0.08)', alignItems: 'center', justifyContent: 'center' },
-  name: { fontSize: 18, fontWeight: '600', color: '#2D3748', fontFamily: 'Outfit-Medium' },
-  role: { fontSize: 14, color: '#667EEA', fontWeight: '500', marginTop: 4, fontFamily: 'Outfit-Medium', },
-  license: { fontSize: 13, color: '#718096', marginTop: 8, fontFamily: 'Outfit-Regular', },
-
-  cardBottom: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 12, backgroundColor: '#F7FAFC', borderBottomLeftRadius: 16, borderBottomRightRadius: 16 },
-  statusPill: { paddingHorizontal: 12, paddingVertical: 6, borderRadius: 12, flexDirection: 'row', alignItems: 'center' },
-  statusDot: { width: 6, height: 6, borderRadius: 3 },
-  statusText: { marginLeft: 8, fontSize: 12, fontWeight: '500' },
-
-  callBtn: { marginLeft: 'auto', paddingHorizontal: 16, paddingVertical: 8, borderRadius: 12, flexDirection: 'row', alignItems: 'center' },
-  callEnabled: { backgroundColor: '#48BB78' },
-  callDisabled: { backgroundColor: '#d6d6d6ff' },
-  callBtnText: { color: '#fff', fontWeight: '600', fontFamily: 'Outfit-Medium', },
+  cardTop: { 
+    padding: 16 
+  },
+  left: { 
+    flexDirection: 'row', 
+    alignItems: 'flex-start' 
+  },
+  avatarCircle: { 
+    width: 60, 
+    height: 60, 
+    borderRadius: 30, 
+    backgroundColor: isDark ? 'rgba(139,92,246,0.12)' : 'rgba(102,126,234,0.08)', 
+    alignItems: 'center', 
+    justifyContent: 'center' 
+  },
+  name: { 
+    fontSize: 18, 
+    fontWeight: '600', 
+    color: isDark ? '#F7FAFC' : '#2D3748', 
+    fontFamily: 'Outfit-Medium' 
+  },
+  role: { 
+    fontSize: 14, 
+    color: isDark ? '#8B5CF6' : '#667EEA', 
+    fontWeight: '500', 
+    marginTop: 4, 
+    fontFamily: 'Outfit-Medium' 
+  },
+  license: { 
+    fontSize: 13, 
+    color: isDark ? '#94A3B8' : '#718096', 
+    marginTop: 8, 
+    fontFamily: 'Outfit-Regular' 
+  },
+  cardBottom: { 
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    paddingHorizontal: 16, 
+    paddingVertical: 12, 
+    backgroundColor: isDark ? '#0A0A0F' : '#F7FAFC', 
+    borderTopWidth: 1,
+    borderTopColor: isDark ? '#2D2D3A' : 'transparent',
+    borderBottomLeftRadius: 16, 
+    borderBottomRightRadius: 16 
+  },
+  statusPill: { 
+    paddingHorizontal: 12, 
+    paddingVertical: 6, 
+    borderRadius: 12, 
+    flexDirection: 'row', 
+    alignItems: 'center' 
+  },
+  statusDot: { 
+    width: 6, 
+    height: 6, 
+    borderRadius: 3 
+  },
+  statusText: { 
+    marginLeft: 8, 
+    fontSize: 12, 
+    fontWeight: '500',
+    fontFamily: 'Outfit-Medium',
+  },
+  callBtn: { 
+    marginLeft: 'auto', 
+    paddingHorizontal: 16, 
+    paddingVertical: 8, 
+    borderRadius: 12, 
+    flexDirection: 'row', 
+    alignItems: 'center' 
+  },
+  callEnabled: { 
+    backgroundColor: isDark ? '#68D391' : '#48BB78' 
+  },
+  callDisabled: { 
+    backgroundColor: isDark ? '#4A5568' : '#d6d6d6ff' 
+  },
+  callBtnText: { 
+    color: '#fff', 
+    fontWeight: '600', 
+    fontFamily: 'Outfit-Medium',
+    fontSize: 14,
+  },
 });

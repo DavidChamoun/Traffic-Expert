@@ -10,6 +10,7 @@ import {
   ToastAndroid,
   ActivityIndicator,
   Alert,
+  useColorScheme
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
@@ -57,6 +58,12 @@ const MapPage: React.FC<Props> = ({ onCenterPress }) => {
   const mapRef = useRef<MapView>(null);
   const unsubscribeRef = useRef<(() => void) | null>(null);
 
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
+
+  const styles = getStyles(isDark);
+
+
   // Initial region (Beirut, Lebanon)
   const defaultRegion = useMemo(
     () => ({
@@ -71,7 +78,7 @@ const MapPage: React.FC<Props> = ({ onCenterPress }) => {
   const [userRegion, setUserRegion] = useState(defaultRegion);
 
 
-    useDoubleBackExit();
+  useDoubleBackExit();
 
 
   const calculateDistanceKm = useCallback(
@@ -467,29 +474,46 @@ const MapPage: React.FC<Props> = ({ onCenterPress }) => {
 
 export default MapPage;
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff' },
-  mapContainer: { flex: 1 },
-  map: { flex: 1 },
-  loadingContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#F7FAFC' },
-  loadingText: { marginTop: 12, color: '#718096', fontSize: 16, fontFamily: 'Outfit-Medium' },
+const getStyles = (isDark: boolean) => StyleSheet.create({
+  container: { 
+    flex: 1, 
+    backgroundColor: isDark ? '#0A0A0F' : '#fff' 
+  },
+  mapContainer: { 
+    flex: 1 
+  },
+  map: { 
+    flex: 1 
+  },
+  loadingContainer: { 
+    flex: 1, 
+    justifyContent: 'center', 
+    alignItems: 'center', 
+    backgroundColor: isDark ? '#0A0A0F' : '#F7FAFC' 
+  },
+  loadingText: { 
+    marginTop: 12, 
+    color: isDark ? '#94A3B8' : '#718096', 
+    fontSize: 16, 
+    fontFamily: 'Outfit-Medium' 
+  },
   errorContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F7FAFC',
+    backgroundColor: isDark ? '#0A0A0F' : '#F7FAFC',
     paddingHorizontal: 24,
   },
   errorTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#2D3748',
+    color: isDark ? '#F7FAFC' : '#2D3748',
     marginTop: 16,
     fontFamily: 'Outfit-Bold',
   },
   errorMessage: {
     fontSize: 14,
-    color: '#718096',
+    color: isDark ? '#94A3B8' : '#718096',
     marginTop: 8,
     textAlign: 'center',
     fontFamily: 'Outfit-Medium',
@@ -498,7 +522,7 @@ const styles = StyleSheet.create({
     marginTop: 24,
     paddingHorizontal: 24,
     paddingVertical: 12,
-    backgroundColor: '#102C7E',
+    backgroundColor: isDark ? '#8B5CF6' : '#102C7E',
     borderRadius: 8,
   },
   retryBtnText: {
@@ -516,13 +540,15 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 12,
-    backgroundColor: '#fff',
+    backgroundColor: isDark ? '#1A1A24' : '#fff',
     alignItems: 'center',
     justifyContent: 'center',
-    elevation: 4,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
+    elevation: isDark ? 0 : 4,
+    shadowColor: isDark ? '#8B5CF6' : '#000',
+    shadowOpacity: isDark ? 0.15 : 0.1,
     shadowRadius: 4,
+    borderWidth: isDark ? 1 : 0,
+    borderColor: isDark ? '#2D2D3A' : 'transparent',
   },
   callBtnContainer: {
     position: 'absolute',
@@ -531,26 +557,27 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   callBtn: {
-    width: 56,
-    height: 56,
-    backgroundColor: '#48BB78',
-    borderRadius: 16,
+    width: 60,
+    height: 60,
+    backgroundColor: isDark ? '#68D391' : '#48BB78',
+    borderRadius: 20,
     alignItems: 'center',
     justifyContent: 'center',
-    elevation: 6,
-    shadowColor: '#48BB78',
-    shadowOpacity: 0.3,
+    elevation: isDark ? 0 : 6,
+    shadowColor: isDark ? '#68D391' : '#48BB78',
+    shadowOpacity: isDark ? 0.25 : 0.3,
     shadowRadius: 8,
+    borderWidth: isDark ? 0 : 0,
   },
   callBtnDisabled: {
-    backgroundColor: '#A0AEC0',
+    backgroundColor: isDark ? '#4A5568' : '#A0AEC0',
     opacity: 0.6,
   },
   badgeContainer: {
     position: 'absolute',
     top: -8,
     right: -8,
-    backgroundColor: '#E53E3E',
+    backgroundColor: '#EF4444',
     borderRadius: 12,
     minWidth: 24,
     height: 24,
@@ -574,27 +601,31 @@ const styles = StyleSheet.create({
     marginTop: 12,
     fontSize: 16,
     fontWeight: '600',
-    color: '#2D3748',
+    color: isDark ? '#F7FAFC' : '#2D3748',
     textAlign: 'center',
+    fontFamily: 'Outfit-Medium',
   },
   noExpertsSubtext: {
     marginTop: 4,
     fontSize: 14,
-    color: '#718096',
+    color: isDark ? '#94A3B8' : '#718096',
     textAlign: 'center',
+    fontFamily: 'Outfit-Regular',
   },
   modalOverlay: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: isDark ? 'rgba(0, 0, 0, 0.7)' : 'rgba(0, 0, 0, 0.5)',
   },
   dialog: {
     width: '85%',
-    backgroundColor: '#fff',
-    borderRadius: 16,
-    padding: 20,
-    elevation: 8,
+    backgroundColor: isDark ? '#1A1A24' : '#fff',
+    borderRadius: 20,
+    padding: 24,
+    elevation: isDark ? 0 : 8,
+    borderWidth: isDark ? 1 : 0,
+    borderColor: isDark ? '#2D2D3A' : 'transparent',
   },
   dialogHeader: {
     flexDirection: 'row',
@@ -602,30 +633,29 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   avatar: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    backgroundColor: 'rgba(16, 44, 126, 0.1)',
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: isDark ? 'rgba(139,92,246,0.15)' : 'rgba(16, 44, 126, 0.1)',
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: 12,
   },
   dialogTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#2D3748',
+    color: isDark ? '#F7FAFC' : '#2D3748',
     fontFamily: 'Outfit-Medium',
   },
   dialogSubtitle: {
     fontSize: 13,
-    color: '#48BB78',
+    color: isDark ? '#68D391' : '#48BB78',
     marginTop: 4,
     fontWeight: '500',
     fontFamily: 'Outfit-Regular',
   },
   dialogText: {
     fontSize: 14,
-    color: '#718096',
+    color: isDark ? '#94A3B8' : '#718096',
     lineHeight: 20,
     marginBottom: 20,
     fontFamily: 'Outfit-Regular',
@@ -633,24 +663,24 @@ const styles = StyleSheet.create({
   actions: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
-    gap: 8,
+    gap: 12,
   },
   cancelBtn: {
     paddingHorizontal: 16,
     paddingVertical: 10,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: isDark ? '#2D2D3A' : '#E2E8F0',
   },
   cancelBtnText: {
-    color: '#718096',
+    color: isDark ? '#94A3B8' : '#718096',
     fontWeight: '600',
     fontFamily: 'Outfit-Medium',
   },
   confirmBtn: {
     paddingHorizontal: 16,
     paddingVertical: 10,
-    backgroundColor: '#48BB78',
+    backgroundColor: isDark ? '#68D391' : '#48BB78',
     borderRadius: 8,
     flexDirection: 'row',
     alignItems: 'center',

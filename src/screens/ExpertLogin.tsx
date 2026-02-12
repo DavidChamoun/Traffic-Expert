@@ -11,6 +11,7 @@ import {
   Alert,
   ScrollView,
   ToastAndroid,
+  useColorScheme,
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import firestore from '@react-native-firebase/firestore';
@@ -28,6 +29,11 @@ const ExpertLogin: React.FC<any> = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [obscure, setObscure] = useState(true);
   const [error, setError] = useState<string>('');
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
+
+  const styles = getStyles(isDark);
+
 
 
   useEffect(() => {
@@ -179,7 +185,7 @@ const ExpertLogin: React.FC<any> = ({ navigation }) => {
           {/* Form */}
           <View style={styles.formCard}>
             <View style={styles.inputWrap}>
-              <MaterialIcons name="badge" size={20} color="#102C7E" />
+              <MaterialIcons name="badge" size={20} color={isDark ? '#F1F5F9' : '#102C7E'} />
               <TextInput
                 placeholder="License Number"
                 placeholderTextColor="#718096"
@@ -196,7 +202,7 @@ const ExpertLogin: React.FC<any> = ({ navigation }) => {
             <View style={{ height: 12 }} />
 
             <View style={styles.inputWrap}>
-              <MaterialIcons name="lock" size={20} color="#102C7E" />
+              <MaterialIcons name="lock" size={20} color={isDark ? '#F1F5F9' : '#102C7E'} />
               <TextInput
                 placeholder="Password"
                 placeholderTextColor="#718096"
@@ -252,27 +258,120 @@ const ExpertLogin: React.FC<any> = ({ navigation }) => {
 
 export default ExpertLogin;
 
-const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: '#fff' },
-  container: { flex: 1, padding: 24, marginBottom: 60 },
-  back: { padding: 12 },
-  content: { flex: 1, justifyContent: 'center' },
-  title: { fontSize: 32, textAlign: 'center', color: '#2D3748', fontFamily: 'Outfit-SemiBold' },
-  subtitle: { marginTop: 8, textAlign: 'center', fontFamily: 'Outfit-Medium', color: '#718096', fontSize: 16 },
+const getStyles = (isDark: boolean) => StyleSheet.create({
+  safe: { 
+    flex: 1, 
+    backgroundColor: isDark ? '#0A0A0F' : '#fff' 
+  },
+  container: { 
+    flex: 1, 
+    padding: 24, 
+    marginBottom: 60,
+    backgroundColor: isDark ? '#0A0A0F' : '#fff',
+  },
+  back: { 
+    padding: 12 
+  },
+  content: { 
+    flex: 1, 
+    justifyContent: 'center' 
+  },
+  title: { 
+    fontSize: 32, 
+    textAlign: 'center', 
+    color: isDark ? '#F7FAFC' : '#2D3748', 
+    fontFamily: 'Outfit-SemiBold' 
+  },
+  subtitle: { 
+    marginTop: 8, 
+    textAlign: 'center', 
+    fontFamily: 'Outfit-Medium', 
+    color: isDark ? '#94A3B8' : '#718096', 
+    fontSize: 16 
+  },
 
-  badge: { marginTop: 16, alignSelf: 'center', paddingHorizontal: 16, paddingVertical: 8, borderRadius: 20, backgroundColor: '#F0FFF4', borderWidth: 1, borderColor: '#48BB78', flexDirection: 'row', alignItems: 'center' },
-  badgeText: { color: '#48BB78', marginLeft: 8, fontFamily: 'Outfit-Regular' },
+  badge: { 
+    marginTop: 16, 
+    alignSelf: 'center', 
+    paddingHorizontal: 16, 
+    paddingVertical: 8, 
+    borderRadius: 20, 
+    backgroundColor: isDark ? 'rgba(72,187,120,0.15)' : '#F0FFF4', 
+    borderWidth: 1, 
+    borderColor: isDark ? 'rgba(72,187,120,0.3)' : '#48BB78', 
+    flexDirection: 'row', 
+    alignItems: 'center' 
+  },
+  badgeText: { 
+    color: isDark ? '#68D391' : '#48BB78', 
+    marginLeft: 8, 
+    fontFamily: 'Outfit-Regular' 
+  },
 
-  formCard: { marginTop: 18 },
-  inputWrap: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#fff', borderRadius: 12, borderWidth: 1, borderColor: '#E2E8F0', paddingHorizontal: 12, paddingVertical: 8, shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 6, elevation: 2 },
-  input: { marginLeft: 12, flex: 1, color: '#2D3748', fontFamily: 'Outfit-Regular' },
-  errorContainer: { marginTop: 12, alignItems: 'center' },
-  errorText: { color: '#EF4444', fontSize: 14, fontFamily: 'Outfit-Regular' },
+  formCard: { 
+    marginTop: 18 
+  },
+  inputWrap: { 
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    backgroundColor: isDark ? '#1A1A24' : '#fff', 
+    borderRadius: 12, 
+    borderWidth: 1, 
+    borderColor: isDark ? '#2D2D3A' : '#E2E8F0', 
+    paddingHorizontal: 12, 
+    paddingVertical: 8, 
+    shadowColor: isDark ? '#8B5CF6' : '#000', 
+    shadowOpacity: isDark ? 0.1 : 0.05, 
+    shadowRadius: 6, 
+    elevation: isDark ? 0 : 2,
+  },
+  input: { 
+    marginLeft: 12, 
+    flex: 1, 
+    color: isDark ? '#F7FAFC' : '#2D3748', 
+    fontFamily: 'Outfit-Regular' 
+  },
+  errorContainer: { 
+    marginTop: 12, 
+    alignItems: 'center' 
+  },
+  errorText: { 
+    color: '#EF4444', 
+    fontSize: 14, 
+    fontFamily: 'Outfit-Regular' 
+  },
 
-  signInBtn: { height: 56, borderRadius: 16, backgroundColor: '#102C7E', alignItems: 'center', justifyContent: 'center', elevation: 6 },
-  signInText: { color: '#fff', fontSize: 18, fontWeight: '600', fontFamily: 'Outfit-Medium' },
+  signInBtn: { 
+    height: 56, 
+    borderRadius: 16, 
+    backgroundColor: isDark ? '#102C7E' : '#102C7E', 
+    alignItems: 'center', 
+    justifyContent: 'center', 
+    elevation: isDark ? 0 : 6,
+    shadowColor: isDark ? '#102C7E' : '#102C7E',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: isDark ? 0.25 : 0.15,
+    shadowRadius: 8,
+  },
+  signInText: { 
+    color: '#fff', 
+    fontSize: 18, 
+    fontWeight: '600', 
+    fontFamily: 'Outfit-Medium' 
+  },
 
-  forgot: { textAlign: 'center', color: '#102C7E', fontWeight: '500', fontFamily: 'Outfit-Medium' },
+  forgot: { 
+    textAlign: 'center', 
+    color: isDark ? '#102C7E' : '#102C7E', 
+    fontWeight: '500', 
+    fontFamily: 'Outfit-Medium' 
+  },
 
-  registerRow: { flexDirection: 'row', justifyContent: 'center', marginTop: 8, alignItems: 'center' },
+  registerRow: { 
+    flexDirection: 'row', 
+    justifyContent: 'center', 
+    marginTop: 8, 
+    alignItems: 'center' 
+  },
 });
+

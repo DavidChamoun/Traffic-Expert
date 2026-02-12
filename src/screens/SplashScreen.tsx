@@ -5,6 +5,7 @@ import {
   Animated,
   Image,
   StyleSheet,
+  useColorScheme,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { checkAndPrepareLocation, requestNotificationPermission } from '../utils/permissions';
@@ -12,6 +13,11 @@ import { checkAndPrepareLocation, requestNotificationPermission } from '../utils
 const SplashScreen: React.FC = () => {
   const navigation = useNavigation<any>();
   const fadeAnim = useRef(new Animated.Value(0)).current;
+
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
+
+  const styles = getStyles(isDark);
 
   useEffect(() => {
     Animated.timing(fadeAnim, {
@@ -42,10 +48,10 @@ const SplashScreen: React.FC = () => {
 
 export default SplashScreen;
 
-const styles = StyleSheet.create({
+const getStyles = (isDark: boolean) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: isDark ? '#181818' : '#fff',
     alignItems: 'center',
     justifyContent: 'center',
   },

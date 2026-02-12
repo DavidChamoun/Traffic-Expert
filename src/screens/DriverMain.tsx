@@ -10,6 +10,7 @@ import {
   Alert,
   Dimensions,
   Platform,
+  useColorScheme
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { getExpertSession } from '../session/session';
@@ -40,6 +41,12 @@ const TABS = [
 const DriverMain: React.FC<any> = ({ navigation }) => {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [session, setSession] = useState<{ expertId: string } | null>(null);
+
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
+
+  const styles = getStyles(isDark);
+
 
 
 
@@ -125,7 +132,7 @@ const DriverMain: React.FC<any> = ({ navigation }) => {
 
         {currentIndex === 0 && (
           <View style={styles.appBarIcon}>
-            <MaterialIcons name="arrow-back" size={moderateScale(22)} color="#2D3748" style={{opacity: 0}} />
+            <MaterialIcons name="arrow-back" size={moderateScale(22)} color="#2D3748" style={{ opacity: 0 }} />
           </View>
         )}
 
@@ -176,10 +183,10 @@ const DriverMain: React.FC<any> = ({ navigation }) => {
 
 export default DriverMain;
 
-const styles = StyleSheet.create({
+const getStyles = (isDark: boolean) => StyleSheet.create({
   safe: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: isDark ? '#0A0A0F' : '#fff',
   },
   appBar: {
     marginTop: Platform.OS === 'ios' ? verticalScale(10) : verticalScale(20),
@@ -187,9 +194,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#EEE',
+    borderBottomColor: isDark ? '#2D2D3A' : '#EEE',
     paddingHorizontal: scale(12),
-    backgroundColor: '#fff',
+    backgroundColor: isDark ? '#0A0A0F' : '#fff',
   },
   appBarIcon: {
     padding: moderateScale(6),
@@ -199,7 +206,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: moderateScale(18),
     fontFamily: 'Outfit-SemiBold',
-    color: '#2D3748',
+    color: isDark ? '#F7FAFC' : '#2D3748',
   },
   rightActions: {
     width: scale(40),
@@ -208,27 +215,27 @@ const styles = StyleSheet.create({
   iconCircle: {
     padding: moderateScale(8),
     borderRadius: moderateScale(20),
-    // display: 'none',
-    // backgroundColor: 'rgba(16,44,126,0.06)',
+    backgroundColor: isDark ? 'rgba(139,92,246,0.1)' : 'rgba(16,44,126,0.06)',
   },
   content: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: isDark ? '#0A0A0F' : '#FFFFFF',
   },
   bottomBar: {
     height: verticalScale(80),
-    borderTopWidth: 0,
-    backgroundColor: '#fff',
+    borderTopWidth: 1,
+    borderTopColor: isDark ? '#2D2D3A' : 'rgba(0,0,0,0)',
+    backgroundColor: isDark ? '#0A0A0F' : '#fff',
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
     paddingVertical: verticalScale(12),
     paddingBottom: Platform.OS === 'ios' ? verticalScale(15) : verticalScale(20),
-    shadowColor: '#000',
+    shadowColor: isDark ? '#8B5CF6' : '#000',
     shadowOffset: { width: 0, height: -2 },
-    shadowOpacity: 0.07,
+    shadowOpacity: isDark ? 0.1 : 0.07,
     shadowRadius: moderateScale(8),
-    elevation: 8,
+    elevation: isDark ? 0 : 8,
   },
   tabItem: {
     alignItems: 'center',

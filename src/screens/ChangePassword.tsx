@@ -13,13 +13,12 @@ import {
     KeyboardAvoidingView,
     Platform,
     ActivityIndicator,
+    useColorScheme,
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { getExpertSession } from '../session/session.tsx';
 import firestore from '@react-native-firebase/firestore';
 import { ToastAndroid } from 'react-native';
-
-
 
 const { width, height } = Dimensions.get('window');
 
@@ -45,6 +44,17 @@ interface PasswordInputProps {
     showPassword: boolean;
     onToggleVisibility: () => void;
     placeholder: string;
+    isDark: boolean;
+}
+
+interface PasswordRequirementProps {
+    text: string;
+    met: boolean;
+    isDark: boolean;
+}
+
+interface ExpertProfileData {
+    password: string;
 }
 
 // Extracted PasswordInput as a separate memoized component
@@ -55,56 +65,60 @@ const PasswordInput = React.memo(({
     showPassword,
     onToggleVisibility,
     placeholder,
-}: PasswordInputProps) => (
-    <View style={styles.inputContainer}>
-        <Text style={styles.inputLabel}>{label}</Text>
-        <View style={styles.passwordInputWrapper}>
-            <TextInput
-                style={styles.passwordInput}
-                value={value}
-                onChangeText={onChangeText}
-                secureTextEntry={!showPassword}
-                placeholder={placeholder}
-                placeholderTextColor="#A0AEC0"
-                autoCapitalize="none"
-                autoCorrect={false}
-                returnKeyType="next"
-            />
-            <TouchableOpacity
-                style={styles.eyeButton}
-                onPress={onToggleVisibility}
-                hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-            >
-                <MaterialIcons
-                    name={showPassword ? 'visibility-off' : 'visibility'}
-                    size={responsiveSize(22)}
-                    color="#718096"
+    isDark,
+}: PasswordInputProps) => {
+    const styles = getStyles(isDark);
+    
+    return (
+        <View style={styles.inputContainer}>
+            <Text style={styles.inputLabel}>{label}</Text>
+            <View style={styles.passwordInputWrapper}>
+                <TextInput
+                    style={styles.passwordInput}
+                    value={value}
+                    onChangeText={onChangeText}
+                    secureTextEntry={!showPassword}
+                    placeholder={placeholder}
+                    placeholderTextColor={isDark ? '#4A5568' : '#A0AEC0'}
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                    returnKeyType="next"
                 />
-            </TouchableOpacity>
+                <TouchableOpacity
+                    style={styles.eyeButton}
+                    onPress={onToggleVisibility}
+                    hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                >
+                    <MaterialIcons
+                        name={showPassword ? 'visibility-off' : 'visibility'}
+                        size={responsiveSize(22)}
+                        color={isDark ? '#94A3B8' : '#718096'}
+                    />
+                </TouchableOpacity>
+            </View>
         </View>
-    </View>
-));
-
-interface PasswordRequirementProps {
-    text: string;
-    met: boolean;
-}
-
-interface ExpertProfileData {
-    password: string;
-}``
+    );
+});
 
 // Extracted PasswordRequirement as a separate memoized component
-const PasswordRequirement = React.memo(({ text, met }: PasswordRequirementProps) => (
-    <View style={styles.requirementRow}>
-        <View style={[styles.requirementDot, met && styles.requirementDotMet]} />
-        <Text style={[styles.requirementText, met && styles.requirementTextMet]}>
-            {text}
-        </Text>
-    </View>
-));
+const PasswordRequirement = React.memo(({ text, met, isDark }: PasswordRequirementProps) => {
+    const styles = getStyles(isDark);
+    
+    return (
+        <View style={styles.requirementRow}>
+            <View style={[styles.requirementDot, met && styles.requirementDotMet]} />
+            <Text style={[styles.requirementText, met && styles.requirementTextMet]}>
+                {text}
+            </Text>
+        </View>
+    );
+});
 
 const ChangePassword: React.FC<ChangePasswordProps> = ({ navigation }) => {
+    const colorScheme = useColorScheme();
+    const isDark = colorScheme === 'dark';
+    const styles = getStyles(isDark);
+    
     const [currentPassword, setCurrentPassword] = useState<string>('');
     const [newPassword, setNewPassword] = useState<string>('');
     const [confirmPassword, setConfirmPassword] = useState<string>('');
@@ -116,18 +130,14 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({ navigation }) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string>('');
 
-
-
     useEffect(() => {
         const loadExpert = async () => {
             try {
                 setLoading(true);
 
-                // 1️⃣ Get session
                 const session = await getExpertSession();
                 if (!session) return;
 
-                // 2️⃣ Fetch expert document
                 const expertSnap = await firestore()
                     .collection('experts')
                     .doc(session.expertId)
@@ -137,7 +147,6 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({ navigation }) => {
 
                 const expertData = expertSnap.data();
 
-                // 3️⃣ Resolve verifiedRef
                 const verifiedRef = expertData?.verifiedRef;
                 if (!verifiedRef) return;
 
@@ -146,11 +155,9 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({ navigation }) => {
 
                 const verifiedData = verifiedSnap.data();
 
-                // 4️⃣ Map to UI
                 setExpertInfo({
                     password: expertData.password,
                 });
-
 
             } catch (e) {
                 console.error('Failed to load expert profile:', e);
@@ -227,7 +234,7 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({ navigation }) => {
         }
     };
 
-    // Memoize event handlers to prevent unnecessary re-renders
+    // Memoize event handlers
     const toggleCurrentPassword = useCallback(() => {
         setShowCurrentPassword(prev => !prev);
     }, []);
@@ -272,6 +279,14 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({ navigation }) => {
 
     const isUpdateDisabled = !currentPassword || !newPassword || !confirmPassword || isLoading;
 
+    if (loading) {
+        return (
+            <SafeAreaView style={[styles.safeArea, styles.loadingScreen]}>
+                <ActivityIndicator size="large" color={isDark ? '#102C7E' : '#102C7E'} />
+            </SafeAreaView>
+        );
+    }
+
     return (
         <SafeAreaView style={styles.safeArea}>
             <KeyboardAvoidingView
@@ -293,7 +308,7 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({ navigation }) => {
                             <MaterialIcons
                                 name="arrow-back"
                                 size={responsiveSize(24)}
-                                color="#2D3748"
+                                color={isDark ? '#E2E8F0' : '#2D3748'}
                             />
                         </TouchableOpacity>
                         <Text style={styles.headerTitle}>Change Password</Text>
@@ -308,6 +323,7 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({ navigation }) => {
                         showPassword={showCurrentPassword}
                         onToggleVisibility={toggleCurrentPassword}
                         placeholder="Enter current password"
+                        isDark={isDark}
                     />
 
                     {/* New Password */}
@@ -318,6 +334,7 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({ navigation }) => {
                         showPassword={showNewPassword}
                         onToggleVisibility={toggleNewPassword}
                         placeholder="Enter new password"
+                        isDark={isDark}
                     />
 
                     {/* Confirm New Password */}
@@ -328,15 +345,17 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({ navigation }) => {
                         showPassword={showConfirmPassword}
                         onToggleVisibility={toggleConfirmPassword}
                         placeholder="Confirm new password"
+                        isDark={isDark}
                     />
 
-                    <TouchableOpacity style={{ marginBottom: 10 }} onPress={() => {
-                        // mark isExpert and navigate (mimic Flutter behavior)
-                        navigation.replace('ForgotPasswordStep1', {
-                            isChangePassword: true,
-                        });
-
-                    }}>
+                    <TouchableOpacity 
+                        style={{ marginBottom: 10 }} 
+                        onPress={() => {
+                            navigation.replace('ForgotPasswordStep1', {
+                                isChangePassword: true,
+                            });
+                        }}
+                    >
                         <Text style={styles.forgot}>Forgot Password?</Text>
                     </TouchableOpacity>
 
@@ -347,21 +366,25 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({ navigation }) => {
                         <PasswordRequirement
                             text="Current password match"
                             met={requirementsMet.currentMatch}
+                            isDark={isDark}
                         />
 
                         <PasswordRequirement
                             text="At least 6 characters"
                             met={requirementsMet.length}
+                            isDark={isDark}
                         />
 
                         <PasswordRequirement
                             text="Passwords match"
                             met={requirementsMet.match}
+                            isDark={isDark}
                         />
 
                         <PasswordRequirement
                             text="Different from current password"
                             met={requirementsMet.different}
+                            isDark={isDark}
                         />
                     </View>
 
@@ -389,7 +412,7 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({ navigation }) => {
                                     size={responsiveSize(20)}
                                     color="#fff"
                                 />
-                                {isLoading ? <ActivityIndicator color="#fff" /> : <Text style={styles.updateButtonText}>Update Password</Text>}
+                                <Text style={styles.updateButtonText}>Update Password</Text>
                             </View>
                         )}
                     </TouchableOpacity>
@@ -410,10 +433,16 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({ navigation }) => {
 
 export default ChangePassword;
 
-const styles = StyleSheet.create({
+const getStyles = (isDark: boolean) => StyleSheet.create({
     safeArea: {
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: isDark ? '#0A0A0F' : '#fff',
+    },
+    loadingScreen: { 
+        flex: 1, 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        backgroundColor: isDark ? '#0A0A0F' : '#fff' 
     },
     container: {
         flex: 1,
@@ -422,6 +451,7 @@ const styles = StyleSheet.create({
         flexGrow: 1,
         paddingHorizontal: responsiveSize(24),
         paddingBottom: responsiveVertical(30),
+        backgroundColor: isDark ? '#0A0A0F' : '#fff',
     },
     header: {
         flexDirection: 'row',
@@ -435,7 +465,7 @@ const styles = StyleSheet.create({
     },
     headerTitle: {
         fontSize: responsiveSize(20),
-        color: '#2D3748',
+        color: isDark ? '#F7FAFC' : '#2D3748',
         textAlign: 'center',
         fontFamily: 'Outfit-SemiBold',
     },
@@ -448,7 +478,7 @@ const styles = StyleSheet.create({
     inputLabel: {
         fontSize: responsiveSize(14),
         fontWeight: '600',
-        color: '#4A5568',
+        color: isDark ? '#E2E8F0' : '#4A5568',
         fontFamily: 'Outfit-Medium',
         marginBottom: responsiveVertical(8),
     },
@@ -456,9 +486,9 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         borderWidth: 1.5,
-        borderColor: '#E2E8F0',
+        borderColor: isDark ? '#2D2D3A' : '#E2E8F0',
         borderRadius: responsiveSize(12),
-        backgroundColor: '#fff',
+        backgroundColor: isDark ? '#1A1A24' : '#fff',
         overflow: 'hidden',
     },
     passwordInput: {
@@ -466,7 +496,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: responsiveSize(16),
         paddingVertical: responsiveVertical(16),
         fontSize: responsiveSize(14),
-        color: '#2D3748',
+        color: isDark ? '#F7FAFC' : '#2D3748',
         includeFontPadding: false,
         fontFamily: 'Outfit-Regular'
     },
@@ -474,21 +504,26 @@ const styles = StyleSheet.create({
         paddingHorizontal: responsiveSize(16),
         paddingVertical: responsiveVertical(16),
     },
-    forgot: { textAlign: 'right', color: '#102C7E', fontWeight: '500', fontFamily: 'Outfit-Medium' },
+    forgot: { 
+        textAlign: 'right', 
+        color: isDark ? '#102C7E' : '#102C7E', 
+        fontWeight: '500', 
+        fontFamily: 'Outfit-Medium' 
+    },
 
     requirementsContainer: {
         marginTop: responsiveVertical(8),
         marginBottom: responsiveVertical(14),
         padding: responsiveSize(16),
         borderRadius: responsiveSize(12),
-        backgroundColor: '#F7FAFC',
+        backgroundColor: isDark ? '#1A1A24' : '#F7FAFC',
         borderWidth: 1,
-        borderColor: '#E2E8F0',
+        borderColor: isDark ? '#2D2D3A' : '#E2E8F0',
     },
     requirementsTitle: {
         fontSize: responsiveSize(14),
         fontWeight: '600',
-        color: '#4A5568',
+        color: isDark ? '#F7FAFC' : '#4A5568',
         fontFamily: 'Outfit-Medium',
         marginBottom: responsiveVertical(12),
     },
@@ -501,43 +536,51 @@ const styles = StyleSheet.create({
         width: responsiveSize(8),
         height: responsiveSize(8),
         borderRadius: responsiveSize(4),
-        backgroundColor: '#E2E8F0',
+        backgroundColor: isDark ? '#4A5568' : '#E2E8F0',
         marginRight: responsiveSize(12),
     },
     requirementDotMet: {
-        backgroundColor: '#48BB78',
+        backgroundColor: isDark ? '#68D391' : '#48BB78',
     },
     requirementText: {
         fontSize: responsiveSize(12),
-        color: '#A0AEC0',
+        color: isDark ? '#94A3B8' : '#A0AEC0',
         fontFamily: 'Outfit-Regular'
     },
     requirementTextMet: {
-        color: '#48BB78',
+        color: isDark ? '#68D391' : '#48BB78',
         fontWeight: '500',
         fontFamily: 'Outfit-Regular'
     },
-    errorContainer: { marginBottom: responsiveVertical(14), alignItems: 'center', flex: 1 },
-    errorText: { color: 'red', fontSize: 14, fontFamily: 'Outfit-Regular' },
+    errorContainer: { 
+        marginBottom: responsiveVertical(14), 
+        alignItems: 'center', 
+        flex: 1 
+    },
+    errorText: { 
+        color: isDark ? '#FC8181' : 'red', 
+        fontSize: 14, 
+        fontFamily: 'Outfit-Regular' 
+    },
     updateButton: {
-        backgroundColor: '#102C7E',
+        backgroundColor: isDark ? '#102C7E' : '#102C7E',
         height: responsiveVertical(56),
         borderRadius: responsiveSize(12),
         justifyContent: 'center',
         alignItems: 'center',
         marginBottom: responsiveVertical(16),
-        shadowColor: '#102C7E',
+        shadowColor: isDark ? '#102C7E' : '#102C7E',
         shadowOffset: {
             width: 0,
             height: 4,
         },
-        shadowOpacity: 0.15,
+        shadowOpacity: isDark ? 0.25 : 0.15,
         shadowRadius: 8,
-        elevation: 4,
+        elevation: isDark ? 0 : 4,
     },
     updateButtonDisabled: {
         opacity: 0.5,
-        backgroundColor: '#102C7E',
+        backgroundColor: isDark ? '#102C7E' : '#102C7E',
     },
     updateButtonContent: {
         flexDirection: 'row',
@@ -555,7 +598,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     cancelButtonText: {
-        color: '#718096',
+        color: isDark ? '#94A3B8' : '#718096',
         fontSize: responsiveSize(16),
         fontWeight: '500',
         fontFamily: 'Outfit-Medium',

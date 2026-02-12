@@ -13,6 +13,7 @@ import {
   ScrollView,
   Dimensions,
   ToastAndroid,
+  useColorScheme
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import auth, { firebase, FirebaseAuthTypes } from '@react-native-firebase/auth';
@@ -55,6 +56,11 @@ const OTPAuthScreen: React.FC<OTPAuthScreenProps> = ({ route, navigation }) => {
   const TEST_PHONE = '+96176132529';
   const IS_TEST_MODE = true;
   const TEST_OTP = '123456';
+
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
+
+  const styles = getStyles(isDark);
 
 
 
@@ -238,7 +244,7 @@ const OTPAuthScreen: React.FC<OTPAuthScreenProps> = ({ route, navigation }) => {
           //   setIsLoading(false);
           // }
 
-            
+
 
           // Navigate after brief delay
           navigation.reset({
@@ -457,10 +463,10 @@ const OTPAuthScreen: React.FC<OTPAuthScreenProps> = ({ route, navigation }) => {
 
 export default OTPAuthScreen;
 
-const styles = StyleSheet.create({
+const getStyles = (isDark: boolean) => StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: isDark ? '#0A0A0F' : '#fff',
   },
   container: {
     flex: 1,
@@ -485,21 +491,21 @@ const styles = StyleSheet.create({
     width: responsiveSize(80),
     height: responsiveSize(80),
     borderRadius: responsiveSize(40),
-    backgroundColor: 'rgba(16,44,126,0.08)',
+    backgroundColor: isDark ? 'rgba(139,92,246,0.15)' : 'rgba(16,44,126,0.08)',
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: responsiveVertical(20),
   },
   title: {
     fontSize: responsiveSize(28),
-    color: '#2D3748',
+    color: isDark ? '#F7FAFC' : '#2D3748',
     marginBottom: responsiveVertical(8),
     textAlign: 'center',
     fontFamily: 'Outfit-SemiBold'
   },
   subtitle: {
     fontSize: responsiveSize(16),
-    color: '#718096',
+    color: isDark ? '#94A3B8' : '#718096',
     textAlign: 'center',
     marginBottom: responsiveVertical(4),
     fontFamily: 'Outfit-Medium'
@@ -507,7 +513,7 @@ const styles = StyleSheet.create({
   phoneNumber: {
     fontSize: responsiveSize(18),
     fontWeight: '600',
-    color: '#102C7E',
+    color: isDark ? '#102C7E' : '#102C7E',
     fontFamily: 'Outfit-Medium',
     textAlign: 'center',
   },
@@ -517,7 +523,7 @@ const styles = StyleSheet.create({
   otpLabel: {
     fontSize: responsiveSize(14),
     fontWeight: '600',
-    color: '#4A5568',
+    color: isDark ? '#E2E8F0' : '#4A5568',
     marginBottom: responsiveVertical(16),
     textAlign: 'center',
     fontFamily: 'Outfit-Medium'
@@ -532,23 +538,23 @@ const styles = StyleSheet.create({
     height: responsiveSize(60),
     fontFamily: 'Outfit-Medium',
     borderWidth: 1.5,
-    borderColor: '#E2E8F0',
+    borderColor: isDark ? '#2D2D3A' : '#E2E8F0',
     borderRadius: responsiveSize(12),
     fontSize: responsiveSize(24),
     fontWeight: '600',
-    color: '#2D3748',
+    color: isDark ? '#F7FAFC' : '#2D3748',
     textAlign: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: isDark ? '#1A1A24' : '#fff',
   },
   otpInputFilled: {
-    borderColor: '#102C7E',
-    backgroundColor: 'rgba(16,44,126,0.02)',
+    borderColor: isDark ? '#102C7E' : '#102C7E',
+    backgroundColor: isDark ? 'rgba(139,92,246,0.05)' : 'rgba(16,44,126,0.02)',
   },
   otpInputError: {
-    borderColor: '#E53E3E',
+    borderColor: '#EF4444',
   },
   errorText: {
-    color: '#E53E3E',
+    color: '#EF4444',
     fontSize: responsiveSize(14),
     textAlign: 'center',
     marginTop: responsiveVertical(12),
@@ -560,35 +566,36 @@ const styles = StyleSheet.create({
   },
   timerText: {
     fontSize: responsiveSize(14),
-    color: '#718096',
+    color: isDark ? '#94A3B8' : '#718096',
     fontFamily: 'Outfit-Medium',
     textAlign: 'center',
   },
   timerHighlight: {
-    color: '#102C7E',
+    // color: isDark ? '#8B5CF6' : '#102C7E',
+    color: isDark ? '#102C7E' : '#102C7E',
     fontWeight: '600',
     fontFamily: 'Outfit-SemiBold'
   },
   resendReady: {
-    color: '#38A169',
+    color: isDark ? '#68D391' : '#38A169',
     fontWeight: '600',
   },
   verifyButton: {
-    backgroundColor: '#102C7E',
+    backgroundColor: isDark ? '#102C7E' : '#102C7E',
     height: responsiveVertical(56),
     borderRadius: responsiveSize(16),
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: responsiveVertical(20),
-    shadowColor: '#102C7E',
+    shadowColor: isDark ? '#102C7E' : '#102C7E',
     shadowOffset: {
       width: 0,
       height: 4,
     },
-    shadowOpacity: 0.15,
+    shadowOpacity: isDark ? 0.25 : 0.15,
     shadowRadius: 8,
-    elevation: 4,
+    elevation: isDark ? 0 : 4,
   },
   verifyButtonDisabled: {
     opacity: 0.7,
@@ -620,24 +627,24 @@ const styles = StyleSheet.create({
   resendButtonText: {
     fontSize: responsiveSize(16),
     fontWeight: '600',
-    color: '#102C7E',
+    color: isDark ? '#102C7E' : '#102C7E',
     fontFamily: 'Outfit-Medium',
     marginLeft: responsiveSize(8),
   },
   resendButtonTextDisabled: {
-    color: '#A0AEC0',
+    color: isDark ? '#4A5568' : '#A0AEC0',
   },
   footer: {
     alignItems: 'center',
   },
   footerText: {
     fontSize: responsiveSize(14),
-    color: '#718096',
+    color: isDark ? '#94A3B8' : '#718096',
     textAlign: 'center',
     fontFamily: 'Outfit-Regular'
   },
   footerLink: {
-    color: '#102C7E',
+    color: isDark ? '#102C7E' : '#102C7E',
     fontFamily: 'Outfit-Medium',
     fontWeight: '600',
     textDecorationLine: 'underline',

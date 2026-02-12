@@ -12,6 +12,7 @@ import {
   ToastAndroid,
   Pressable,
   Modal,
+  useColorScheme
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -52,6 +53,10 @@ const ExpertProfile: React.FC = () => {
   const [dialogVisible, setDialogVisible] = useState(false);
   const [trackingEnabled, setTrackingEnabled] = useState(false);
 
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
+
+  const styles = getStyles(isDark);
 
 
   useDoubleBackExit();
@@ -416,13 +421,20 @@ const ExpertProfile: React.FC = () => {
 
 
         {/* Verification Badge */}
-        <View style={styles.verifWrap}>
-          <View style={styles.verifIconWrap}>
-            <MaterialIcons name="verified-user" size={24} color="#48BB78" />
+        <View style={[styles.verifWrap, {
+          backgroundColor: isDark ? 'rgba(104,211,145,0.08)' : '#F0FFF4',
+          borderColor: isDark ? 'rgba(104,211,145,0.3)' : '#48BB78'
+        }]}>
+          <View style={[styles.verifIconWrap, {
+            backgroundColor: isDark ? 'rgba(104,211,145,0.15)' : 'rgba(72,187,120,0.1)'
+          }]}>
+            <MaterialIcons name="verified-user" size={24} color={isDark ? '#68D391' : '#48BB78'} />
           </View>
           <View style={{ marginLeft: 16, flex: 1 }}>
-            <Text style={styles.verifTitle}>Verified Expert</Text>
-            <Text style={styles.verifText}>
+            <Text style={[styles.verifTitle, { color: isDark ? '#F7FAFC' : '#2D3748' }]}>
+              Verified Expert
+            </Text>
+            <Text style={[styles.verifText, { color: isDark ? '#94A3B8' : '#718096' }]}>
               Your account is verified by Traffic Experts Syndicate. All information is certified and cannot be modified.
             </Text>
           </View>
@@ -430,13 +442,18 @@ const ExpertProfile: React.FC = () => {
 
         {/* Logout Button */}
         <TouchableOpacity
-          style={styles.logoutButton}
+          style={[styles.logoutButton, {
+            backgroundColor: isDark ? 'rgba(252,129,129,0.08)' : 'rgba(229,62,62,0.05)',
+            borderColor: isDark ? 'rgba(252,129,129,0.3)' : '#FED7D7'
+          }]}
           onPress={() => setDialogVisible(true)}
           activeOpacity={0.8}
         >
           <View style={styles.logoutButtonContent}>
-            <MaterialIcons name="logout" size={24} color="#E53E3E" />
-            <Text style={styles.logoutButtonText}>Logout</Text>
+            <MaterialIcons name="logout" size={24} color={isDark ? '#FC8181' : '#E53E3E'} />
+            <Text style={[styles.logoutButtonText, { color: isDark ? '#FC8181' : '#E53E3E' }]}>
+              Logout
+            </Text>
           </View>
         </TouchableOpacity>
 
@@ -463,7 +480,7 @@ const ExpertProfile: React.FC = () => {
                   <Text style={styles.cancelBtnText}>Cancel</Text>
                 </Pressable>
                 <Pressable style={styles.confirmBtn} onPress={logout}>
-                  <MaterialIcons name="logout" size={18} color="#fff" />
+                  <MaterialIcons name="logout" size={18} color="#dd1919ff" />
                   <Text style={styles.confirmBtnText}>Logout</Text>
                 </Pressable>
               </View>
@@ -481,118 +498,286 @@ const ExpertProfile: React.FC = () => {
 
 export default ExpertProfile;
 
-const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: '#fff' },
-  container: { padding: 24 },
-  headerWrap: { alignItems: 'center', marginTop: 6 },
+const getStyles = (isDark: boolean) => StyleSheet.create({
+  safe: {
+    flex: 1,
+    backgroundColor: isDark ? '#0A0A0F' : '#fff'
+  },
+  container: {
+    padding: 24,
+    backgroundColor: isDark ? '#0A0A0F' : '#fff',
+  },
+  headerWrap: {
+    alignItems: 'center',
+    marginTop: 6
+  },
   avatar: {
-    width: 120, height: 120, borderRadius: 120, alignItems: 'center', justifyContent: 'center',
-    shadowColor: '#102C7E', shadowOpacity: 0.18, shadowRadius: 20, elevation: 8,
+    width: 120,
+    height: 120,
+    borderRadius: 120,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: isDark ? '#8B5CF6' : '#102C7E',
+    shadowOpacity: isDark ? 0.25 : 0.18,
+    shadowRadius: 20,
+    elevation: 8,
   },
-  name: { fontSize: 24, fontWeight: '700', color: '#2D3748', marginTop: 18, fontFamily: 'Outfit-SemiBold' },
+  name: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: isDark ? '#F7FAFC' : '#2D3748',
+    marginTop: 18,
+    fontFamily: 'Outfit-SemiBold'
+  },
   statusPill: {
-    flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 8,
-    borderRadius: 20, borderWidth: 1, marginTop: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+    borderWidth: 1,
+    marginTop: 12,
   },
-  statusDot: { width: 8, height: 8, borderRadius: 8 },
-  statusText: { marginLeft: 8, fontWeight: '600', fontFamily: 'Outfit-Medium' },
+  statusDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 8
+  },
+  statusText: {
+    marginLeft: 8,
+    fontWeight: '600',
+    fontFamily: 'Outfit-Medium'
+  },
 
   card: {
-    marginTop: 32, padding: 20, borderRadius: 16, backgroundColor: '#fff', borderWidth: 1, borderColor: '#E2E8F0',
-    shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 10, elevation: 3,
+    marginTop: 32,
+    padding: 20,
+    borderRadius: 16,
+    backgroundColor: isDark ? '#1A1A24' : '#fff',
+    borderWidth: 1,
+    borderColor: isDark ? '#2D2D3A' : '#E2E8F0',
+    shadowColor: isDark ? '#8B5CF6' : '#000',
+    shadowOpacity: isDark ? 0.1 : 0.05,
+    shadowRadius: 10,
+    elevation: isDark ? 0 : 3,
   },
   changePasswordCard: {
-    marginTop: 16, padding: 20, borderRadius: 16, backgroundColor: '#fff', borderWidth: 1, borderColor: '#E2E8F0',
-    shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 10, elevation: 3,
+    marginTop: 16,
+    padding: 20,
+    borderRadius: 16,
+    backgroundColor: isDark ? '#1A1A24' : '#fff',
+    borderWidth: 1,
+    borderColor: isDark ? '#2D2D3A' : '#E2E8F0',
+    shadowColor: isDark ? '#8B5CF6' : '#000',
+    shadowOpacity: isDark ? 0.1 : 0.05,
+    shadowRadius: 10,
+    elevation: isDark ? 0 : 3,
   },
-  passwordIconCircle: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(16,44,126,0.06)' },
+  passwordIconCircle: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 
   loadingOverlay: {
-    ...StyleSheet.absoluteFillObject, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(255, 255, 255, 0.1)', borderRadius: 16
+    ...StyleSheet.absoluteFillObject,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: isDark ? 'rgba(10,10,15,0.5)' : 'rgba(255,255,255,0.1)',
+    borderRadius: 16
   },
 
-
-  row: { flexDirection: 'row', alignItems: 'center' },
-  iconCircle: { width: 50, height: 50, borderRadius: 25, alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(16,44,126,0.06)' },
-  cardTitle: { fontSize: 16, fontWeight: '600', color: '#2D3748', fontFamily: 'Outfit-Medium' },
-  cardSub: { marginTop: 4, color: '#718096', fontSize: 12, fontFamily: 'Outfit-Regular' },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  iconCircle: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  cardTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: isDark ? '#F7FAFC' : '#2D3748',
+    fontFamily: 'Outfit-Medium'
+  },
+  cardSub: {
+    marginTop: 4,
+    color: isDark ? '#94A3B8' : '#718096',
+    fontSize: 12,
+    fontFamily: 'Outfit-Regular'
+  },
 
   infoContainer: {
-    marginTop: 24, borderRadius: 16, overflow: 'hidden', borderWidth: 1, borderColor: '#E2E8F0', backgroundColor: '#fff',
-    shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 10, elevation: 2,
+    marginTop: 24,
+    borderRadius: 16,
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: isDark ? '#2D2D3A' : '#E2E8F0',
+    backgroundColor: isDark ? '#1A1A24' : '#fff',
+    shadowColor: isDark ? '#8B5CF6' : '#000',
+    shadowOpacity: isDark ? 0.1 : 0.05,
+    shadowRadius: 10,
+    elevation: isDark ? 0 : 2,
   },
-  infoHeader: { padding: 20, backgroundColor: '#F7FAFC', flexDirection: 'row', alignItems: 'center' },
-  infoHeaderText: { fontSize: 18, fontWeight: '600', color: '#2D3748', fontFamily: 'Outfit-Medium' },
+  infoHeader: {
+    padding: 20,
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  infoHeaderText: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: isDark ? '#F7FAFC' : '#2D3748',
+    fontFamily: 'Outfit-Medium'
+  },
 
-  infoItem: { flexDirection: 'row', padding: 20, alignItems: 'flex-start' },
-  infoItemBorder: { borderBottomWidth: 1, borderBottomColor: '#E2E8F0' },
-  infoIconWrap: { width: 40, height: 40, borderRadius: 20, backgroundColor: 'rgba(16,44,126,0.06)', alignItems: 'center', justifyContent: 'center' },
-  infoLabel: { color: '#718096', fontSize: 14, fontWeight: '500', fontFamily: 'Outfit-Medium' },
-  infoValue: { marginTop: 4, color: '#2D3748', fontSize: 16, fontWeight: '600', fontFamily: 'Outfit-Medium' },
+  infoItem: {
+    flexDirection: 'row',
+    padding: 20,
+    alignItems: 'flex-start'
+  },
+  infoItemBorder: {
+    borderBottomWidth: 1,
+    borderBottomColor: isDark ? '#2D2D3A' : '#E2E8F0'
+  },
+  infoIconWrap: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  infoLabel: {
+    color: isDark ? '#94A3B8' : '#718096',
+    fontSize: 14,
+    fontWeight: '500',
+    fontFamily: 'Outfit-Medium'
+  },
+  infoValue: {
+    marginTop: 4,
+    color: isDark ? '#F7FAFC' : '#2D3748',
+    fontSize: 16,
+    fontWeight: '600',
+    fontFamily: 'Outfit-Medium'
+  },
 
-  verifWrap: { marginTop: 24, padding: 20, borderRadius: 16, borderWidth: 1, borderColor: '#48BB78', backgroundColor: '#F0FFF4', flexDirection: 'row', alignItems: 'center' },
-  verifIconWrap: { width: 50, height: 50, borderRadius: 25, backgroundColor: 'rgba(72,187,120,0.1)', alignItems: 'center', justifyContent: 'center' },
-  verifTitle: { fontSize: 16, fontWeight: '600', color: '#2D3748', fontFamily: 'Outfit-Medium' },
-  verifText: { marginTop: 4, color: '#718096', fontSize: 12, fontFamily: 'Outfit-Regular' },
+  verifWrap: {
+    marginTop: 24,
+    padding: 20,
+    borderRadius: 16,
+    borderWidth: 1,
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  verifIconWrap: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  verifTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    fontFamily: 'Outfit-Medium'
+  },
+  verifText: {
+    marginTop: 4,
+    fontSize: 12,
+    fontFamily: 'Outfit-Regular'
+  },
 
   // Logout Button
+  logoutButton: {
+    marginTop: 32,
+    paddingVertical: 16,
+    paddingHorizontal: 20,
+    borderRadius: 12,
+    borderWidth: 1.5,
+    alignItems: 'center'
+  },
+  logoutButtonContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  logoutButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    marginLeft: 12,
+    fontFamily: 'Outfit-Medium'
+  },
 
-  logoutButton: { marginTop: 32, paddingVertical: 16, paddingHorizontal: 20, borderRadius: 12, backgroundColor: 'rgba(229,62,62,0.05)', borderWidth: 1.5, borderColor: '#FED7D7', alignItems: 'center' },
-  logoutButtonContent: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center' },
-  logoutButtonText: { color: '#E53E3E', fontSize: 16, fontWeight: '600', marginLeft: 12, fontFamily: 'Outfit-Medium' },
+  loadingScreen: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: isDark ? '#0A0A0F' : '#fff'
+  },
 
-  loadingScreen: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#fff' },
   modalOverlay: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.2)',
+    backgroundColor: isDark ? 'rgba(0,0,0,0.7)' : 'rgba(0,0,0,0.2)',
   },
   dialog: {
     width: '85%',
-    backgroundColor: '#fff',
+    backgroundColor: isDark ? '#1A1A24' : '#fff',
     borderRadius: 16,
-    padding: 20,
+    padding: 24,
     elevation: 8,
+    borderWidth: isDark ? 1 : 0,
+    borderColor: isDark ? '#2D2D3A' : 'transparent',
+  },
+  dialogTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: isDark ? '#F7FAFC' : '#2D3748',
+    fontFamily: 'Outfit-SemiBold',
+    marginBottom: 8,
   },
   dialogText: {
     fontSize: 16,
-    color: '#718096',
-    lineHeight: 20,
-    marginTop: 15,
-    fontFamily: 'Outfit-Medium',
+    color: isDark ? '#94A3B8' : '#718096',
+    lineHeight: 22,
+    fontFamily: 'Outfit-Regular',
   },
   actions: {
     marginTop: 25,
     flexDirection: 'row',
     justifyContent: 'flex-end',
-    gap: 8,
+    gap: 12,
   },
   cancelBtn: {
-    paddingHorizontal: 6,
+    paddingHorizontal: 16,
     paddingVertical: 10,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: isDark ? '#2D2D3A' : '#E2E8F0',
   },
   cancelBtnText: {
-    color: '#718096',
+    color: isDark ? '#94A3B8' : '#718096',
     fontWeight: '600',
     fontFamily: 'Outfit-Medium',
   },
   confirmBtn: {
     paddingHorizontal: 16,
     paddingVertical: 10,
-    backgroundColor: '#d42222ff',
     borderRadius: 8,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
   },
   confirmBtnText: {
-    color: '#fff',
+    color: '#dd1919ff',
     fontWeight: '600',
     fontFamily: 'Outfit-Medium',
   },
-
 });
