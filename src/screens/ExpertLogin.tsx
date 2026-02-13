@@ -248,7 +248,7 @@ const ExpertLogin: React.FC<any> = ({ navigation }) => {
           <View style={styles.registerRow}>
             <Text style={{ color: '#718096', fontFamily: 'Outfit-Regular' }}>Don't have an account? </Text>
             <TouchableOpacity onPress={() => navigation.replace('ExpertRegister')}>
-              <Text style={{ color: '#102C7E', fontWeight: '600', fontFamily: 'Outfit-Medium' }}>Register Now</Text>
+              <Text style={{ color: isDark ? '#002fbdff' : '#102C7E', fontWeight: '600', fontFamily: 'Outfit-Medium' }}>Register Now</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -344,11 +344,11 @@ const getStyles = (isDark: boolean) => StyleSheet.create({
   signInBtn: { 
     height: 56, 
     borderRadius: 16, 
-    backgroundColor: isDark ? '#102C7E' : '#102C7E', 
+    backgroundColor: isDark ? '#002fbdff' : '#102C7E', 
     alignItems: 'center', 
     justifyContent: 'center', 
     elevation: isDark ? 0 : 6,
-    shadowColor: isDark ? '#102C7E' : '#102C7E',
+    shadowColor: isDark ? '#002fbdff' : '#102C7E',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: isDark ? 0.25 : 0.15,
     shadowRadius: 8,
@@ -362,7 +362,7 @@ const getStyles = (isDark: boolean) => StyleSheet.create({
 
   forgot: { 
     textAlign: 'center', 
-    color: isDark ? '#102C7E' : '#102C7E', 
+    color: isDark ? '#002fbdff' : '#102C7E', 
     fontWeight: '500', 
     fontFamily: 'Outfit-Medium' 
   },

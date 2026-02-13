@@ -451,13 +451,13 @@ const getStyles = (isDark: boolean) => StyleSheet.create({
         fontFamily: 'Outfit-Regular' 
     },
     resetButton: {
-        backgroundColor: isDark ? '#102C7E' : '#102C7E',
+        backgroundColor: isDark ? '#002fbdff' : '#102C7E',
         height: responsiveVertical(56),
         borderRadius: responsiveSize(12),
         justifyContent: 'center',
         alignItems: 'center',
         marginBottom: responsiveVertical(16),
-        shadowColor: isDark ? '#102C7E' : '#102C7E',
+        shadowColor: isDark ? '#002fbdff' : '#102C7E',
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: isDark ? 0.25 : 0.15,
         shadowRadius: 8,
@@ -465,7 +465,7 @@ const getStyles = (isDark: boolean) => StyleSheet.create({
     },
     resetButtonDisabled: {
         opacity: 0.5,
-        backgroundColor: isDark ? '#2b4081ff' : '#2b4081ff',
+        backgroundColor: isDark ? '#002fbdff' : '#102C7E',
     },
     buttonContent: {
         flexDirection: 'row',

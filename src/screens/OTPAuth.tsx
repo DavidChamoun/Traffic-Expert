@@ -335,7 +335,7 @@ const OTPAuthScreen: React.FC<OTPAuthScreenProps> = ({ route, navigation }) => {
               <MaterialIcons
                 name="verified-user"
                 size={responsiveSize(48)}
-                color="#102C7E"
+                color={isDark ? '#002fbdff' : '#102C7E'}
               />
             </View>
             <Text style={styles.title}>OTP Verification</Text>
@@ -435,7 +435,7 @@ const OTPAuthScreen: React.FC<OTPAuthScreenProps> = ({ route, navigation }) => {
             <MaterialIcons
               name="refresh"
               size={responsiveSize(18)}
-              color={isResendEnabled ? '#102C7E' : '#A0AEC0'}
+              color={isResendEnabled ? (isDark ? '#002fbdff' : '#102C7E') : '#A0AEC0'}
             />
             <Text
               style={[
@@ -513,7 +513,7 @@ const getStyles = (isDark: boolean) => StyleSheet.create({
   phoneNumber: {
     fontSize: responsiveSize(18),
     fontWeight: '600',
-    color: isDark ? '#102C7E' : '#102C7E',
+    color: isDark ? '#002fbdff' : '#102C7E',
     fontFamily: 'Outfit-Medium',
     textAlign: 'center',
   },
@@ -547,7 +547,7 @@ const getStyles = (isDark: boolean) => StyleSheet.create({
     backgroundColor: isDark ? '#1A1A24' : '#fff',
   },
   otpInputFilled: {
-    borderColor: isDark ? '#102C7E' : '#102C7E',
+    borderColor: isDark ? '#002fbdff' : '#102C7E',
     backgroundColor: isDark ? 'rgba(139,92,246,0.05)' : 'rgba(16,44,126,0.02)',
   },
   otpInputError: {
@@ -572,7 +572,7 @@ const getStyles = (isDark: boolean) => StyleSheet.create({
   },
   timerHighlight: {
     // color: isDark ? '#8B5CF6' : '#102C7E',
-    color: isDark ? '#102C7E' : '#102C7E',
+    color: isDark ? '#002fbdff' : '#102C7E',
     fontWeight: '600',
     fontFamily: 'Outfit-SemiBold'
   },
@@ -581,14 +581,14 @@ const getStyles = (isDark: boolean) => StyleSheet.create({
     fontWeight: '600',
   },
   verifyButton: {
-    backgroundColor: isDark ? '#102C7E' : '#102C7E',
+    backgroundColor: isDark ? '#002fbdff' : '#102C7E',
     height: responsiveVertical(56),
     borderRadius: responsiveSize(16),
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: responsiveVertical(20),
-    shadowColor: isDark ? '#102C7E' : '#102C7E',
+    shadowColor: isDark ? '#002fbdff' : '#102C7E',
     shadowOffset: {
       width: 0,
       height: 4,
@@ -627,7 +627,7 @@ const getStyles = (isDark: boolean) => StyleSheet.create({
   resendButtonText: {
     fontSize: responsiveSize(16),
     fontWeight: '600',
-    color: isDark ? '#102C7E' : '#102C7E',
+    color: isDark ? '#002fbdff' : '#102C7E',
     fontFamily: 'Outfit-Medium',
     marginLeft: responsiveSize(8),
   },
@@ -644,7 +644,7 @@ const getStyles = (isDark: boolean) => StyleSheet.create({
     fontFamily: 'Outfit-Regular'
   },
   footerLink: {
-    color: isDark ? '#102C7E' : '#102C7E',
+    color: isDark ? '#002fbdff' : '#102C7E',
     fontFamily: 'Outfit-Medium',
     fontWeight: '600',
     textDecorationLine: 'underline',

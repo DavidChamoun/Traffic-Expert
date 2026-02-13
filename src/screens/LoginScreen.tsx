@@ -205,7 +205,7 @@ const LoginScreen: React.FC = ({ navigation }: any) => {
                 activeOpacity={0.7}
               >
                 <View style={styles.optionIconWrap}>
-                  <MaterialIcons name="login" size={moderateScale(24)} color="#102C7E" />
+                  <MaterialIcons name="login" size={moderateScale(24)} color={isDark ? '#002fbdff' : '#102C7E'} />
                 </View>
                 <View style={styles.optionContent}>
                   <Text style={styles.optionTitle}>Existing Expert</Text>
@@ -225,7 +225,7 @@ const LoginScreen: React.FC = ({ navigation }: any) => {
                 activeOpacity={0.7}
               >
                 <View style={styles.optionIconWrap}>
-                  <MaterialIcons name="person-add" size={moderateScale(24)} color="#102C7E" />
+                  <MaterialIcons name="person-add" size={moderateScale(24)} color={isDark ? '#002fbdff' : '#102C7E'} />
                 </View>
                 <View style={styles.optionContent}>
                   <Text style={styles.optionTitle}>New Expert</Text>

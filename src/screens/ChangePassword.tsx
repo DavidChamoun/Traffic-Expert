@@ -282,7 +282,7 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({ navigation }) => {
     if (loading) {
         return (
             <SafeAreaView style={[styles.safeArea, styles.loadingScreen]}>
-                <ActivityIndicator size="large" color={isDark ? '#102C7E' : '#102C7E'} />
+                <ActivityIndicator size="large" color={isDark ? '#002fbdff' : '#102C7E'} />
             </SafeAreaView>
         );
     }
@@ -506,7 +506,7 @@ const getStyles = (isDark: boolean) => StyleSheet.create({
     },
     forgot: { 
         textAlign: 'right', 
-        color: isDark ? '#102C7E' : '#102C7E', 
+        color: isDark ? '#002fbdff' : '#102C7E', 
         fontWeight: '500', 
         fontFamily: 'Outfit-Medium' 
     },
@@ -563,13 +563,13 @@ const getStyles = (isDark: boolean) => StyleSheet.create({
         fontFamily: 'Outfit-Regular' 
     },
     updateButton: {
-        backgroundColor: isDark ? '#102C7E' : '#102C7E',
+        backgroundColor: isDark ? '#002fbdff' : '#102C7E',
         height: responsiveVertical(56),
         borderRadius: responsiveSize(12),
         justifyContent: 'center',
         alignItems: 'center',
         marginBottom: responsiveVertical(16),
-        shadowColor: isDark ? '#102C7E' : '#102C7E',
+        shadowColor: isDark ? '#002fbdff' : '#102C7E',
         shadowOffset: {
             width: 0,
             height: 4,
@@ -580,7 +580,7 @@ const getStyles = (isDark: boolean) => StyleSheet.create({
     },
     updateButtonDisabled: {
         opacity: 0.5,
-        backgroundColor: isDark ? '#102C7E' : '#102C7E',
+        backgroundColor: isDark ? '#002fbdff' : '#102C7E',
     },
     updateButtonContent: {
         flexDirection: 'row',

@@ -144,7 +144,8 @@ const ExpertsList: React.FC = () => {
   if (loading) {
     return (
       <View style={[styles.safe, styles.loadingScreen]}>
-        <ActivityIndicator size="large" color="#102C7E" />
+        <ActivityIndicator size="large" color={isDark ? '#002fbdff' : '#102C7E'}
+        />
       </View>
     );
   }
@@ -203,15 +204,15 @@ const ExpertsList: React.FC = () => {
 export default ExpertsList;
 
 const getStyles = (isDark: boolean) => StyleSheet.create({
-  safe: { 
-    flex: 1, 
-    backgroundColor: isDark ? '#0A0A0F' : '#fff' 
+  safe: {
+    flex: 1,
+    backgroundColor: isDark ? '#0A0A0F' : '#fff'
   },
-  loadingScreen: { 
-    flex: 1, 
-    justifyContent: 'center', 
-    alignItems: 'center', 
-    backgroundColor: isDark ? '#0A0A0F' : '#fff' 
+  loadingScreen: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: isDark ? '#0A0A0F' : '#fff'
   },
   errorContainer: {
     flex: 1,
@@ -226,8 +227,8 @@ const getStyles = (isDark: boolean) => StyleSheet.create({
     fontFamily: 'Outfit-Medium',
     marginTop: 16,
   },
-  searchContainer: { 
-    padding: 16, 
+  searchContainer: {
+    padding: 16,
     backgroundColor: isDark ? '#0A0A0F' : '#fff',
     borderBottomWidth: 1,
     borderBottomColor: isDark ? '#2D2D3A' : 'transparent',
@@ -243,35 +244,35 @@ const getStyles = (isDark: boolean) => StyleSheet.create({
     borderColor: isDark ? '#2D2D3A' : '#E2E8F0',
     height: 48,
   },
-  searchInput: { 
-    marginLeft: 12, 
-    flex: 1, 
-    color: isDark ? '#F7FAFC' : '#2D3748', 
+  searchInput: {
+    marginLeft: 12,
+    flex: 1,
+    color: isDark ? '#F7FAFC' : '#2D3748',
     fontFamily: 'Outfit-Regular',
     fontSize: 15,
   },
   listContent: {
     padding: 16,
   },
-  verifiedHeader: { 
-    flexDirection: 'row', 
-    alignItems: 'center', 
-    paddingHorizontal: 16, 
-    paddingVertical: 12, 
+  verifiedHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
     backgroundColor: isDark ? 'rgba(72,187,120,0.08)' : '#F0FFF4',
     borderBottomWidth: 1,
     borderBottomColor: isDark ? 'rgba(72,187,120,0.15)' : 'rgba(72,187,120,0.1)',
   },
-  verifiedIcon: { 
-    backgroundColor: isDark ? '#68D391' : '#48BB78', 
-    padding: 6, 
-    borderRadius: 12, 
-    marginRight: 8 
+  verifiedIcon: {
+    backgroundColor: isDark ? '#68D391' : '#48BB78',
+    padding: 6,
+    borderRadius: 12,
+    marginRight: 8
   },
-  verifiedText: { 
-    flex: 1, 
-    color: isDark ? '#E2E8F0' : '#2D3748', 
-    fontWeight: '500', 
+  verifiedText: {
+    flex: 1,
+    color: isDark ? '#E2E8F0' : '#2D3748',
+    fontWeight: '500',
     fontFamily: 'Outfit-Regular',
     fontSize: 13,
   },
@@ -305,86 +306,86 @@ const getStyles = (isDark: boolean) => StyleSheet.create({
     shadowRadius: 10,
     elevation: isDark ? 0 : 2,
   },
-  cardTop: { 
-    padding: 16 
+  cardTop: {
+    padding: 16
   },
-  left: { 
-    flexDirection: 'row', 
-    alignItems: 'flex-start' 
+  left: {
+    flexDirection: 'row',
+    alignItems: 'flex-start'
   },
-  avatarCircle: { 
-    width: 60, 
-    height: 60, 
-    borderRadius: 30, 
-    backgroundColor: isDark ? 'rgba(139,92,246,0.12)' : 'rgba(102,126,234,0.08)', 
-    alignItems: 'center', 
-    justifyContent: 'center' 
+  avatarCircle: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: isDark ? 'rgba(139,92,246,0.12)' : 'rgba(102,126,234,0.08)',
+    alignItems: 'center',
+    justifyContent: 'center'
   },
-  name: { 
-    fontSize: 18, 
-    fontWeight: '600', 
-    color: isDark ? '#F7FAFC' : '#2D3748', 
-    fontFamily: 'Outfit-Medium' 
+  name: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: isDark ? '#F7FAFC' : '#2D3748',
+    fontFamily: 'Outfit-Medium'
   },
-  role: { 
-    fontSize: 14, 
-    color: isDark ? '#8B5CF6' : '#667EEA', 
-    fontWeight: '500', 
-    marginTop: 4, 
-    fontFamily: 'Outfit-Medium' 
+  role: {
+    fontSize: 14,
+    color: isDark ? '#002fbdff' : '#667EEA',
+    fontWeight: '500',
+    marginTop: 4,
+    fontFamily: 'Outfit-Medium'
   },
-  license: { 
-    fontSize: 13, 
-    color: isDark ? '#94A3B8' : '#718096', 
-    marginTop: 8, 
-    fontFamily: 'Outfit-Regular' 
+  license: {
+    fontSize: 13,
+    color: isDark ? '#94A3B8' : '#718096',
+    marginTop: 8,
+    fontFamily: 'Outfit-Regular'
   },
-  cardBottom: { 
-    flexDirection: 'row', 
-    alignItems: 'center', 
-    paddingHorizontal: 16, 
-    paddingVertical: 12, 
-    backgroundColor: isDark ? '#0A0A0F' : '#F7FAFC', 
+  cardBottom: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    backgroundColor: isDark ? '#0A0A0F' : '#F7FAFC',
     borderTopWidth: 1,
     borderTopColor: isDark ? '#2D2D3A' : 'transparent',
-    borderBottomLeftRadius: 16, 
-    borderBottomRightRadius: 16 
+    borderBottomLeftRadius: 16,
+    borderBottomRightRadius: 16
   },
-  statusPill: { 
-    paddingHorizontal: 12, 
-    paddingVertical: 6, 
-    borderRadius: 12, 
-    flexDirection: 'row', 
-    alignItems: 'center' 
+  statusPill: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 12,
+    flexDirection: 'row',
+    alignItems: 'center'
   },
-  statusDot: { 
-    width: 6, 
-    height: 6, 
-    borderRadius: 3 
+  statusDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3
   },
-  statusText: { 
-    marginLeft: 8, 
-    fontSize: 12, 
+  statusText: {
+    marginLeft: 8,
+    fontSize: 12,
     fontWeight: '500',
     fontFamily: 'Outfit-Medium',
   },
-  callBtn: { 
-    marginLeft: 'auto', 
-    paddingHorizontal: 16, 
-    paddingVertical: 8, 
-    borderRadius: 12, 
-    flexDirection: 'row', 
-    alignItems: 'center' 
+  callBtn: {
+    marginLeft: 'auto',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 12,
+    flexDirection: 'row',
+    alignItems: 'center'
   },
-  callEnabled: { 
-    backgroundColor: isDark ? '#68D391' : '#48BB78' 
+  callEnabled: {
+    backgroundColor: isDark ? '#68D391' : '#48BB78'
   },
-  callDisabled: { 
-    backgroundColor: isDark ? '#4A5568' : '#d6d6d6ff' 
+  callDisabled: {
+    backgroundColor: isDark ? '#4A5568' : '#d6d6d6ff'
   },
-  callBtnText: { 
-    color: '#fff', 
-    fontWeight: '600', 
+  callBtnText: {
+    color: '#fff',
+    fontWeight: '600',
     fontFamily: 'Outfit-Medium',
     fontSize: 14,
   },

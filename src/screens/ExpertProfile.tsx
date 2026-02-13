@@ -301,7 +301,7 @@ const ExpertProfile: React.FC = () => {
         <View style={styles.card}>
           <View style={styles.row}>
             <View style={styles.iconCircle}>
-              <MaterialIcons name="phone" size={24} color="#102C7E" />
+              <MaterialIcons name="phone" size={24} color={isDark ? '#002fbdff' : '#102C7E'} />
             </View>
 
             <View style={{ flex: 1, marginLeft: 16 }}>
@@ -321,14 +321,14 @@ const ExpertProfile: React.FC = () => {
         {/* Expert Information */}
         <View style={styles.infoContainer}>
           <View style={styles.infoHeader}>
-            <MaterialIcons name="info" size={20} color="#102C7E" />
+            <MaterialIcons name="info" size={20} color={isDark ? '#002fbdff' : '#102C7E'} />
             <Text style={styles.infoHeaderText}>  Expert Information</Text>
           </View>
 
           {infoRows.map((row, index) => (
             <View key={index} style={styles.infoItem}>
               <View style={styles.infoIconWrap}>
-                <MaterialIcons name={row.icon} size={20} color="#102C7E" />
+                <MaterialIcons name={row.icon} size={20} color={isDark ? '#002fbdff' : '#102C7E'} />
               </View>
 
               <View style={{ marginLeft: 16 }}>
@@ -345,7 +345,7 @@ const ExpertProfile: React.FC = () => {
         <View style={styles.card}>
           <View style={styles.row}>
             <View style={styles.passwordIconCircle}>
-              <MaterialCommunityIcons name="map-marker-check" size={20} color="#102C7E" />
+              <MaterialCommunityIcons name="map-marker-check" size={20} color={isDark ? '#002fbdff' : '#102C7E'} />
             </View>
 
             <View style={{ flex: 1, marginLeft: 16 }}>
@@ -379,7 +379,7 @@ const ExpertProfile: React.FC = () => {
 
             <View style={styles.row}>
               <View style={styles.passwordIconCircle}>
-                <MaterialIcons name="location-pin" size={20} color="#102C7E" />
+                <MaterialIcons name="location-pin" size={20} color={isDark ? '#002fbdff' : '#102C7E'} />
               </View>
 
               <View style={{ flex: 1, marginLeft: 16 }}>
@@ -390,7 +390,7 @@ const ExpertProfile: React.FC = () => {
 
             {locationIsLoading && (
               <View style={styles.loadingOverlay}>
-                <ActivityIndicator size="small" color="#102C7E" />
+                <ActivityIndicator size="small" color={isDark ? '#002fbdff' : '#102C7E'} />
               </View>
             )}
           </View>
@@ -407,7 +407,7 @@ const ExpertProfile: React.FC = () => {
         >
           <View style={styles.row}>
             <View style={styles.passwordIconCircle}>
-              <MaterialIcons name="lock" size={20} color="#102C7E" />
+              <MaterialIcons name="lock" size={20} color={isDark ? '#002fbdff' : '#102C7E'} />
             </View>
 
             <View style={{ flex: 1, marginLeft: 16 }}>

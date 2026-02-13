@@ -168,9 +168,9 @@ const DriverMain: React.FC<any> = ({ navigation }) => {
                   },
                 ]}
               >
-                <MaterialIcons name={t.icon as any} size={moderateScale(22)} color={active ? '#102C7E' : '#A0AEC0'} />
+                <MaterialIcons name={t.icon as any} size={moderateScale(22)} color={active ? (isDark ? '#002fbdff' : '#102C7E') : '#A0AEC0'} />
               </View>
-              <Text style={[styles.tabLabel, { color: active ? '#102C7E' : '#A0AEC0', fontFamily: active ? 'Outfit-Medium' : 'Outfit-Light' }]}>
+              <Text style={[styles.tabLabel, { color: active ? (isDark ? '#002fbdff' : '#102C7E') : '#A0AEC0', fontFamily: active ? 'Outfit-Medium' : 'Outfit-Light' }]}>
                 {t.label}
               </Text>
             </TouchableOpacity>

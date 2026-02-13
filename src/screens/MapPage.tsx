@@ -311,7 +311,7 @@ const MapPage: React.FC<Props> = ({ onCenterPress }) => {
     return (
       <View style={styles.container}>
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#102C7E" />
+          <ActivityIndicator size="large" color={isDark ? '#002fbdff' : '#102C7E'} />
           <Text style={styles.loadingText}>Loading nearby experts...</Text>
         </View>
       </View>
@@ -434,7 +434,7 @@ const MapPage: React.FC<Props> = ({ onCenterPress }) => {
               <>
                 <View style={styles.dialogHeader}>
                   <View style={styles.avatar}>
-                    <MaterialIcons name="engineering" size={24} color="#102C7E" />
+                    <MaterialIcons name="engineering" size={24} color={isDark ? '#002fbdff' : '#102C7E'} />
                   </View>
                   <View style={{ flex: 1 }}>
                     <Text style={styles.dialogTitle}>{selectedExpert.fullName}</Text>
@@ -522,7 +522,7 @@ const getStyles = (isDark: boolean) => StyleSheet.create({
     marginTop: 24,
     paddingHorizontal: 24,
     paddingVertical: 12,
-    backgroundColor: isDark ? '#8B5CF6' : '#102C7E',
+    backgroundColor: isDark ? '#002fbdff' : '#102C7E',
     borderRadius: 8,
   },
   retryBtnText: {
@@ -544,7 +544,7 @@ const getStyles = (isDark: boolean) => StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     elevation: isDark ? 0 : 4,
-    shadowColor: isDark ? '#8B5CF6' : '#000',
+    shadowColor: isDark ? '#002fbdff' : '#000',
     shadowOpacity: isDark ? 0.15 : 0.1,
     shadowRadius: 4,
     borderWidth: isDark ? 1 : 0,

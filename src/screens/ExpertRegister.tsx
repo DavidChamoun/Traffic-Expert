@@ -261,7 +261,7 @@ const ExpertRegister: React.FC<any> = ({ navigation }) => {
           <Text style={styles.infoText}>
             {info && (
               <>
-                <MaterialCommunityIcons name="map-marker-alert" color="#102C7E" size={14} />
+                <MaterialCommunityIcons name="map-marker-alert" color={isDark ? '#002fbdff' : '#102C7E'} size={14} />
                 {infoText}
               </>
             )}
@@ -350,7 +350,7 @@ const ExpertRegister: React.FC<any> = ({ navigation }) => {
         <View style={styles.registerRow}>
           <Text style={{ color: '#718096', fontFamily: 'Outfit-Regular' }}>Already have an account? </Text>
           <TouchableOpacity onPress={() => navigation.replace('ExpertLogin')}>
-            <Text style={{ color: '#102C7E', fontWeight: '600', fontFamily: 'Outfit-Medium' }}>Sign In</Text>
+            <Text style={{ color: isDark ? '#002fbdff' : '#102C7E', fontWeight: '600', fontFamily: 'Outfit-Medium' }}>Sign In</Text>
           </TouchableOpacity>
         </View>
 
@@ -462,7 +462,7 @@ const getStyles = (isDark: boolean) => StyleSheet.create({
     flex: 1 
   },
   infoText: { 
-    color: isDark ? '#8B5CF6' : '#102C7E', 
+    color: isDark ? '#002fbdff' : '#102C7E', 
     fontSize: 14, 
     gap: 5, 
     fontFamily: 'Outfit-Medium' 
@@ -471,11 +471,11 @@ const getStyles = (isDark: boolean) => StyleSheet.create({
   registerBtn: { 
     height: 56, 
     borderRadius: 16, 
-    backgroundColor: isDark ? '#102C7E' : '#102C7E', 
+    backgroundColor: isDark ? '#002fbdff' : '#102C7E', 
     alignItems: 'center', 
     justifyContent: 'center', 
     elevation: isDark ? 0 : 6,
-    shadowColor: isDark ? '#102C7E' : '#102C7E',
+    shadowColor: isDark ? '#002fbdff' : '#102C7E',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: isDark ? 0.25 : 0.15,
     shadowRadius: 8,

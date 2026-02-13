@@ -52,12 +52,12 @@ const AdvicePage: React.FC = () => {
         <View key={s.id} style={styles.stepCard}>
           <View style={styles.stepLeft}>
             <View style={styles.stepNum}>
-              <Text style={{ color: '#102C7E', fontWeight: '700', fontFamily: 'Outfit-SemiBold' }}>{s.id}</Text>
+              <Text style={{ color: isDark ? '#002fbdff' : '#102C7E', fontWeight: '700', fontFamily: 'Outfit-SemiBold' }}>{s.id}</Text>
             </View>
           </View>
           <View style={{ flex: 1 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <MaterialIcons name={s.icon as any} size={16} color="#102C7E" />
+              <MaterialIcons name={s.icon as any} size={16} color={isDark ? '#002fbdff' : '#102C7E'} />
               <Text style={styles.stepTitle}>{s.title}</Text>
             </View>
             <Text style={styles.stepDesc}>{s.desc}</Text>
