@@ -523,8 +523,7 @@ const getStyles = (isDark: boolean) => StyleSheet.create({
     elevation: 8,
   },
   name: {
-    fontSize: 24,
-    fontWeight: '700',
+    fontSize: 26,
     color: isDark ? '#F7FAFC' : '#2D3748',
     marginTop: 18,
     fontFamily: 'Outfit-SemiBold'
