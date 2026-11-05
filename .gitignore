@@ -73,3 +73,18 @@ yarn-error.log
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+
+# Environment variables
+.env
+.env.*
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+!.env.example
+admin-panel/.env*
+!admin-panel/.env.example
+# Admin Panel & Cloud Functions build artifacts
+admin-panel/dist/
+functions/lib/
+

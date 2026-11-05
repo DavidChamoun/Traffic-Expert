@@ -25,7 +25,7 @@ const AdvicePage: React.FC = () => {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
 
-  const styles = getStyles(isDark);
+  const styles = React.useMemo(() => getStyles(isDark), [isDark]);
 
   useDoubleBackExit();
 

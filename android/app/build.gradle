@@ -72,6 +72,21 @@ def enableProguardInReleaseBuilds = false
  */
 def jscFlavor = 'io.github.react-native-community:jsc-android:2026004.+'
 
+def envFile = rootProject.file('../.env')
+def envProps = new Properties()
+if (envFile.exists()) {
+    envFile.eachLine { line ->
+        line = line.trim()
+        if (line && !line.startsWith("#") && line.contains("=")) {
+            def parts = line.split("=", 2)
+            if (parts.length == 2) {
+                envProps.setProperty(parts[0].trim(), parts[1].trim().replaceAll("^[\"']|[\"']\$", ""))
+            }
+        }
+    }
+}
+def mapsApiKey = envProps.getProperty("GOOGLE_MAPS_API_KEY_ANDROID") ?: envProps.getProperty("GOOGLE_MAPS_API_KEY") ?: ""
+
 android {
     ndkVersion rootProject.ext.ndkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
@@ -84,6 +99,10 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
+
+        manifestPlaceholders = [
+            GOOGLE_MAPS_API_KEY: mapsApiKey
+        ]
 
         project.ext.vectoricons = [
             iconFontNames: [ 'MaterialIcons.ttf', 'MaterialCommunityIcons.ttf', 'FontAwesome.ttf', 'Ionicons.ttf', 'Fontisto.ttf' ] // add what you need

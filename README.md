@@ -1,97 +1,180 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# Traffic Expert — Lebanese Syndicate Administration & Mobile Application
 
-# Getting Started
+The **Traffic Expert** platform connects drivers involved in traffic accidents in Lebanon with officially certified, nearby traffic accident experts authorized by the **Syndicate of Traffic Accident Experts in Lebanon** (*نقابة خبراء السير في لبنان*).
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+This repository contains both:
+1. **The Mobile Application (React Native 0.82.1)** for Drivers and Certified Experts.
+2. **The Syndicate Administration Web Panel (`admin-panel/`)** for Syndicate officials to manage officially authorized experts, revoke or suspend licenses, monitor activations, and maintain audit logs.
+3. **Cloud Functions & Security Rules (`functions/`, `firestore.rules`)** enforcing backend authorization and preventing unauthorized operations.
 
-## Step 1: Start Metro
+---
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
+## 🏛️ System Architecture
 
-To start the Metro dev server, run the following command from the root of your React Native project:
+```
+TrafficExpert/
+├── admin-panel/              # Web Application: Syndicate Administration Panel (React 19, TypeScript, Vite, Tailwind CSS)
+│   ├── src/
+│   │   ├── components/       # StatusBadge, ConfirmationModal, StatCard, Sidebar, Navbar, ProtectedRoute
+│   │   ├── config/           # Firebase Web SDK initialization
+│   │   ├── context/          # AuthContext (role verification & custom claim handling)
+│   │   ├── layouts/          # AdminLayout (responsive dashboard shell)
+│   │   ├── pages/            # Dashboard, ExpertsList, AddExpert, EditExpert, ExpertDetails, ActivityLog, Login
+│   │   ├── services/         # expertService, authService, activityService
+│   │   └── types/            # TypeScript domain models
+├── functions/                # Firebase Cloud Functions (Node 20, TypeScript, Firebase Admin SDK)
+│   └── src/index.ts          # Server-side admin provisioning, suspension, reactivation, revocation
+├── firestore.rules           # Strict security rules (admin-only writes to verifiedExperts, expert self-update constraints)
+├── firestore.indexes.json    # Firestore composite query index configurations
+├── firebase.json             # Unified Firebase deployment configuration
+├── src/                      # Mobile Application (React Native 0.82.1, TypeScript)
+│   ├── navigation/           # AppNavigator (stack navigation)
+│   ├── screens/              # DriverMain, MapPage, ExpertsList, ExpertRegister, ExpertLogin, ExpertProfile, OTPAuth
+│   ├── session/              # Expert session persistence
+│   └── utils/                # Location, permissions, Firestore helpers
+```
+
+---
+
+## 🔒 Security & Data Model Integration
+
+### Firestore Collections
+
+#### 1. `verifiedExperts/{licenseNumber}`
+Contains expert credentials officially authorized by the syndicate. The document ID is the unique syndicate license number.
+- `fullName` (string): Official name registered with the syndicate.
+- `phoneNumber` (string): Official mobile number used for phone OTP verification.
+- `email` (string, optional): Official email.
+- `address` (string, optional): Syndicate district or office location.
+- `isRegistered` (boolean): `true` when the expert has completed mobile account setup; `false` when newly authorized.
+- `authorizationStatus` (string): `'authorized'` | `'suspended'` | `'revoked'`.
+- `createdBy` (string): Admin UID who authorized the record.
+- `createdAt` / `updatedAt` (Timestamp): Server timestamps.
+
+#### 2. `experts/{expertId}`
+Contains expert application accounts created during mobile app registration.
+- `verifiedRef` (DocumentReference): Pointer to `verifiedExperts/{licenseNumber}`.
+- `isAvailable` (boolean): Real-time availability toggle for driver emergency dispatch.
+- `location` (GeoPoint): Real-time coordinates.
+- `isTrackingEnabled` (boolean): Background tracking status.
+- `authUid` (string): Firebase Authentication UID verified via phone OTP.
+- `createdAt` / `lastUpdated` (Timestamp): Operational timestamps.
+
+> [!IMPORTANT]
+> **No Plaintext Passwords in Admin Panel**: The Syndicate Administration Panel never retrieves, modifies, or displays expert passwords. Passwords are treated as confidential operational credentials managed via phone OTP verification.
+
+---
+
+## ⚡ Syndicate Administration Panel Features
+
+1. **Dashboard KPI Overview**:
+   - Total Authorized Experts in Registry.
+   - Active & Authorized Experts eligible for dispatch.
+   - Suspended Experts (temporarily barred).
+   - Revoked Experts (permanently barred).
+   - Accounts Activated on Mobile vs Pending Initial Registration.
+   - Live recently authorized experts table & administrative activity feed.
+
+2. **Expert Management**:
+   - **Multi-Field Search**: Real-time filtering by Full Name, License Number, Phone Number, and Email.
+   - **Status Filtering**: Filter by Syndicate Status (All, Authorized, Suspended, Revoked) and Mobile Registration Status (Registered, Pending).
+   - **Sorting & Pagination**: Clean tabular interface with pagination.
+   - **Detail Profile View**: Complete syndicate records, mobile account sync state, location coordinates, and audit history.
+   - **Audit-Logged Actions**: Confirmation modals with mandatory justification for suspensions, revocations, and reactivations.
+
+3. **Add New Traffic Expert Workflow**:
+   - Validates license number uniqueness in `verifiedExperts`.
+   - Validates Lebanese phone format (`+961 XX XXXXXX`).
+   - Automatically initializes `authorizationStatus: 'authorized'` and `isRegistered: false`.
+   - Does **not** arbitrarily create an expert application account (preserving mobile separation).
+   - Logs the action in `adminActivityLog`.
+
+4. **Edit Official Expert Information**:
+   - Full Name, Phone Number, Email, and District Address editing.
+   - License number is strictly immutable with in-app explanation to preserve `verifiedRef` foreign key integrity across the mobile database.
+
+5. **Syndicate Activity & Audit Log**:
+   - Immutable audit trail recording every creation, modification, suspension, reactivation, and revocation.
+   - Contains administrator email/UID, target license, action type, and justification timestamp.
+
+---
+
+## 📱 Mobile App Compatibility & Enforcement
+
+The React Native application has been updated to respect syndicate authorization:
+- **`ExpertsList.tsx`**: Automatically filters out any expert whose `authorizationStatus` is `'suspended'` or `'revoked'`.
+- **`MapPage.tsx`**: Real-time map snapshot filters out suspended/revoked experts, ensuring drivers only see authorized personnel.
+- **`ExpertRegister.tsx`**: Rejects registration attempts if a license has been suspended or revoked.
+- **`ExpertLogin.tsx`**: Denies login if the syndicate has suspended or revoked the expert's credentials.
+- **`ForgotPasswordStep1.tsx`**: Blocks password recovery for suspended/revoked licenses.
+- **Backward Compatibility**: Any legacy records lacking the new `authorizationStatus` field default automatically to `'authorized'`.
+
+---
+
+## 🚀 Getting Started & Development
+
+### 1. Syndicate Administration Panel (`admin-panel/`)
 
 ```sh
-# Using npm
+cd admin-panel
+npm install
+npm run dev
+```
+
+The panel runs by default at `http://localhost:5173`.
+
+#### Environment Configuration (`admin-panel/.env`):
+Create `.env` using `.env.example` as a template:
+```ini
+VITE_FIREBASE_API_KEY=your_firebase_web_api_key
+VITE_FIREBASE_AUTH_DOMAIN=trafficexpert-app.firebaseapp.com
+VITE_FIREBASE_PROJECT_ID=trafficexpert-app
+VITE_FIREBASE_STORAGE_BUCKET=trafficexpert-app.firebasestorage.app
+VITE_FIREBASE_MESSAGING_SENDER_ID=961513525788
+VITE_FIREBASE_APP_ID=your_firebase_web_app_id
+```
+
+### 2. Cloud Functions (`functions/`)
+
+```sh
+cd functions
+npm install
+npm run build
+firebase deploy --only functions
+```
+
+### 3. Deploying Firestore Security Rules
+
+```sh
+firebase deploy --only firestore:rules
+```
+
+### 4. Running the React Native Mobile App
+
+```sh
+# Start Metro bundler
 npm start
 
-# OR using Yarn
-yarn start
-```
-
-## Step 2: Build and run your app
-
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
-
-### Android
-
-```sh
-# Using npm
+# Run Android
 npm run android
 
-# OR using Yarn
-yarn android
-```
-
-### iOS
-
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
-
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
-
-```sh
-bundle install
-```
-
-Then, and every time you update your native dependencies, run:
-
-```sh
-bundle exec pod install
-```
-
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
-
-```sh
-# Using npm
+# Run iOS
 npm run ios
-
-# OR using Yarn
-yarn ios
 ```
 
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
+---
 
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
+## 🛡️ Administrative Bootstrapping
 
-## Step 3: Modify your app
-
-Now that you have successfully run the app, let's make changes!
-
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
-
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
-
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
-
-## Congratulations! :tada:
-
-You've successfully run and modified your React Native App. :partying_face:
-
-### Now what?
-
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
-
-# Troubleshooting
-
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+To create the initial Syndicate Administrator:
+1. In the **Firebase Console**, create an administrator user with their syndicate email under **Authentication > Users**.
+2. Create a document in Firestore collection `adminUsers/{uid}` with:
+   ```json
+   {
+     "email": "admin@syndicate.gov.lb",
+     "role": "admin",
+     "createdAt": "SERVER_TIMESTAMP"
+   }
+   ```
+   *Or* call the Cloud Function `createInitialAdmin` from the login screen helper.
+3. The custom security rule and frontend AuthGuard verify that only users with confirmed admin privileges can read audit logs or write to `verifiedExperts`.

@@ -20,6 +20,7 @@ import auth, { firebase, FirebaseAuthTypes } from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import { saveExpertSession } from '../session/session';
 import { checkAndPrepareBackgroundLocation } from '../utils/location';
+import ENV from '../config/env';
 
 
 const { width, height } = Dimensions.get('window');
@@ -53,14 +54,14 @@ interface OTPAuthScreenProps {
 const OTPAuthScreen: React.FC<OTPAuthScreenProps> = ({ route, navigation }) => {
   const { phoneNumber = '+961 71 123 456', isSignUp = false, expertDocID = '', licenseID = '', forgotPassword = false, isChangePassword = false } = route?.params || {};
 
-  const TEST_PHONE = '+96176132529';
-  const IS_TEST_MODE = true;
-  const TEST_OTP = '123456';
+  const TEST_PHONE = ENV.TEST_PHONE;
+  const IS_TEST_MODE = ENV.IS_TEST_MODE;
+  const TEST_OTP = ENV.TEST_OTP;
 
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
 
-  const styles = getStyles(isDark);
+  const styles = React.useMemo(() => getStyles(isDark), [isDark]);
 
 
 

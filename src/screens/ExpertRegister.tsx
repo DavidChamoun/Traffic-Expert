@@ -37,36 +37,37 @@ const ExpertRegister: React.FC<any> = ({ navigation }) => {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
 
-  const styles = getStyles(isDark);
-
-
-
+  const styles = React.useMemo(() => getStyles(isDark), [isDark]);
 
   useEffect(() => {
-    const checkSession = async () => {
+    let isMounted = true;
+
+    const initRegister = async () => {
       const session = await getExpertSession();
+      if (!isMounted) return;
 
       if (session?.expertId) {
         navigation.reset({
           index: 0,
           routes: [{ name: 'DriverMain' }],
         });
-
-        // ToastAndroid.show('Session loaded...', ToastAndroid.LONG);
+        return;
       }
-    };
-
-    checkSession();
-
-    (async () => {
 
       const enabled = await isLocationTurnedOn();
+      if (!isMounted) return;
 
       if (!enabled) {
         navigation.replace('Login');
       }
-    })();
-  }, []);
+    };
+
+    initRegister();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [navigation]);
 
 
 
@@ -114,6 +115,19 @@ const ExpertRegister: React.FC<any> = ({ navigation }) => {
       }
 
       const verifiedData = verifiedSnap.data()!;
+
+      // Check syndicate authorization status
+      if (verifiedData.authorizationStatus === 'suspended') {
+        setError('This license is currently suspended by the Syndicate.');
+        setIsLoading(false);
+        return;
+      }
+
+      if (verifiedData.authorizationStatus === 'revoked') {
+        setError('Syndicate authorization for this license has been permanently revoked.');
+        setIsLoading(false);
+        return;
+      }
 
       if (!verifiedData.phoneNumber) {
         setError('Invalid license data. Please contact support.');

@@ -117,7 +117,7 @@ const PasswordRequirement = React.memo(({ text, met, isDark }: PasswordRequireme
 const ChangePassword: React.FC<ChangePasswordProps> = ({ navigation }) => {
     const colorScheme = useColorScheme();
     const isDark = colorScheme === 'dark';
-    const styles = getStyles(isDark);
+    const styles = React.useMemo(() => getStyles(isDark), [isDark]);
     
     const [currentPassword, setCurrentPassword] = useState<string>('');
     const [newPassword, setNewPassword] = useState<string>('');
@@ -131,42 +131,41 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({ navigation }) => {
     const [error, setError] = useState<string>('');
 
     useEffect(() => {
+        let isMounted = true;
         const loadExpert = async () => {
             try {
                 setLoading(true);
 
                 const session = await getExpertSession();
-                if (!session) return;
+                if (!session || !isMounted) return;
 
                 const expertSnap = await firestore()
                     .collection('experts')
                     .doc(session.expertId)
                     .get();
 
-                if (!expertSnap.exists) return;
+                if (!expertSnap.exists || !isMounted) return;
 
                 const expertData = expertSnap.data();
-
-                const verifiedRef = expertData?.verifiedRef;
-                if (!verifiedRef) return;
-
-                const verifiedSnap = await verifiedRef.get();
-                if (!verifiedSnap.exists) return;
-
-                const verifiedData = verifiedSnap.data();
-
-                setExpertInfo({
-                    password: expertData.password,
-                });
-
+                if (expertData && isMounted) {
+                    setExpertInfo({
+                        password: expertData.password,
+                    });
+                }
             } catch (e) {
                 console.error('Failed to load expert profile:', e);
             } finally {
-                setLoading(false);
+                if (isMounted) {
+                    setLoading(false);
+                }
             }
         };
 
         loadExpert();
+
+        return () => {
+            isMounted = false;
+        };
     }, []);
 
     const validatePasswords = (): boolean => {

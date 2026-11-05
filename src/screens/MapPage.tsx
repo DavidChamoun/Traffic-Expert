@@ -22,6 +22,7 @@ import { useNavigation } from '@react-navigation/native';
 import firestore from '@react-native-firebase/firestore';
 import { getExpertSession } from '../session/session';
 import useDoubleBackExit from '../utils/doubleBackService.ts';
+import ENV from '../config/env';
 
 type Props = {
   onCenterPress?: () => void;
@@ -41,7 +42,7 @@ interface UserLocation {
   longitude: number;
 }
 
-const DISTANCE_FILTER_KM = 10;
+const DISTANCE_FILTER_KM = ENV.DISTANCE_FILTER_KM;
 
 
 const MapPage: React.FC<Props> = ({ onCenterPress }) => {
@@ -57,11 +58,12 @@ const MapPage: React.FC<Props> = ({ onCenterPress }) => {
   const navigation = useNavigation<any>();
   const mapRef = useRef<MapView>(null);
   const unsubscribeRef = useRef<(() => void) | null>(null);
+  const verifiedCacheRef = useRef<Map<string, { fullName: string; phoneNumber: string }>>(new Map());
 
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
 
-  const styles = getStyles(isDark);
+  const styles = useMemo(() => getStyles(isDark), [isDark]);
 
 
   // Initial region (Beirut, Lebanon)
@@ -153,19 +155,13 @@ const MapPage: React.FC<Props> = ({ onCenterPress }) => {
           async (snap) => {
             try {
               console.log('[MapPage] 📦 Got', snap.docs.length, 'available experts');
-              const nearbyExperts: ExpertMarker[] = [];
-
-              // Process each expert
+              
+              // 1. Pre-filter by location & distance
+              const candidates: { docId: string; expertData: any; distance: number }[] = [];
               for (const expertDoc of snap.docs) {
                 const expertData = expertDoc.data();
+                if (!expertData.location || !expertData.verifiedRef) continue;
 
-                // Validate required fields
-                if (!expertData.location || !expertData.verifiedRef) {
-                  console.log('[MapPage] ⚠️ Skipping expert', expertDoc.id, '- missing location or verifiedRef');
-                  continue;
-                }
-
-                // Calculate distance
                 const distance = calculateDistanceKm(
                   userLocation.latitude,
                   userLocation.longitude,
@@ -173,51 +169,55 @@ const MapPage: React.FC<Props> = ({ onCenterPress }) => {
                   expertData.location.longitude
                 );
 
-                console.log(`[MapPage] 📍 Expert ${expertDoc.id}: ${distance.toFixed(2)} KM away`);
-
-                // Filter by distance (10 KM)
-                if (distance > DISTANCE_FILTER_KM) {
-                  console.log(`[MapPage] ⏭️ Expert ${expertDoc.id} is ${distance.toFixed(2)} KM away (> ${DISTANCE_FILTER_KM} KM)`);
-                  continue;
+                if (distance <= DISTANCE_FILTER_KM) {
+                  candidates.push({ docId: expertDoc.id, expertData, distance });
                 }
+              }
 
-                // Get verified expert data
-                try {
-                  const verifiedSnap = await expertData.verifiedRef.get();
+              // 2. Fetch missing verifiedRefs concurrently using cache
+              const resolvedExperts = await Promise.all(
+                candidates.map(async ({ docId, expertData, distance }) => {
+                  const refKey = expertData.verifiedRef.path || expertData.verifiedRef.id;
+                  let verifiedData = verifiedCacheRef.current.get(refKey);
 
-                  if (!verifiedSnap.exists) {
-                    console.log('[MapPage] ⚠️ Verified reference not found for expert', expertDoc.id);
-                    continue;
+                  if (!verifiedData) {
+                    try {
+                      const verifiedSnap = await expertData.verifiedRef.get();
+                      if (verifiedSnap.exists) {
+                        const data = verifiedSnap.data();
+                        // Syndicate authorization check: exclude suspended or revoked experts
+                        if (data?.authorizationStatus === 'suspended' || data?.authorizationStatus === 'revoked') {
+                          return null;
+                        }
+                        if (data?.fullName && data?.phoneNumber) {
+                          verifiedData = { fullName: data.fullName, phoneNumber: data.phoneNumber };
+                          verifiedCacheRef.current.set(refKey, verifiedData);
+                        }
+                      }
+                    } catch (error) {
+                      console.error('[MapPage] ❌ Error fetching verified data for expert', docId, ':', error);
+                    }
                   }
 
-                  const verifiedData = verifiedSnap.data();
+                  if (!verifiedData) return null;
 
-                  if (!verifiedData?.fullName || !verifiedData?.phoneNumber) {
-                    console.log('[MapPage] ⚠️ Missing verified data for expert', expertDoc.id);
-                    continue;
-                  }
-
-                  nearbyExperts.push({
-                    id: expertDoc.id,
+                  return {
+                    id: docId,
                     latitude: expertData.location.latitude,
                     longitude: expertData.location.longitude,
                     fullName: verifiedData.fullName,
                     phoneNumber: verifiedData.phoneNumber,
-                    distance: distance,
-                  });
+                    distance,
+                  } as ExpertMarker;
+                })
+              );
 
-                  console.log(`[MapPage] ✅ Added expert: ${verifiedData.fullName} (${distance.toFixed(2)} KM)`);
-                } catch (error) {
-                  console.error('[MapPage] ❌ Error fetching verified data for expert', expertDoc.id, ':', error);
-                }
-              }
-
-              // Sort by distance (nearest first)
-              nearbyExperts.sort((a, b) => a.distance - b.distance);
+              const nearbyExperts = resolvedExperts
+                .filter((e): e is ExpertMarker => e !== null)
+                .sort((a, b) => a.distance - b.distance);
 
               console.log('[MapPage] ✅ Found', nearbyExperts.length, 'nearby experts');
               setExperts(nearbyExperts);
-
             } catch (error) {
               console.error('[MapPage] ❌ Error processing experts snapshot:', error);
               setMapError('Failed to load nearby experts');

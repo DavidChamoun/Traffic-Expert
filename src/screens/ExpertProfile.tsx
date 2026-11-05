@@ -56,7 +56,7 @@ const ExpertProfile: React.FC = () => {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
 
-  const styles = getStyles(isDark);
+  const styles = React.useMemo(() => getStyles(isDark), [isDark]);
 
 
   useDoubleBackExit();
@@ -256,12 +256,12 @@ const ExpertProfile: React.FC = () => {
 
 
 
-  const infoRows = [
+  const infoRows = React.useMemo(() => [
     { label: 'Full Name', value: expertInfo?.fullName, icon: 'person' },
     { label: 'Phone Number', value: expertInfo?.phoneNumber, icon: 'phone' },
     { label: 'Syndicate License Number', value: expertInfo?.licenseId, icon: 'badge' },
     { label: 'Last Updated', value: expertInfo?.lastUpdated, icon: 'calendar-today' },
-  ];
+  ], [expertInfo]);
 
 
   if (loading) {

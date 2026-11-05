@@ -15,6 +15,60 @@ interface Expert {
   isAvailable: boolean;
 }
 
+interface ExpertCardProps {
+  item: Expert;
+  styles: ReturnType<typeof getStyles>;
+  onCall: (phone: string) => void;
+}
+
+const ExpertCard = React.memo(({ item, styles, onCall }: ExpertCardProps) => (
+  <View style={styles.card}>
+    <View style={styles.cardTop}>
+      <View style={styles.left}>
+        <View style={{ marginLeft: 12, flex: 1 }}>
+          <Text style={styles.name}>{item.fullName}</Text>
+          <Text style={styles.role}>Traffic Accident Inspector</Text>
+          <Text style={styles.license}>License: {item.licenseId}</Text>
+        </View>
+      </View>
+    </View>
+
+    <View style={styles.cardBottom}>
+      <View
+        style={[
+          styles.statusPill,
+          { backgroundColor: item.isAvailable ? 'rgba(72,187,120,0.1)' : 'rgba(229,62,62,0.08)' },
+        ]}
+      >
+        <View
+          style={[
+            styles.statusDot,
+            { backgroundColor: item.isAvailable ? '#48BB78' : '#E53E3E' },
+          ]}
+        />
+        <Text
+          style={[
+            styles.statusText,
+            { color: item.isAvailable ? '#48BB78' : '#E53E3E' },
+          ]}
+        >
+          {item.isAvailable ? 'Available Now' : 'Currently Busy'}
+        </Text>
+      </View>
+
+      <TouchableOpacity
+        style={[styles.callBtn, item.isAvailable ? styles.callEnabled : styles.callDisabled]}
+        disabled={!item.isAvailable}
+        onPress={() => onCall(item.phoneNumber)}
+        activeOpacity={0.85}
+      >
+        <MaterialIcons name="phone" size={16} color="#fff" />
+        <Text style={styles.callBtnText}> Call</Text>
+      </TouchableOpacity>
+    </View>
+  </View>
+));
+
 const ExpertsList: React.FC = () => {
   const [experts, setExperts] = useState<Expert[]>([]);
   const [loading, setLoading] = useState(true);
@@ -24,16 +78,15 @@ const ExpertsList: React.FC = () => {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
 
-  const styles = getStyles(isDark);
-
+  const styles = React.useMemo(() => getStyles(isDark), [isDark]);
 
   useDoubleBackExit();
 
-
   useEffect(() => {
+    let isMounted = true;
+
     const loadExperts = async () => {
       try {
-        // setError('');
         setLoading(true);
 
         const verifiedSnap = await firestore()
@@ -41,116 +94,91 @@ const ExpertsList: React.FC = () => {
           .where('isRegistered', '==', true)
           .get();
 
-        const results: Expert[] = [];
+        // Concurrently fetch matching expert accounts
+        const resolved = await Promise.all(
+          verifiedSnap.docs.map(async (verifiedDoc) => {
+            try {
+              const verifiedData = verifiedDoc.data();
+              // Syndicate authorization enforcement: omit suspended or revoked experts
+              if (verifiedData.authorizationStatus === 'suspended' || verifiedData.authorizationStatus === 'revoked') {
+                return null;
+              }
 
-        for (const verifiedDoc of verifiedSnap.docs) {
-          const verifiedData = verifiedDoc.data();
+              const expertSnap = await firestore()
+                .collection('experts')
+                .where('verifiedRef', '==', verifiedDoc.ref)
+                .limit(1)
+                .get();
 
-          // Find matching expert account
-          const expertSnap = await firestore()
-            .collection('experts')
-            .where('verifiedRef', '==', verifiedDoc.ref)
-            .limit(1)
-            .get();
+              if (expertSnap.empty) return null;
 
-          if (expertSnap.empty) continue;
+              const expertData = expertSnap.docs[0].data();
 
-          const expertData = expertSnap.docs[0].data();
+              return {
+                id: expertSnap.docs[0].id,
+                fullName: verifiedData.fullName,
+                licenseId: verifiedDoc.id,
+                phoneNumber: verifiedData.phoneNumber,
+                isAvailable: expertData.isAvailable ?? false,
+              } as Expert;
+            } catch {
+              return null;
+            }
+          })
+        );
 
-          results.push({
-            id: expertSnap.docs[0].id,
-            fullName: verifiedData.fullName,
-            licenseId: verifiedDoc.id,
-            phoneNumber: verifiedData.phoneNumber,
-            isAvailable: expertData.isAvailable ?? false,
-          });
+        if (isMounted) {
+          const results = resolved.filter((item): item is Expert => item !== null);
+          setExperts(results);
         }
-
-        setExperts(results);
       } catch (e) {
-        setError('Failed to load experts')
+        if (isMounted) {
+          setError('Failed to load experts');
+        }
         console.error('Failed to load experts', e);
       } finally {
-        setLoading(false);
+        if (isMounted) {
+          setLoading(false);
+        }
       }
     };
 
     loadExperts();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
-
-  const filteredExperts = experts.filter(expert => {
+  const filteredExperts = React.useMemo(() => {
     const q = search.toLowerCase().trim();
+    if (!q) return experts;
 
-    return (
+    return experts.filter(expert =>
       expert.fullName.toLowerCase().includes(q) ||
       expert.licenseId.toLowerCase().includes(q) ||
       expert.phoneNumber.toLowerCase().includes(q)
     );
-  });
+  }, [experts, search]);
 
+  const handleCall = React.useCallback((phoneNumber: string) => {
+    makePhoneCall(phoneNumber);
+  }, []);
 
-
-
-  const renderInspector = ({ item }: { item: Expert }) => (
-    <View style={styles.card}>
-      <View style={styles.cardTop}>
-        <View style={styles.left}>
-          <View style={{ marginLeft: 12, flex: 1 }}>
-            <Text style={styles.name}>{item.fullName}</Text>
-            <Text style={styles.role}>Traffic Accident Inspector</Text>
-            <Text style={styles.license}>License: {item.licenseId}</Text>
-          </View>
-        </View>
-      </View>
-
-      <View style={styles.cardBottom}>
-        <View
-          style={[
-            styles.statusPill,
-            { backgroundColor: item.isAvailable ? 'rgba(72,187,120,0.1)' : 'rgba(229,62,62,0.08)' },
-          ]}
-        >
-          <View
-            style={[
-              styles.statusDot,
-              { backgroundColor: item.isAvailable ? '#48BB78' : '#E53E3E' },
-            ]}
-          />
-          <Text
-            style={[
-              styles.statusText,
-              { color: item.isAvailable ? '#48BB78' : '#E53E3E' },
-            ]}
-          >
-            {item.isAvailable ? 'Available Now' : 'Currently Busy'}
-          </Text>
-        </View>
-
-        <TouchableOpacity
-          style={[styles.callBtn, item.isAvailable ? styles.callEnabled : styles.callDisabled]}
-          disabled={!item.isAvailable}
-          onPress={() => makePhoneCall(item.phoneNumber)}
-          activeOpacity={0.85}
-        >
-          <MaterialIcons name="phone" size={16} color="#fff" />
-          <Text style={styles.callBtnText}> Call</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+  const renderInspector = React.useCallback(
+    ({ item }: { item: Expert }) => (
+      <ExpertCard item={item} styles={styles} onCall={handleCall} />
+    ),
+    [styles, handleCall]
   );
-
 
   if (loading) {
     return (
       <View style={[styles.safe, styles.loadingScreen]}>
-        <ActivityIndicator size="large" color={isDark ? '#002fbdff' : '#102C7E'}
-        />
+        <ActivityIndicator size="large" color={isDark ? '#002fbdff' : '#102C7E'} />
       </View>
     );
   }
-
-
 
   return (
     <View style={styles.safe}>
@@ -162,7 +190,8 @@ const ExpertsList: React.FC = () => {
             placeholderTextColor="#A0AEC0"
             value={search}
             onChangeText={setSearch}
-            style={styles.searchInput} />
+            style={styles.searchInput}
+          />
         </View>
       </View>
 
@@ -177,26 +206,24 @@ const ExpertsList: React.FC = () => {
         <View style={styles.errorContainer}>
           <Text style={styles.errorText}>{error}</Text>
         </View>
-
-      )
-        :
-        (
-          <FlatList
-            data={filteredExperts}
-            keyExtractor={(item) => item.licenseId}
-            contentContainerStyle={{ padding: 16 }}
-            renderItem={renderInspector}
-            ListEmptyComponent={
-              <View style={styles.noDataFound}>
-                <Text style={styles.noDataFoundText}>
-                  No experts found
-                </Text>
-              </View>
-            }
-
-          />
-        )}
-
+      ) : (
+        <FlatList
+          data={filteredExperts}
+          keyExtractor={(item) => item.licenseId}
+          contentContainerStyle={{ padding: 16 }}
+          renderItem={renderInspector}
+          initialNumToRender={8}
+          maxToRenderPerBatch={10}
+          windowSize={5}
+          ListEmptyComponent={
+            <View style={styles.noDataFound}>
+              <Text style={styles.noDataFoundText}>
+                No experts found
+              </Text>
+            </View>
+          }
+        />
+      )}
     </View>
   );
 };

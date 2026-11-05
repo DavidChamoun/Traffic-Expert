@@ -45,20 +45,21 @@ const DriverMain: React.FC<any> = ({ navigation }) => {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
 
-  const styles = getStyles(isDark);
-
-
-
+  const styles = React.useMemo(() => getStyles(isDark), [isDark]);
 
   useEffect(() => {
+    let isMounted = true;
+
     const loadSession = async () => {
       const storedSession = await getExpertSession();
-      setSession(storedSession);
+      if (isMounted) {
+        setSession(storedSession);
+      }
     };
 
     const checkAndRestartTracking = async () => {
-      const session = await getExpertSession();
-      if (!session?.expertId) return;
+      const stored = await getExpertSession();
+      if (!stored?.expertId) return;
 
       if (await isTrackingActive()) {
         return;
@@ -67,7 +68,7 @@ const DriverMain: React.FC<any> = ({ navigation }) => {
       try {
         const doc = await firestore()
           .collection('experts')
-          .doc(session.expertId)
+          .doc(stored.expertId)
           .get();
 
         const data = doc.data();
@@ -86,12 +87,17 @@ const DriverMain: React.FC<any> = ({ navigation }) => {
     };
 
     checkAndRestartTracking();
-
     loadSession();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
-
-  const tabs = session?.expertId ? [...TABS, { key: 'profile', label: 'Profile', icon: 'person-outline' }] : TABS;
+  const tabs = React.useMemo(
+    () => (session?.expertId ? [...TABS, { key: 'profile', label: 'Profile', icon: 'person-outline' }] : TABS),
+    [session?.expertId]
+  );
 
   const getTitle = () => {
     switch (currentIndex) {
@@ -108,14 +114,6 @@ const DriverMain: React.FC<any> = ({ navigation }) => {
     }
   };
 
-  const renderPage = () => {
-    if (currentIndex === 0) return <MapPage onCenterPress={() => showSnack('Centering map on your location')} />;
-    if (currentIndex === 1) return <ExpertsList />;
-    if (currentIndex === 2) return <AdvicePage />;
-    if (currentIndex === 3) return <ExpertProfile />;
-    return null;
-  };
-
   const showSnack = (message: string) => {
     Alert.alert('', message);
   };
@@ -125,7 +123,7 @@ const DriverMain: React.FC<any> = ({ navigation }) => {
       <StatusBar barStyle="dark-content" backgroundColor="#fff" />
       <View style={styles.appBar}>
         {currentIndex !== 0 && (
-          <TouchableOpacity onPress={() => (navigation.replace('DriverMain'))} style={styles.appBarIcon}>
+          <TouchableOpacity onPress={() => setCurrentIndex(0)} style={styles.appBarIcon}>
             <MaterialIcons name="arrow-back" size={moderateScale(22)} color="#2D3748" />
           </TouchableOpacity>
         )}
@@ -139,15 +137,26 @@ const DriverMain: React.FC<any> = ({ navigation }) => {
         <Text style={styles.title}>{getTitle()}</Text>
 
         <View style={styles.rightActions}>
-          {/* {currentIndex === 0 && (
-            <TouchableOpacity style={styles.iconCircle} onPress={() => showSnack('Refresh Goes here')}>
-              <MaterialIcons name="refresh" size={moderateScale(20)} color="#102C7E" />
-            </TouchableOpacity>
-          )} */}
+          {/* Right actions placeholder */}
         </View>
       </View>
 
-      <View style={styles.content}>{renderPage()}</View>
+      <View style={styles.content}>
+        <View style={[styles.pageContainer, currentIndex !== 0 && styles.hiddenPage]}>
+          <MapPage onCenterPress={() => showSnack('Centering map on your location')} />
+        </View>
+        <View style={[styles.pageContainer, currentIndex !== 1 && styles.hiddenPage]}>
+          <ExpertsList />
+        </View>
+        <View style={[styles.pageContainer, currentIndex !== 2 && styles.hiddenPage]}>
+          <AdvicePage />
+        </View>
+        {session?.expertId && (
+          <View style={[styles.pageContainer, currentIndex !== 3 && styles.hiddenPage]}>
+            <ExpertProfile />
+          </View>
+        )}
+      </View>
 
       <View style={styles.bottomBar}>
         {tabs.map((t, idx) => {
@@ -220,6 +229,12 @@ const getStyles = (isDark: boolean) => StyleSheet.create({
   content: {
     flex: 1,
     backgroundColor: isDark ? '#0A0A0F' : '#FFFFFF',
+  },
+  pageContainer: {
+    flex: 1,
+  },
+  hiddenPage: {
+    display: 'none',
   },
   bottomBar: {
     height: verticalScale(80),

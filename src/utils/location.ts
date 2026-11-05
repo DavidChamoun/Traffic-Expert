@@ -62,24 +62,34 @@ import notifee from '@notifee/react-native';
 //   });
 // }
 
-async function notifyFetching() {
-  const channelId = await notifee.createChannel({
-    id: 'location_silent',
-    name: 'Location Fetching',
-    sound: undefined,                          // disable sound
-    vibration: false,                          // disable vibration
-  });
+let isChannelCreated = false;
 
-  await notifee.displayNotification({
-    title: 'Fetching Location',
-    body: 'Please wait…',
-    android: {
-      channelId,
-      ongoing: true,      // persistent
-      autoCancel: false,
-      onlyAlertOnce: true // prevents re-alerting
-    },
-  });
+async function notifyFetching() {
+  try {
+    if (!isChannelCreated) {
+      await notifee.createChannel({
+        id: 'location_silent',
+        name: 'Location Fetching',
+        sound: undefined,                          // disable sound
+        vibration: false,                          // disable vibration
+      });
+      isChannelCreated = true;
+    }
+
+    await notifee.displayNotification({
+      id: 'location_fetching_notice',
+      title: 'Fetching Location',
+      body: 'Please wait…',
+      android: {
+        channelId: 'location_silent',
+        ongoing: true,      // persistent
+        autoCancel: false,
+        onlyAlertOnce: true // prevents re-alerting
+      },
+    });
+  } catch (err) {
+    console.warn('Failed to display location notification:', err);
+  }
 }
 
 interface LocationCoords {
@@ -98,7 +108,7 @@ export const getCurrentLocation = (): Promise<LocationCoords> => {
           longitude: position.coords.longitude,
         };
         console.log('Got HIGH accuracy location');
-        notifee.cancelAllNotifications();
+        notifee.cancelNotification('location_fetching_notice').catch(() => {});
         resolve(geoPoint);
       },
       (error) => {
@@ -112,10 +122,11 @@ export const getCurrentLocation = (): Promise<LocationCoords> => {
               longitude: position.coords.longitude,
             };
             console.log('Got NETWORK location');
-            notifee.cancelAllNotifications();
+            notifee.cancelNotification('location_fetching_notice').catch(() => {});
             resolve(geoPoint);
           },
           (fallbackError) => {
+            notifee.cancelNotification('location_fetching_notice').catch(() => {});
             reject(fallbackError);
           },
           {

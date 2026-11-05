@@ -1,0 +1,57 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── Helper functions ──────────────────────────────────────────────
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && request.auth.token.admin == true;
+    }
+
+    // ── verifiedExperts collection ────────────────────────────────────
+    // Admins: full CRUD
+    // Mobile experts: read-only (needed for registration, login, profile)
+    match /verifiedExperts/{licenseNumber} {
+      allow read: if isSignedIn();
+      allow create, update, delete: if isAdmin();
+    }
+
+    // ── experts collection ───────────────────────────────────────────
+    // Admins: full read (no write – they manage verifiedExperts, not expert accounts)
+    // Expert owners: read own doc + limited writes (availability, location, password, tracking)
+    match /experts/{expertId} {
+      allow read: if isSignedIn();
+
+      // Allow create during registration (signed-in user creating their own account)
+      allow create: if isSignedIn();
+
+      // Allow update only for the expert's own document fields, or for admin
+      allow update: if isAdmin() ||
+        (isSignedIn() && (
+          // Expert can update their own operational fields
+          request.resource.data.diff(resource.data).affectedKeys()
+            .hasOnly(['isAvailable', 'location', 'lastUpdated', 'password', 'isTrackingEnabled', 'authUid'])
+        ));
+
+      allow delete: if isAdmin();
+    }
+
+    // ── adminActivityLog collection ──────────────────────────────────
+    // Only admins can read; only Cloud Functions / admins can write
+    match /adminActivityLog/{logId} {
+      allow read: if isAdmin();
+      allow create: if isAdmin();
+      allow update, delete: if false; // Immutable audit log
+    }
+
+    // ── adminUsers collection ────────────────────────────────────────
+    // Only admins can read their own profile info
+    match /adminUsers/{userId} {
+      allow read: if isAdmin();
+      allow write: if isAdmin();
+    }
+  }
+}

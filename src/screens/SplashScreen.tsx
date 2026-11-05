@@ -17,9 +17,11 @@ const SplashScreen: React.FC = () => {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
 
-  const styles = getStyles(isDark);
+  const styles = React.useMemo(() => getStyles(isDark), [isDark]);
 
   useEffect(() => {
+    let timerId: ReturnType<typeof setTimeout> | undefined;
+
     Animated.timing(fadeAnim, {
       toValue: 1,
       duration: 2000,
@@ -29,9 +31,13 @@ const SplashScreen: React.FC = () => {
     (async () => {
       await checkAndPrepareLocation();
       await requestNotificationPermission();
-      setTimeout(() => navigation.replace('Login'), 1000);
+      timerId = setTimeout(() => navigation.replace('Login'), 1000);
     })();
-  }, []);
+
+    return () => {
+      if (timerId) clearTimeout(timerId);
+    };
+  }, [fadeAnim, navigation]);
 
   return (
     <SafeAreaView style={styles.container}>

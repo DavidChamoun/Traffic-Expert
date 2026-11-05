@@ -28,6 +28,61 @@ interface ForgotPasswordStep2Props {
     navigation: any;
 }
 
+interface PasswordInputProps {
+    label: string;
+    value: string;
+    onChangeText: (text: string) => void;
+    showPassword: boolean;
+    onToggleVisibility: () => void;
+    placeholder: string;
+    styles: ReturnType<typeof getStyles>;
+}
+
+const PasswordInput = React.memo(({
+    label,
+    value,
+    onChangeText,
+    showPassword,
+    onToggleVisibility,
+    placeholder,
+    styles,
+}: PasswordInputProps) => (
+    <View style={styles.inputContainer}>
+        <Text style={styles.inputLabel}>{label}</Text>
+        <View style={styles.inputWrapper}>
+            <MaterialIcons
+                name="lock"
+                size={responsiveSize(20)}
+                color="#718096"
+                style={styles.inputIcon}
+            />
+            <TextInput
+                style={styles.input}
+                value={value}
+                onChangeText={onChangeText}
+                secureTextEntry={!showPassword}
+                placeholder={placeholder}
+                placeholderTextColor="#A0AEC0"
+                autoCapitalize="none"
+                autoCorrect={false}
+                returnKeyType="done"
+                blurOnSubmit={false}
+            />
+            <TouchableOpacity
+                style={styles.eyeButton}
+                onPress={onToggleVisibility}
+                hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+            >
+                <MaterialIcons
+                    name={showPassword ? 'visibility-off' : 'visibility'}
+                    size={responsiveSize(22)}
+                    color="#718096"
+                />
+            </TouchableOpacity>
+        </View>
+    </View>
+));
+
 const ForgotPasswordStep2: React.FC<ForgotPasswordStep2Props> = ({ route, navigation }) => {
     const { licenseID } = route?.params || {};
     const { isChangePassword } = route?.params || {};
@@ -41,7 +96,7 @@ const ForgotPasswordStep2: React.FC<ForgotPasswordStep2Props> = ({ route, naviga
     const colorScheme = useColorScheme();
     const isDark = colorScheme === 'dark';
 
-    const styles = getStyles(isDark);
+    const styles = React.useMemo(() => getStyles(isDark), [isDark]);
 
 
     const validatePasswords = (): boolean => {
@@ -120,58 +175,6 @@ const ForgotPasswordStep2: React.FC<ForgotPasswordStep2Props> = ({ route, naviga
         }
     };
 
-
-    const PasswordInput = React.useMemo(() => ({
-        label,
-        value,
-        onChangeText,
-        showPassword,
-        onToggleVisibility,
-        placeholder,
-    }: {
-        label: string;
-        value: string;
-        onChangeText: (text: string) => void;
-        showPassword: boolean;
-        onToggleVisibility: () => void;
-        placeholder: string;
-    }) => (
-        <View style={styles.inputContainer}>
-            <Text style={styles.inputLabel}>{label}</Text>
-            <View style={styles.inputWrapper}>
-                <MaterialIcons
-                    name="lock"
-                    size={responsiveSize(20)}
-                    color="#718096"
-                    style={styles.inputIcon}
-                />
-                <TextInput
-                    style={styles.input}
-                    value={value}
-                    onChangeText={onChangeText}
-                    secureTextEntry={!showPassword}
-                    placeholder={placeholder}
-                    placeholderTextColor="#A0AEC0"
-                    autoCapitalize="none"
-                    autoCorrect={false}
-                    returnKeyType="done"
-                    blurOnSubmit={false}
-                />
-                <TouchableOpacity
-                    style={styles.eyeButton}
-                    onPress={onToggleVisibility}
-                    hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-                >
-                    <MaterialIcons
-                        name={showPassword ? 'visibility-off' : 'visibility'}
-                        size={responsiveSize(22)}
-                        color="#718096"
-                    />
-                </TouchableOpacity>
-            </View>
-        </View>
-    ), []);
-
     const requirementsMet = {
         length: newPassword.length >= 6,
         match: newPassword === confirmPassword && confirmPassword.length > 0,
@@ -208,8 +211,9 @@ const ForgotPasswordStep2: React.FC<ForgotPasswordStep2Props> = ({ route, naviga
                         value={newPassword}
                         onChangeText={setNewPassword}
                         showPassword={showNewPassword}
-                        onToggleVisibility={() => setShowNewPassword(!showNewPassword)}
+                        onToggleVisibility={() => setShowNewPassword(prev => !prev)}
                         placeholder="Enter new password"
+                        styles={styles}
                     />
 
                     {/* Confirm Password Input */}
@@ -218,8 +222,9 @@ const ForgotPasswordStep2: React.FC<ForgotPasswordStep2Props> = ({ route, naviga
                         value={confirmPassword}
                         onChangeText={setConfirmPassword}
                         showPassword={showConfirmPassword}
-                        onToggleVisibility={() => setShowConfirmPassword(!showConfirmPassword)}
+                        onToggleVisibility={() => setShowConfirmPassword(prev => !prev)}
                         placeholder="Confirm new password"
+                        styles={styles}
                     />
 
                     {/* Password Requirements */}

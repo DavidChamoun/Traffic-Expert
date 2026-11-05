@@ -44,7 +44,7 @@ const ForgotPasswordStep1: React.FC<ForgotPasswordStep1Props> = ({ route, naviga
     const colorScheme = useColorScheme();
     const isDark = colorScheme === 'dark';
 
-    const styles = getStyles(isDark);
+    const styles = React.useMemo(() => getStyles(isDark), [isDark]);
 
 
     const handleContinue = async () => {
@@ -80,6 +80,19 @@ const ForgotPasswordStep1: React.FC<ForgotPasswordStep1Props> = ({ route, naviga
             }
 
             const verifiedData = verifiedSnap.data()!;
+
+            // Check syndicate authorization status
+            if (verifiedData.authorizationStatus === 'suspended') {
+                setError('This license is currently suspended by the Syndicate.');
+                setIsLoading(false);
+                return;
+            }
+
+            if (verifiedData.authorizationStatus === 'revoked') {
+                setError('Syndicate authorization has been revoked.');
+                setIsLoading(false);
+                return;
+            }
 
             // Verify the document actually has required fields
             if (!verifiedData.phoneNumber) {
@@ -119,19 +132,7 @@ const ForgotPasswordStep1: React.FC<ForgotPasswordStep1Props> = ({ route, naviga
                 return;
             }
 
-            // Create expert account
-            const snapshot = await firestore()
-                .collection('experts')
-                .where('verifiedRef', '==', verifiedRef)
-                .limit(1)
-                .get();
-
-            if (snapshot.empty) {
-                setError('Invalid License Number');
-                return;
-            }
-
-            const expertDoc = snapshot.docs[0];
+            const expertDoc = existingExpertSnap.docs[0];
             const expertDocID = expertDoc.id;
 
 
