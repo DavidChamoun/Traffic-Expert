@@ -156,7 +156,7 @@ export const LoginPage: React.FC = () => {
           </form>
 
           {/* Initial Admin Provisioning Helper Accordion */}
-          <div className="mt-6 pt-6 border-t border-gray-100 text-center">
+          {/* <div className="mt-6 pt-6 border-t border-gray-100 text-center">
             <button
               type="button"
               onClick={() => setShowBootstrapHelp(!showBootstrapHelp)}
@@ -186,7 +186,7 @@ export const LoginPage: React.FC = () => {
                 </button>
               </div>
             )}
-          </div>
+          </div> */}
         </div>
 
         <div className="mt-6 text-center text-xs text-slate-400">
