@@ -5,6 +5,8 @@ import { claimInitialAdmin } from '../services/authService';
 import { Scale, Lock, Mail, AlertCircle, Loader2, ShieldCheck, KeyRound } from 'lucide-react';
 import toast from 'react-hot-toast';
 
+import logoImg from '../assets/images/traffic_expert.png';
+
 export const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -61,8 +63,12 @@ export const LoginPage: React.FC = () => {
     <div className="min-h-screen bg-slate-900 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="flex justify-center">
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-primary-600 to-blue-500 flex items-center justify-center text-white shadow-xl shadow-primary-900/50">
-            <Scale className="w-8 h-8" />
+          <div className="w-20 h-20 rounded-2xl bg-white/100 p-2 flex items-center justify-center shadow-xl shadow-primary-900/50 backdrop-blur-xs border border-white/10">
+            <img
+              src={logoImg}
+              alt="Traffic Expert Syndicate Official Logo"
+              className="w-full h-full object-contain"
+            />
           </div>
         </div>
         <h2 className="mt-4 text-center text-2xl font-bold tracking-tight text-white">

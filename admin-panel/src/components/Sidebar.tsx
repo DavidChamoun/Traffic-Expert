@@ -9,6 +9,8 @@ import {
   Scale
 } from 'lucide-react';
 
+import logoImg from '../assets/images/traffic_expert.png';
+
 interface SidebarProps {
   isOpen: boolean;
   onClose?: () => void;
@@ -46,11 +48,13 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
       } flex flex-col`}
     >
       {/* Brand Header */}
-      <div className="h-16 flex items-center px-6 border-b border-slate-800 bg-slate-950">
+      <div className="h-16 flex items-center px-5 border-b border-slate-800 bg-slate-950">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-lg bg-gradient-to-tr from-primary-600 to-blue-500 flex items-center justify-center text-white shadow-md shadow-primary-900/40">
-            <Scale className="w-5 h-5 text-white" />
-          </div>
+          <img
+            src={logoImg}
+            alt="Traffic Expert Syndicate Logo"
+            className="w-10 h-10 object-contain rounded-lg p-0.5 bg-white/100 shadow-sm"
+          />
           <div>
             <h1 className="text-sm font-bold tracking-tight text-white leading-tight">
               Traffic Expert
